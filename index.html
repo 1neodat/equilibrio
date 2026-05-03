@@ -15,7 +15,7 @@
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1250px;
       margin: auto;
       padding: 30px;
     }
@@ -109,6 +109,38 @@
       margin-top: 14px;
     }
 
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .metric {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 15px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+
+    .metric span {
+      font-size: 20px;
+      font-weight: bold;
+      color: #0f172a;
+    }
+
+    .grafica-control {
+      max-width: 420px;
+      margin: 0 auto 20px auto;
+    }
+
     canvas {
       margin-top: 20px;
     }
@@ -157,8 +189,8 @@
     </table>
 
     <div class="nota">
-      El cálculo asume que el equilibrio se alcanza vendiendo todos los productos en conjunto:
-      la misma cantidad de unidades de cada producto.
+      El cálculo considera la venta conjunta de todos los productos.  
+      Cada ciclo equivale a vender una unidad de cada producto ingresado.
     </div>
 
     <div class="acciones">
@@ -169,15 +201,36 @@
   </div>
 
   <div class="card">
-    <h2>Resultados</h2>
+    <h2>Resultados generales</h2>
     <div id="resultado" class="resultado">
       Ingrese la información y presione calcular.
     </div>
   </div>
 
   <div class="card">
-    <h2>Gráfica</h2>
+    <h2>Gráfica interactiva</h2>
+
+    <div class="grafica-control">
+      <label for="vistaGrafica"><strong>Seleccione vista de análisis</strong></label>
+      <select id="vistaGrafica" onchange="actualizarVistaGrafica()">
+        <option value="todos">Todos los productos</option>
+      </select>
+    </div>
+
     <canvas id="grafica"></canvas>
+
+    <div class="nota">
+      Zona roja: pérdida.  
+      Punto amarillo: equilibrio.  
+      Zona verde: ganancia.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Desglose por producto</h2>
+    <div id="desglose" class="resultado">
+      El desglose aparecerá después del cálculo.
+    </div>
   </div>
 
   <div class="card">
@@ -193,6 +246,7 @@
   let contadorRubros = 0;
   let contadorProductos = 0;
   let grafica = null;
+  let datosCalculados = null;
 
   function agregarRubro() {
     contadorRubros++;
@@ -265,6 +319,7 @@
     const error = document.getElementById("error");
     const resultado = document.getElementById("resultado");
     const interpretacion = document.getElementById("interpretacion");
+    const desglose = document.getElementById("desglose");
 
     error.textContent = "";
 
@@ -298,9 +353,9 @@
     }
 
     let productos = [];
-    let margenTotalPorRonda = 0;
-    let ingresoTotalPorRonda = 0;
-    let costoVariableTotalPorRonda = 0;
+    let margenTotalPorCiclo = 0;
+    let ingresoTotalPorCiclo = 0;
+    let costoVariableTotalPorCiclo = 0;
 
     for (const fila of filasProductos) {
       const nombre = fila.querySelector(".productoNombre").value.trim();
@@ -324,28 +379,28 @@
         const margenDeseado = parseFloat(fila.querySelector(".margenDeseado").value);
 
         if (isNaN(margenDeseado) || margenDeseado <= 0) {
-          error.textContent = "Ingrese un margen válido para cada producto configurado por margen.";
+          error.textContent = "Ingrese un margen válido.";
           return;
         }
 
         precio = costoVariable + margenDeseado;
-        descripcionPrecio = "Costo variable + margen";
+        descripcionPrecio = "Costo + margen";
       }
 
       if (tipoPrecio === "porcentaje") {
         const porcentaje = parseFloat(fila.querySelector(".porcentajeUtilidad").value);
 
         if (isNaN(porcentaje) || porcentaje <= 0 || porcentaje >= 100) {
-          error.textContent = "El porcentaje de utilidad debe ser mayor que 0 y menor que 100.";
+          error.textContent = "El porcentaje debe ser mayor que 0 y menor que 100.";
           return;
         }
 
-        precio = costoVariable / (1 - (porcentaje / 100));
-        descripcionPrecio = "% de utilidad sobre precio";
+        precio = costoVariable / (1 - porcentaje / 100);
+        descripcionPrecio = "% utilidad sobre precio";
       }
 
       if (isNaN(precio) || precio <= costoVariable) {
-        error.textContent = "El precio calculado debe ser mayor que el costo variable en todos los productos.";
+        error.textContent = "El precio calculado debe ser mayor que el costo variable.";
         return;
       }
 
@@ -354,136 +409,375 @@
       productos.push({
         nombre,
         costoVariable,
-        tipoPrecio,
-        descripcionPrecio,
         precio,
-        margenUnitario
+        margenUnitario,
+        descripcionPrecio
       });
 
-      margenTotalPorRonda += margenUnitario;
-      ingresoTotalPorRonda += precio;
-      costoVariableTotalPorRonda += costoVariable;
+      margenTotalPorCiclo += margenUnitario;
+      ingresoTotalPorCiclo += precio;
+      costoVariableTotalPorCiclo += costoVariable;
     }
 
-    if (margenTotalPorRonda <= 0) {
-      error.textContent = "El margen total debe ser mayor que cero.";
-      return;
-    }
+    const ciclosNecesariosExactos = costosFijos / margenTotalPorCiclo;
+    const ciclosNecesarios = Math.ceil(ciclosNecesariosExactos);
 
-    const rondasNecesarias = Math.ceil(costosFijos / margenTotalPorRonda);
-    const margenGenerado = rondasNecesarias * margenTotalPorRonda;
-    const ingresosTotales = rondasNecesarias * ingresoTotalPorRonda;
-    const costosVariablesTotales = rondasNecesarias * costoVariableTotalPorRonda;
+    const margenGenerado = ciclosNecesarios * margenTotalPorCiclo;
+    const ingresosTotales = ciclosNecesarios * ingresoTotalPorCiclo;
+    const costosVariablesTotales = ciclosNecesarios * costoVariableTotalPorCiclo;
     const diferencia = margenGenerado - costosFijos;
 
-    let tablaProductos = `
+    productos.forEach(producto => {
+      producto.unidades = ciclosNecesarios;
+      producto.ventas = producto.precio * ciclosNecesarios;
+      producto.costoVariableTotal = producto.costoVariable * ciclosNecesarios;
+      producto.margenTotal = producto.margenUnitario * ciclosNecesarios;
+      producto.pesoMargen = producto.margenUnitario / margenTotalPorCiclo;
+    });
+
+    datosCalculados = {
+      costosFijos,
+      detalleRubros,
+      productos,
+      margenTotalPorCiclo,
+      ingresoTotalPorCiclo,
+      costoVariableTotalPorCiclo,
+      ciclosNecesarios,
+      ciclosNecesariosExactos,
+      margenGenerado,
+      ingresosTotales,
+      costosVariablesTotales,
+      diferencia
+    };
+
+    resultado.innerHTML = `
+      <div class="grid">
+        <div class="metric">
+          <strong>Costos fijos totales</strong>
+          <span>${moneda(costosFijos)}</span>
+        </div>
+
+        <div class="metric">
+          <strong>Margen por ciclo conjunto</strong>
+          <span>${moneda(margenTotalPorCiclo)}</span>
+        </div>
+
+        <div class="metric">
+          <strong>Unidades por producto</strong>
+          <span>${ciclosNecesarios}</span>
+        </div>
+
+        <div class="metric">
+          <strong>Ventas necesarias</strong>
+          <span>${moneda(ingresosTotales)}</span>
+        </div>
+      </div>
+
+      <br>
+
+      <strong>Rubros ingresados:</strong><br>
+      ${detalleRubros}
+
+      <br>
+
+      <strong>Resultado:</strong><br>
+      Para cubrir los costos fijos, se deben vender aproximadamente 
+      <strong>${ciclosNecesarios} unidades de cada producto</strong>.
+      El margen generado será de <strong>${moneda(margenGenerado)}</strong>.
+      La diferencia frente a los costos fijos será de <strong>${moneda(diferencia)}</strong>.
+    `;
+
+    construirDesglose();
+    construirInterpretacion();
+    cargarSelectorGrafica();
+    actualizarVistaGrafica();
+  }
+
+  function construirDesglose() {
+    const desglose = document.getElementById("desglose");
+    const d = datosCalculados;
+
+    let html = `
       <table>
         <thead>
           <tr>
             <th>Producto</th>
+            <th>Precio</th>
             <th>Costo variable</th>
-            <th>Precio calculado</th>
             <th>Margen unitario</th>
             <th>Unidades a vender</th>
-            <th>Ventas por producto</th>
+            <th>Ventas</th>
+            <th>Margen total</th>
+            <th>Aporte al margen conjunto</th>
           </tr>
         </thead>
         <tbody>
     `;
 
-    productos.forEach(producto => {
-      tablaProductos += `
+    d.productos.forEach(p => {
+      html += `
         <tr>
-          <td>${producto.nombre}</td>
-          <td>${moneda(producto.costoVariable)}</td>
-          <td>${moneda(producto.precio)}</td>
-          <td>${moneda(producto.margenUnitario)}</td>
-          <td>${rondasNecesarias}</td>
-          <td>${moneda(rondasNecesarias * producto.precio)}</td>
+          <td>${p.nombre}</td>
+          <td>${moneda(p.precio)}</td>
+          <td>${moneda(p.costoVariable)}</td>
+          <td>${moneda(p.margenUnitario)}</td>
+          <td>${p.unidades}</td>
+          <td>${moneda(p.ventas)}</td>
+          <td>${moneda(p.margenTotal)}</td>
+          <td>${(p.pesoMargen * 100).toFixed(2)}%</td>
         </tr>
       `;
     });
 
-    tablaProductos += `
+    html += `
         </tbody>
       </table>
     `;
 
-    resultado.innerHTML = `
-      <strong>Costos fijos totales:</strong> ${moneda(costosFijos)}<br><br>
+    desglose.innerHTML = html;
+  }
 
-      <strong>Rubros de costos fijos:</strong><br>
-      ${detalleRubros}<br>
+  function construirInterpretacion() {
+    const interpretacion = document.getElementById("interpretacion");
+    const d = datosCalculados;
 
-      <strong>Margen generado por vender una unidad de cada producto:</strong> ${moneda(margenTotalPorRonda)}<br>
-      <strong>Cantidad necesaria de cada producto:</strong> ${rondasNecesarias} unidades<br>
-      <strong>Ingresos totales necesarios:</strong> ${moneda(ingresosTotales)}<br>
-      <strong>Costos variables totales:</strong> ${moneda(costosVariablesTotales)}<br>
-      <strong>Margen total generado:</strong> ${moneda(margenGenerado)}<br>
-      <strong>Diferencia después de cubrir costos fijos:</strong> ${moneda(diferencia)}<br><br>
-
-      ${tablaProductos}
-    `;
-
-    let formulaProductos = productos
-      .map(p => `${moneda(p.margenUnitario)} de ${p.nombre}`)
+    const productosFormula = d.productos
+      .map(p => `${moneda(p.margenUnitario)} (${p.nombre})`)
       .join(" + ");
 
+    let productoMayorAporte = d.productos[0];
+
+    d.productos.forEach(p => {
+      if (p.margenUnitario > productoMayorAporte.margenUnitario) {
+        productoMayorAporte = p;
+      }
+    });
+
     interpretacion.innerHTML = `
-      <p><strong>Interpretación:</strong></p>
+      <p><strong>Lectura ejecutiva:</strong></p>
 
       <p>
-        El equilibrio se calcula considerando la venta conjunta de todos los productos.
-        En cada ciclo de venta se considera una unidad de cada producto.
+        La empresa alcanza el equilibrio cuando el margen generado por la venta conjunta
+        de todos los productos cubre los costos fijos. En este modelo, un ciclo de venta
+        significa vender una unidad de cada producto.
+      </p>
+
+      <p>
+        El costo fijo total es <strong>${moneda(d.costosFijos)}</strong>.
+        Cada ciclo conjunto genera un margen de <strong>${moneda(d.margenTotalPorCiclo)}</strong>.
+        Por tanto, se requieren <strong>${d.ciclosNecesariosExactos.toFixed(2)}</strong> ciclos exactos.
+        Como no se pueden vender fracciones completas de cada producto, el sistema redondea a
+        <strong>${d.ciclosNecesarios}</strong> unidades por producto.
       </p>
 
       <p><strong>Prueba lógica:</strong></p>
 
       <p>
-        Margen total por ciclo =
-        ${formulaProductos}
-        = <strong>${moneda(margenTotalPorRonda)}</strong>
+        Margen conjunto por ciclo =
+        ${productosFormula}
+        = <strong>${moneda(d.margenTotalPorCiclo)}</strong>
       </p>
 
       <p>
-        Unidades necesarias por producto =
-        Costos fijos ÷ Margen total por ciclo =
-        ${moneda(costosFijos)} ÷ ${moneda(margenTotalPorRonda)}
-        = <strong>${rondasNecesarias} unidades de cada producto</strong>
+        Punto de equilibrio exacto =
+        Costos fijos ÷ Margen conjunto =
+        ${moneda(d.costosFijos)} ÷ ${moneda(d.margenTotalPorCiclo)}
+        = <strong>${d.ciclosNecesariosExactos.toFixed(2)}</strong>
       </p>
 
       <p>
-        Verificación =
-        ${rondasNecesarias} × ${moneda(margenTotalPorRonda)}
-        = <strong>${moneda(margenGenerado)}</strong>
+        Verificación con unidades enteras =
+        ${d.ciclosNecesarios} × ${moneda(d.margenTotalPorCiclo)}
+        = <strong>${moneda(d.margenGenerado)}</strong>
       </p>
 
       <p>
-        Como el margen generado es ${moneda(margenGenerado)} y los costos fijos son ${moneda(costosFijos)},
-        la diferencia es <strong>${moneda(diferencia)}</strong>.
+        Diferencia =
+        Margen generado - Costos fijos =
+        ${moneda(d.margenGenerado)} - ${moneda(d.costosFijos)}
+        = <strong>${moneda(d.diferencia)}</strong>
+      </p>
+
+      <p><strong>Interpretación financiera:</strong></p>
+
+      <p>
+        Antes del punto de equilibrio, la empresa opera en pérdida porque el margen acumulado
+        aún no alcanza a cubrir los costos fijos. En el punto de equilibrio, no hay pérdida ni ganancia.
+        Después de ese punto, cada ciclo adicional genera una ganancia igual al margen conjunto:
+        <strong>${moneda(d.margenTotalPorCiclo)}</strong>.
       </p>
 
       <p>
-        Por tanto, para alcanzar el punto de equilibrio con todos los productos,
-        se deben vender aproximadamente <strong>${rondasNecesarias} unidades de cada producto</strong>.
+        El producto con mayor margen unitario es <strong>${productoMayorAporte.nombre}</strong>,
+        con <strong>${moneda(productoMayorAporte.margenUnitario)}</strong> por unidad.
+        Sin embargo, el equilibrio mostrado no depende solo de ese producto; se calcula con la venta
+        simultánea de todos los productos ingresados.
       </p>
     `;
-
-    dibujarGrafica(costosFijos, margenTotalPorRonda, rondasNecesarias);
   }
 
-  function dibujarGrafica(costosFijos, margenTotalPorRonda, rondasNecesarias) {
-    const ctx = document.getElementById("grafica").getContext("2d");
+  function cargarSelectorGrafica() {
+    const selector = document.getElementById("vistaGrafica");
 
-    const maxRondas = rondasNecesarias + 10;
-    const etiquetas = [];
+    selector.innerHTML = `
+      <option value="todos">Todos los productos</option>
+    `;
 
-    for (let i = 0; i <= maxRondas; i++) {
-      etiquetas.push(i);
+    datosCalculados.productos.forEach((p, index) => {
+      selector.innerHTML += `
+        <option value="${index}">${p.nombre}</option>
+      `;
+    });
+  }
+
+  function actualizarVistaGrafica() {
+    if (!datosCalculados) return;
+
+    const selector = document.getElementById("vistaGrafica");
+    const vista = selector.value;
+
+    if (vista === "todos") {
+      dibujarGraficaTodos();
+    } else {
+      dibujarGraficaProducto(parseInt(vista));
     }
+  }
 
-    const margenAcumulado = etiquetas.map(i => i * margenTotalPorRonda);
-    const costosFijosLinea = etiquetas.map(() => costosFijos);
+  function dibujarGraficaTodos() {
+    const d = datosCalculados;
+    const maxCiclos = d.ciclosNecesarios + 10;
+
+    const etiquetas = [];
+    for (let i = 0; i <= maxCiclos; i++) etiquetas.push(i);
+
+    const margenAcumulado = etiquetas.map(i => i * d.margenTotalPorCiclo);
+    const zonaPerdida = etiquetas.map(i => i <= d.ciclosNecesarios ? d.costosFijos : null);
+    const zonaGanancia = etiquetas.map(i => i >= d.ciclosNecesarios ? i * d.margenTotalPorCiclo : null);
+    const costosFijosLinea = etiquetas.map(() => d.costosFijos);
+    const puntoEquilibrio = etiquetas.map(i => i === d.ciclosNecesarios ? d.margenGenerado : null);
+
+    renderizarGrafica({
+      titulo: "Equilibrio con venta conjunta de todos los productos",
+      ejeX: "Cantidad vendida de cada producto",
+      datasets: [
+        {
+          label: "Zona de pérdida",
+          data: zonaPerdida,
+          backgroundColor: "rgba(239, 68, 68, 0.18)",
+          borderColor: "rgba(239, 68, 68, 0)",
+          fill: true,
+          pointRadius: 0
+        },
+        {
+          label: "Zona de ganancia",
+          data: zonaGanancia,
+          backgroundColor: "rgba(34, 197, 94, 0.18)",
+          borderColor: "rgba(34, 197, 94, 0)",
+          fill: true,
+          pointRadius: 0
+        },
+        {
+          label: "Margen acumulado",
+          data: margenAcumulado,
+          borderColor: "#2563eb",
+          backgroundColor: "#2563eb",
+          borderWidth: 3,
+          fill: false,
+          tension: 0.25
+        },
+        {
+          label: "Costos fijos",
+          data: costosFijosLinea,
+          borderColor: "#ef4444",
+          backgroundColor: "#ef4444",
+          borderWidth: 3,
+          borderDash: [8, 6],
+          fill: false,
+          pointRadius: 0
+        },
+        {
+          label: "Punto de equilibrio",
+          data: puntoEquilibrio,
+          borderColor: "#f59e0b",
+          backgroundColor: "#f59e0b",
+          pointRadius: 7,
+          pointHoverRadius: 10,
+          showLine: false
+        }
+      ]
+    });
+  }
+
+  function dibujarGraficaProducto(index) {
+    const d = datosCalculados;
+    const p = d.productos[index];
+
+    const unidadesNecesarias = Math.ceil(d.costosFijos / p.margenUnitario);
+    const maxUnidades = unidadesNecesarias + 10;
+
+    const etiquetas = [];
+    for (let i = 0; i <= maxUnidades; i++) etiquetas.push(i);
+
+    const margenAcumulado = etiquetas.map(i => i * p.margenUnitario);
+    const zonaPerdida = etiquetas.map(i => i <= unidadesNecesarias ? d.costosFijos : null);
+    const zonaGanancia = etiquetas.map(i => i >= unidadesNecesarias ? i * p.margenUnitario : null);
+    const costosFijosLinea = etiquetas.map(() => d.costosFijos);
+    const puntoEquilibrio = etiquetas.map(i => i === unidadesNecesarias ? i * p.margenUnitario : null);
+
+    renderizarGrafica({
+      titulo: `Equilibrio analizando solo ${p.nombre}`,
+      ejeX: `Unidades vendidas de ${p.nombre}`,
+      datasets: [
+        {
+          label: "Zona de pérdida",
+          data: zonaPerdida,
+          backgroundColor: "rgba(239, 68, 68, 0.18)",
+          borderColor: "rgba(239, 68, 68, 0)",
+          fill: true,
+          pointRadius: 0
+        },
+        {
+          label: "Zona de ganancia",
+          data: zonaGanancia,
+          backgroundColor: "rgba(34, 197, 94, 0.18)",
+          borderColor: "rgba(34, 197, 94, 0)",
+          fill: true,
+          pointRadius: 0
+        },
+        {
+          label: `Margen acumulado de ${p.nombre}`,
+          data: margenAcumulado,
+          borderColor: "#2563eb",
+          backgroundColor: "#2563eb",
+          borderWidth: 3,
+          fill: false,
+          tension: 0.25
+        },
+        {
+          label: "Costos fijos",
+          data: costosFijosLinea,
+          borderColor: "#ef4444",
+          backgroundColor: "#ef4444",
+          borderWidth: 3,
+          borderDash: [8, 6],
+          fill: false,
+          pointRadius: 0
+        },
+        {
+          label: "Punto de equilibrio",
+          data: puntoEquilibrio,
+          borderColor: "#f59e0b",
+          backgroundColor: "#f59e0b",
+          pointRadius: 7,
+          pointHoverRadius: 10,
+          showLine: false
+        }
+      ]
+    });
+  }
+
+  function renderizarGrafica(config) {
+    const ctx = document.getElementById("grafica").getContext("2d");
 
     if (grafica) {
       grafica.destroy();
@@ -492,42 +786,48 @@
     grafica = new Chart(ctx, {
       type: "line",
       data: {
-        labels: etiquetas,
-        datasets: [
-          {
-            label: "Margen acumulado por venta conjunta",
-            data: margenAcumulado,
-            borderWidth: 3,
-            fill: false
-          },
-          {
-            label: "Costos fijos",
-            data: costosFijosLinea,
-            borderWidth: 3,
-            borderDash: [8, 6],
-            fill: false
-          }
-        ]
+        labels: config.datasets[0].data.map((_, i) => i),
+        datasets: config.datasets
       },
       options: {
         responsive: true,
+        interaction: {
+          mode: "index",
+          intersect: false
+        },
         plugins: {
           title: {
             display: true,
-            text: "Punto de equilibrio con todos los productos"
+            text: config.titulo
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                if (context.raw === null) return "";
+                return `${context.dataset.label}: ${moneda(context.raw)}`;
+              }
+            }
+          },
+          legend: {
+            position: "top"
           }
         },
         scales: {
           x: {
             title: {
               display: true,
-              text: "Cantidad vendida de cada producto"
+              text: config.ejeX
             }
           },
           y: {
             title: {
               display: true,
               text: "Margen acumulado"
+            },
+            ticks: {
+              callback: function(value) {
+                return "$" + value;
+              }
             }
           }
         }
