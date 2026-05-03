@@ -293,24 +293,25 @@
     <p>Análisis multiproducto con costos fijos, precios configurables, cálculo por margen, gráfica interactiva e interpretación financiera.</p>
   </section>
 
-  <div class="card">
-    <h2>Costos fijos</h2>
+<div class="card">
+  <h2>Gráfica interactiva de equilibrio</h2>
 
-    <div class="toolbar">
-      <button onclick="agregarRubro()">Agregar rubro</button>
-    </div>
+  <div class="toolbar">
+    <select id="selectorGrafica" onchange="actualizarGraficaSeleccionada()">
+      <option value="total">Total multiproducto</option>
+    </select>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Rubro</th>
-          <th>Valor</th>
-          <th>Eliminar</th>
-        </tr>
-      </thead>
-      <tbody id="rubros"></tbody>
-    </table>
+    <button onclick="alternarPuntoEquilibrio()">Mostrar / ocultar punto de equilibrio</button>
   </div>
+
+  <div class="chart-box">
+    <canvas id="graficaEquilibrio"></canvas>
+  </div>
+
+  <div id="lecturaGrafica" class="nota">
+    La lectura de la gráfica aparecerá después del cálculo.
+  </div>
+</div>
 
   <div class="card">
     <h2>Productos</h2>
@@ -587,7 +588,8 @@
     construirResultado();
     construirDesglose();
     construirInterpretacion();
-    dibujarGraficaEquilibrio();
+    cargarSelectorGrafica();
+actualizarGraficaSeleccionada();
   }
 
   function construirResultado() {
@@ -904,7 +906,27 @@
       }
     });
   }
+function cargarSelectorGrafica() {
+  const selector = document.getElementById("selectorGrafica");
 
+  selector.innerHTML = `<option value="total">Total multiproducto</option>`;
+
+  datosCalculados.productos.forEach((p, index) => {
+    selector.innerHTML += `<option value="${index}">${p.nombre}</option>`;
+  });
+}
+
+function actualizarGraficaSeleccionada() {
+  if (!datosCalculados) return;
+
+  const valor = document.getElementById("selectorGrafica").value;
+
+  if (valor === "total") {
+    dibujarGraficaEquilibrioTotal();
+  } else {
+    dibujarGraficaEquilibrioProducto(parseInt(valor));
+  }
+}
   function mostrarError(mensaje) {
     const error = document.getElementById("error");
     error.textContent = mensaje;
