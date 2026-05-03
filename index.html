@@ -13,7 +13,7 @@
       padding: 2rem;
       color: #0f172a;
     }
-    .container { max-width: 1300px; margin: 0 auto; }
+    .container { max-width: 1400px; margin: 0 auto; }
     .hero {
       background: linear-gradient(135deg, #0c4a6e, #075985);
       border-radius: 1.5rem;
@@ -55,12 +55,12 @@
     table { width: 100%; border-collapse: collapse; }
     th {
       background: #e6f0fa;
-      padding: 0.8rem;
+      padding: 0.8rem 0.5rem;
       font-weight: 800;
       color: #0c4a6e;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
     }
-    td { padding: 0.6rem; border-bottom: 1px solid #e2e8f0; }
+    td { padding: 0.6rem 0.4rem; border-bottom: 1px solid #e2e8f0; }
     input, select {
       width: 100%;
       padding: 0.5rem;
@@ -68,7 +68,6 @@
       border-radius: 0.6rem;
       font-size: 0.85rem;
     }
-    select { cursor: pointer; }
     .nota {
       background: #eff6ff;
       border-radius: 0.8rem;
@@ -105,15 +104,14 @@
       text-align: center;
     }
     .highlight { background: #fef08a; padding: 0.2rem 0.4rem; border-radius: 0.3rem; font-weight: 800; }
-    .precio-input-cell { min-width: 130px; }
-    .margen-cell { font-weight: 700; color: #15803d; }
+    .precio-mostrado { font-weight: 700; color: #0c4a6e; background: #e6f0fa; border-radius: 0.5rem; }
   </style>
 </head>
 <body>
 <div class="container">
   <div class="hero">
     <h1>📊 Punto de Equilibrio Multiproducto</h1>
-    <p>El precio se puede definir de 3 formas: Directo | Margen sobre costo | % de utilidad</p>
+    <p>Precio: Directo | Margen sobre costo | % de utilidad — El sistema calcula todo automáticamente</p>
   </div>
 
   <div class="card">
@@ -138,7 +136,8 @@
             <th>Costo Variable</th>
             <th>Forma de precio</th>
             <th>Dato requerido</th>
-            <th>Margen Unitario</th>
+            <th>PRECIO VENTA</th>
+            <th>Margen Unit.</th>
             <th></th>
           </tr>
         </thead>
@@ -149,7 +148,7 @@
       💡 <strong>Tres formas de definir el precio:</strong><br>
       • <strong>Precio directo:</strong> Ingresa el precio de venta directamente<br>
       • <strong>Margen sobre costo:</strong> Ingresa el valor adicional al costo (ej: costo=60, margen=40 → precio=100)<br>
-      • <strong>% de utilidad:</strong> Ingresa el porcentaje de ganancia sobre el precio (ej: costo=60, %=40 → precio=100)
+      • <strong>% de utilidad:</strong> Ingresa el porcentaje de ganancia SOBRE EL PRECIO (ej: costo=60, %=40 → precio=100)
     </div>
     <div class="toolbar" style="justify-content: center; margin-top: 1rem;">
       <button class="calculate" onclick="calcular()">🚀 Calcular Punto de Equilibrio</button>
@@ -189,9 +188,9 @@
       { id: nextRubroId++, nombre: "Seguros", valor: 450 }
     ];
     productos = [
-      { id: nextProductoId++, nombre: "Producto A", costoVar: 60, tipoPrecio: "directo", valorPrecio: 100 },
-      { id: nextProductoId++, nombre: "Producto B", costoVar: 30, tipoPrecio: "margen", valorPrecio: 20 },
-      { id: nextProductoId++, nombre: "Producto C", costoVar: 80, tipoPrecio: "porcentaje", valorPrecio: 40 }
+      { id: nextProductoId++, nombre: "Producto A", costoVar: 60, tipoPrecio: "directo", valorDato: 100 },
+      { id: nextProductoId++, nombre: "Producto B", costoVar: 30, tipoPrecio: "margen", valorDato: 20 },
+      { id: nextProductoId++, nombre: "Producto C", costoVar: 80, tipoPrecio: "porcentaje", valorDato: 40 }
     ];
     renderRubros();
     renderProductos();
@@ -224,74 +223,73 @@
       nombre: "Nuevo Producto", 
       costoVar: 0, 
       tipoPrecio: "directo", 
-      valorPrecio: 0 
+      valorDato: 0 
     });
     renderProductos();
   }
 
   function cambiarTipoPrecio(idx, nuevoTipo) {
     productos[idx].tipoPrecio = nuevoTipo;
-    productos[idx].valorPrecio = 0;
+    productos[idx].valorDato = 0;
     renderProductos();
+  }
+
+  function actualizarValorDato(idx, valor) {
+    productos[idx].valorDato = parseFloat(valor) || 0;
+    renderProductos(); // refrescar para mostrar el precio calculado
+  }
+
+  function calcularPrecio(producto) {
+    const costo = producto.costoVar || 0;
+    const dato = producto.valorDato || 0;
+    
+    if (producto.tipoPrecio === "directo") {
+      return dato;
+    } else if (producto.tipoPrecio === "margen") {
+      return costo + dato;
+    } else if (producto.tipoPrecio === "porcentaje") {
+      if (dato <= 0 || dato >= 100) return 0;
+      return costo / (1 - dato / 100);
+    }
+    return 0;
   }
 
   function renderProductos() {
     const tbody = document.getElementById("productosBody");
     tbody.innerHTML = "";
     productos.forEach((p, idx) => {
-      // Calcular precio y margen actuales para mostrar
-      let precioActual = 0;
-      if (p.tipoPrecio === "directo") precioActual = p.valorPrecio;
-      else if (p.tipoPrecio === "margen") precioActual = p.costoVar + p.valorPrecio;
-      else if (p.tipoPrecio === "porcentaje") {
-        if (p.valorPrecio > 0 && p.valorPrecio < 100) precioActual = p.costoVar / (1 - p.valorPrecio / 100);
-        else precioActual = 0;
-      }
-      const margenActual = precioActual - p.costoVar;
+      const precioCalculado = calcularPrecio(p);
+      const margen = precioCalculado - p.costoVar;
       
-      let inputPrecioHtml = "";
+      let inputDatoHtml = "";
+      let placeholder = "";
       if (p.tipoPrecio === "directo") 
-        inputPrecioHtml = `<input type="number" step="0.01" placeholder="Precio de venta" value="${p.valorPrecio || ''}" onchange="actualizarValorPrecio(${idx}, this.value)">`;
+        placeholder = "Ej: 100";
       else if (p.tipoPrecio === "margen") 
-        inputPrecioHtml = `<input type="number" step="0.01" placeholder="Margen adicional (USD)" value="${p.valorPrecio || ''}" onchange="actualizarValorPrecio(${idx}, this.value)">`;
+        placeholder = "Ej: 40";
       else 
-        inputPrecioHtml = `<input type="number" step="0.1" placeholder="% de utilidad (ej: 40)" value="${p.valorPrecio || ''}" onchange="actualizarValorPrecio(${idx}, this.value)">`;
+        placeholder = "Ej: 40 (%)";
+      
+      inputDatoHtml = `<input type="number" step="0.01" placeholder="${placeholder}" value="${p.valorDato || ''}" onchange="actualizarValorDato(${idx}, this.value)">`;
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td><input type="text" value="${p.nombre}" onchange="productos[${idx}].nombre = this.value; actualizarMargenDisplay(${idx})"></td>
-        <td><input type="number" step="0.01" value="${p.costoVar}" onchange="productos[${idx}].costoVar = parseFloat(this.value) || 0; actualizarMargenDisplay(${idx})"></td>
+        <td><input type="text" value="${p.nombre}" onchange="productos[${idx}].nombre = this.value; renderProductos()"></td>
+        <td><input type="number" step="0.01" value="${p.costoVar}" onchange="productos[${idx}].costoVar = parseFloat(this.value) || 0; renderProductos()"></td>
         <td>
           <select onchange="cambiarTipoPrecio(${idx}, this.value)">
-            <option value="directo" ${p.tipoPrecio === 'directo' ? 'selected' : ''}>Precio directo</option>
-            <option value="margen" ${p.tipoPrecio === 'margen' ? 'selected' : ''}>Margen sobre costo (USD)</option>
-            <option value="porcentaje" ${p.tipoPrecio === 'porcentaje' ? 'selected' : ''}>% de utilidad sobre precio</option>
+            <option value="directo" ${p.tipoPrecio === 'directo' ? 'selected' : ''}>💰 Precio directo</option>
+            <option value="margen" ${p.tipoPrecio === 'margen' ? 'selected' : ''}>📈 Margen sobre costo (USD)</option>
+            <option value="porcentaje" ${p.tipoPrecio === 'porcentaje' ? 'selected' : ''}>📊 % de utilidad sobre precio</option>
           </select>
         </td>
-        <td class="precio-input-cell">${inputPrecioHtml}</td>
-        <td class="margen-cell" id="margen_${idx}">${margenActual > 0 ? moneda(margenActual) : '—'}</td>
+        <td>${inputDatoHtml}</td>
+        <td class="precio-mostrado" style="background:#e6f0fa; font-weight:700; text-align:center;">${precioCalculado > 0 ? moneda(precioCalculado) : '—'}</td>
+        <td style="text-align:center; font-weight:700; color:${margen > 0 ? '#15803d' : '#dc2626'}">${margen > 0 ? moneda(margen) : '—'}</td>
         <td><button class="delete" onclick="eliminarProducto(${idx})">✖</button></td>
       `;
       tbody.appendChild(tr);
     });
-  }
-
-  function actualizarValorPrecio(idx, valor) {
-    productos[idx].valorPrecio = parseFloat(valor) || 0;
-    actualizarMargenDisplay(idx);
-  }
-
-  function actualizarMargenDisplay(idx) {
-    const p = productos[idx];
-    let precio = 0;
-    if (p.tipoPrecio === "directo") precio = p.valorPrecio;
-    else if (p.tipoPrecio === "margen") precio = p.costoVar + p.valorPrecio;
-    else if (p.tipoPrecio === "porcentaje") {
-      if (p.valorPrecio > 0 && p.valorPrecio < 100) precio = p.costoVar / (1 - p.valorPrecio / 100);
-    }
-    const margen = precio - p.costoVar;
-    const cell = document.getElementById(`margen_${idx}`);
-    if (cell) cell.innerText = (margen > 0 && isFinite(margen)) ? moneda(margen) : '—';
   }
 
   function eliminarProducto(idx) { productos.splice(idx,1); renderProductos(); }
@@ -309,32 +307,41 @@
 
     if (productos.length === 0) { mostrarError("Agregue al menos un producto"); return; }
 
-    // Calcular precios y márgenes de cada producto
+    // Validar productos y calcular datos
     let productosValidos = [];
+    let sumaMargenesPonderados = 0;
+    let sumaPrecios = 0;
+    
     for (let p of productos) {
       const costo = p.costoVar;
       if (isNaN(costo) || costo < 0) { mostrarError(`Costo variable inválido en ${p.nombre}`); return; }
       
       let precio = 0;
       if (p.tipoPrecio === "directo") {
-        precio = p.valorPrecio;
+        precio = p.valorDato;
         if (isNaN(precio) || precio <= 0) { mostrarError(`Precio inválido en ${p.nombre}`); return; }
       } 
       else if (p.tipoPrecio === "margen") {
-        const margen = p.valorPrecio;
-        if (isNaN(margen) || margen <= 0) { mostrarError(`Margen inválido en ${p.nombre}`); return; }
-        precio = costo + margen;
+        const margenDato = p.valorDato;
+        if (isNaN(margenDato) || margenDato < 0) { mostrarError(`Margen inválido en ${p.nombre}`); return; }
+        precio = costo + margenDato;
       } 
       else if (p.tipoPrecio === "porcentaje") {
-        const porcentaje = p.valorPrecio;
-        if (isNaN(porcentaje) || porcentaje <= 0 || porcentaje >= 100) { mostrarError(`% de utilidad inválido en ${p.nombre} (debe ser entre 1 y 99)`); return; }
+        const porcentaje = p.valorDato;
+        if (isNaN(porcentaje) || porcentaje <= 0 || porcentaje >= 100) { 
+          mostrarError(`% de utilidad inválido en ${p.nombre} (debe ser entre 1 y 99)`); 
+          return; 
+        }
         precio = costo / (1 - porcentaje / 100);
       }
       
-      if (precio <= costo) { mostrarError(`El precio de ${p.nombre} debe ser mayor al costo variable`); return; }
+      if (precio <= costo) { 
+        mostrarError(`El precio de ${p.nombre} (${moneda(precio)}) debe ser mayor al costo variable (${moneda(costo)})`); 
+        return; 
+      }
       
       const margen = precio - costo;
-      const relacionMargen = margen / precio;  // qué % del precio es ganancia
+      const relacionMargen = margen / precio;
       
       productosValidos.push({
         nombre: p.nombre,
@@ -343,26 +350,22 @@
         margen: margen,
         relacionMargen: relacionMargen
       });
+      
+      sumaMargenesPonderados += relacionMargen;
+      sumaPrecios += precio;
     }
-
-    // Calcular el margen porcentual promedio (simple, sin ponderar)
-    let sumaRelaciones = 0;
-    for (let p of productosValidos) {
-      sumaRelaciones += p.relacionMargen;
-    }
-    const margenPorcentajePromedio = sumaRelaciones / productosValidos.length;
-
-    // Punto de equilibrio en dólares de venta
+    
+    // Margen porcentual promedio simple
+    const margenPorcentajePromedio = sumaMargenesPonderados / productosValidos.length;
+    
+    // Punto de equilibrio en dólares de venta TOTALES
     const ventasNecesarias = costosFijos / margenPorcentajePromedio;
-
-    // Para mostrar unidades, distribuimos las ventas totales según la participación de cada producto
-    // en el margen total (esto es una aproximación estándar)
+    
+    // Distribución de las ventas por producto según su aporte al margen total
     const margenTotal = productosValidos.reduce((sum, p) => sum + p.margen, 0);
     
     const resultados = productosValidos.map(p => {
-      // Participación de este producto en el margen total
       const participacion = p.margen / margenTotal;
-      // Ventas asignadas a este producto
       const ventasProducto = ventasNecesarias * participacion;
       const unidades = ventasProducto / p.precio;
       return {
@@ -370,74 +373,89 @@
         participacion: participacion * 100,
         ventasNecesarias: ventasProducto,
         unidades: unidades,
-        unidadesRedondeadas: Math.ceil(unidades)
+        unidadesEnteras: Math.ceil(unidades)
       };
     });
-
-    const margenGenerado = resultados.reduce((sum, r) => sum + (r.unidadesRedondeadas * r.margen), 0);
-    const diferencia = margenGenerado - costosFijos;
-
-    // Mostrar resultados
+    
+    // Verificación con unidades enteras
+    const ventasReales = resultados.reduce((sum, r) => sum + (r.unidadesEnteras * r.precio), 0);
+    const margenReal = resultados.reduce((sum, r) => sum + (r.unidadesEnteras * r.margen), 0);
+    const diferencia = margenReal - costosFijos;
+    
+    // Mostrar resultados generales
     document.getElementById("resultadoPanel").innerHTML = `
       <div class="metric-grid">
         <div class="metric-card"><div class="label">💰 Costos fijos totales</div><div class="value">${moneda(costosFijos)}</div></div>
-        <div class="metric-card"><div class="label">📊 Margen promedio ponderado</div><div class="value">${(margenPorcentajePromedio * 100).toFixed(2)}%</div></div>
+        <div class="metric-card"><div class="label">📊 Margen promedio</div><div class="value">${(margenPorcentajePromedio * 100).toFixed(2)}%</div></div>
         <div class="metric-card"><div class="label">💵 Ventas necesarias</div><div class="value">${moneda(ventasNecesarias)}</div></div>
         <div class="metric-card"><div class="label">🎯 Utilidad generada</div><div class="value">${moneda(diferencia)}</div></div>
       </div>
-      <div>El <strong>punto de equilibrio</strong> se alcanza con <span class="highlight">${moneda(ventasNecesarias)} en ventas totales</span>.</div>
+      <div style="margin-top:0.5rem;">
+        📌 <strong>Punto de equilibrio:</strong> Se requieren <span class="highlight">${moneda(ventasNecesarias)} en ventas totales</span> para cubrir los costos fijos.
+      </div>
     `;
-
-    // Desglose de unidades
+    
+    // Desglose de unidades por producto
     let desgloseHtml = `<table style="width:100%; border-collapse:collapse;"><thead><tr>
-      <th>Producto</th><th>Precio</th><th>Costo Var.</th><th>Margen Unit.</th><th>Participación</th>
-      <th style="background:#fef08a;">UNIDADES A VENDER</th><th>Ventas</th>
-    <tr></thead><tbody>`;
+      <th>Producto</th>
+      <th>Precio</th>
+      <th>Costo Var.</th>
+      <th>Margen Unit.</th>
+      <th>Participación</th>
+      <th style="background:#fef08a;">UNIDADES A VENDER</th>
+      <th>Ventas</th>
+    </tr></thead><tbody>`;
+    
     resultados.forEach(r => {
       desgloseHtml += `<tr>
         <td><strong>${r.nombre}</strong></td>
-        <td>${moneda(r.precio)}</td>${moneda(r.costoVar)}</td>${moneda(r.margen)}</td>
+        <td>${moneda(r.precio)}</td><td>${moneda(r.costoVar)}</td><td>${moneda(r.margen)}</td>
         <td>${r.participacion.toFixed(1)}%</td>
-        <td style="background:#fef08a; font-size:1.1rem; font-weight:800;">${r.unidadesRedondeadas} unidades</td>
+        <td style="background:#fef08a; font-size:1.1rem; font-weight:800; text-align:center;">${r.unidadesEnteras} unidades</td>
         <td>${moneda(r.ventasNecesarias)}</td>
       </tr>`;
     });
+    
     desgloseHtml += `</tbody></table>
     <div style="margin-top:1rem; background:#e6f0fa; padding:0.8rem; border-radius:0.8rem;">
-      🎯 <strong>RESUMEN:</strong> Para alcanzar el punto de equilibrio, debe vender:<br>
-      ${resultados.map(r => `• ${r.nombre}: <strong>${r.unidadesRedondeadas} unidades</strong>`).join('<br>')}
+      🎯 <strong>RESUMEN DE UNIDADES A VENDER:</strong><br>
+      ${resultados.map(r => `• ${r.nombre}: <strong>${r.unidadesEnteras} unidades</strong> (${moneda(r.unidadesEnteras * r.precio)} en ventas)`).join('<br>')}
     </div>`;
+    
     document.getElementById("desglosePanel").innerHTML = desgloseHtml;
-
+    
+    // Dibujar gráfica
     dibujarGrafica(costosFijos, ventasNecesarias, margenPorcentajePromedio);
   }
-
+  
   function dibujarGrafica(costosFijos, ventasEq, margenPorcentaje) {
     const ctx = document.getElementById("graficaCanvas").getContext("2d");
     if (chart) chart.destroy();
-
+    
     const maxVentas = ventasEq * 1.8;
     const puntos = 50;
     const labels = [];
     const ingresos = [];
     const costosTotales = [];
-
+    const costosFijosLine = [];
+    
     for (let i = 0; i <= puntos; i++) {
       const ventas = (maxVentas * i) / puntos;
       const costoVariable = ventas * (1 - margenPorcentaje);
       labels.push(moneda(ventas));
       ingresos.push(ventas);
       costosTotales.push(costosFijos + costoVariable);
+      costosFijosLine.push(costosFijos);
     }
-
+    
     chart = new Chart(ctx, {
       type: 'line',
       data: {
         labels: labels,
         datasets: [
-          { label: 'Ingresos totales', data: ingresos, borderColor: '#2563eb', borderWidth: 3, fill: false, pointRadius: 0 },
-          { label: 'Costos totales', data: costosTotales, borderColor: '#dc2626', borderWidth: 3, fill: false, pointRadius: 0 },
-          { label: 'Costos fijos', data: Array(puntos+1).fill(costosFijos), borderColor: '#94a3b8', borderWidth: 2, borderDash: [8,5], pointRadius: 0 }
+          { label: '💰 Ingresos totales', data: ingresos, borderColor: '#2563eb', borderWidth: 3, fill: false, pointRadius: 0 },
+          { label: '📉 Costos totales', data: costosTotales, borderColor: '#dc2626', borderWidth: 3, fill: false, pointRadius: 0 },
+          { label: '📌 Costos fijos', data: costosFijosLine, borderColor: '#94a3b8', borderWidth: 2, borderDash: [8,5], pointRadius: 0 }
         ]
       },
       options: {
@@ -448,25 +466,25 @@
           legend: { position: 'top' }
         },
         scales: {
-          x: { title: { display: true, text: 'Ventas totales (USD)' }, ticks: { maxRotation: 45, autoSkip: true, maxTicksLimit: 8 } },
+          x: { title: { display: true, text: 'Ventas totales (USD)' }, ticks: { maxRotation: 45, autoSkip: true, maxTicksLimit: 6 } },
           y: { title: { display: true, text: 'Monto (USD)' }, ticks: { callback: (val) => moneda(val) } }
         }
       }
     });
   }
-
+  
   function moneda(valor) {
-    if (isNaN(valor)) return '—';
+    if (isNaN(valor) || valor === null) return '—';
     return valor.toLocaleString("es-EC", { style: "currency", currency: "USD", minimumFractionDigits: 0 });
   }
-
+  
   function mostrarError(msg) {
     const e = document.getElementById("errorMsg");
     e.innerText = msg;
     e.style.display = "block";
     setTimeout(() => e.style.display = "none", 5000);
   }
-
+  
   init();
 </script>
 </body>
