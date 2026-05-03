@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <title>BEP Studio | Punto de Equilibrio Multiproducto</title>
-  <!-- Librerías -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -17,268 +16,299 @@
     }
 
     body {
-      background: #eef2f5;
+      background: #f0f4f8;
       font-family: 'Inter', sans-serif;
       color: #1a2c3e;
-      line-height: 1.4;
+      line-height: 1.5;
     }
 
     .app-wrapper {
       max-width: 1400px;
-      margin: 1rem auto;
-      padding: 0 0.8rem;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
     }
 
-    /* Contenedor que se exporta a PDF: fondo blanco y sin desbordes */
     #exportContainer {
       background: white;
       border-radius: 1.5rem;
-      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.08);
-      overflow: visible;      /* Evita cortes en PDF */
+      box-shadow: 0 20px 40px -12px rgba(0,0,0,0.12);
+      overflow: visible;
     }
 
     .report-inner {
-      padding: 1.2rem 1rem 2rem 1rem;
+      padding: 1.8rem 1.8rem 2rem 1.8rem;
       background: white;
     }
 
-    /* Header responsivo */
+    /* Header */
     .header-modern {
-      background: linear-gradient(110deg, #0f2f40 0%, #1a4a66 100%);
-      border-radius: 1.2rem;
-      padding: 1.2rem 1.2rem;
-      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, #0b2b3b 0%, #1a4a66 100%);
+      border-radius: 1.25rem;
+      padding: 1.5rem 2rem;
+      margin-bottom: 2rem;
       color: white;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 0.8rem;
+      gap: 1rem;
     }
     .header-title h1 {
-      font-size: 1.5rem;
-      font-weight: 800;
+      font-size: 1.7rem;
+      font-weight: 700;
       letter-spacing: -0.02em;
       display: flex;
       align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
+      gap: 10px;
     }
     .header-title p {
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       opacity: 0.85;
-      margin-top: 0.2rem;
+      margin-top: 0.3rem;
     }
     .header-buttons {
       display: flex;
-      gap: 0.6rem;
+      gap: 0.75rem;
       flex-wrap: wrap;
     }
     .btn-outline-light {
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.25);
-      padding: 0.45rem 1rem;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 0.55rem 1.2rem;
       border-radius: 2rem;
-      font-weight: 600;
+      font-weight: 500;
       color: white;
       cursor: pointer;
-      font-size: 0.75rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: 0.2s;
-    }
-    .btn-outline-light:hover {
-      background: #2c6e9e;
-      transform: translateY(-2px);
-    }
-    .btn-primary-glow {
-      background: linear-gradient(105deg, #1f6392, #2c7eb0);
-      border: none;
-      border-radius: 2.5rem;
-      padding: 0.7rem 1.4rem;
-      font-weight: 700;
       font-size: 0.85rem;
-      color: white;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(31,99,146,0.25);
-      transition: 0.15s;
+      transition: all 0.2s ease;
     }
-    .btn-primary-glow:hover {
+    .btn-outline-light:hover {
+      background: rgba(255,255,255,0.25);
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(31,99,146,0.35);
+    }
+    .btn-primary {
+      background: linear-gradient(105deg, #1f6392, #2c7eb0);
+      border: none;
+      border-radius: 2rem;
+      padding: 0.7rem 1.8rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(31,99,146,0.3);
+    }
+    .btn-secondary {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 2rem;
+      padding: 0.55rem 1.5rem;
+      font-weight: 500;
+      font-size: 0.85rem;
+      color: #1e4a6b;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: 0.2s;
+    }
+    .btn-secondary:hover {
+      background: #e2e8f0;
+      transform: translateY(-1px);
     }
 
-    /* Tarjetas */
-    .card-clean {
+    /* Cards */
+    .card {
       background: #ffffff;
-      border-radius: 1.2rem;
-      margin-bottom: 1.2rem;
+      border-radius: 1.25rem;
+      margin-bottom: 1.5rem;
       border: 1px solid #e2edf2;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
       break-inside: avoid;
       page-break-inside: avoid;
       overflow: hidden;
     }
     .card-header {
-      background: #fafdff;
-      padding: 0.8rem 1rem;
-      border-bottom: 2px solid #eef2f6;
+      background: #ffffff;
+      padding: 1rem 1.5rem;
+      border-bottom: 2px solid #f0f4f9;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 0.75rem;
     }
     .card-header h2 {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       font-weight: 700;
-      color: #1e4a6b;
+      color: #1a4a66;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
     .card-body {
-      padding: 0.9rem 1rem;
+      padding: 1.25rem 1.5rem;
     }
 
-    /* Tablas responsivas */
+    /* Tablas */
     .table-responsive {
       overflow-x: auto;
-      margin: 0.5rem 0;
+      margin: 0.75rem 0;
       -webkit-overflow-scrolling: touch;
     }
-    .data-grid {
+    .data-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.75rem;
-      min-width: 480px;
+      font-size: 0.8rem;
     }
-    .data-grid th {
-      background: #f7fafd;
-      padding: 0.6rem 0.5rem;
-      font-weight: 700;
+    .data-table th {
+      background: #f8fafc;
+      padding: 0.75rem 0.85rem;
+      font-weight: 600;
       color: #2c5a7a;
       border-bottom: 1.5px solid #e2e8f0;
       text-align: left;
     }
-    .data-grid td {
-      padding: 0.5rem 0.5rem;
+    .data-table td {
+      padding: 0.65rem 0.85rem;
       border-bottom: 1px solid #edf2f7;
       vertical-align: middle;
     }
-    .data-grid input, .data-grid select {
+    .data-table input, .data-table select {
       width: 100%;
-      padding: 0.4rem 0.5rem;
-      border: 1px solid #cfdee9;
+      padding: 0.5rem 0.7rem;
+      border: 1px solid #cbd5e1;
       border-radius: 0.6rem;
-      font-size: 0.7rem;
-      background: #fffef7;
+      font-size: 0.75rem;
+      background: #ffffff;
+      transition: 0.15s;
     }
-    .icon-btn-sm {
+    .data-table input:focus, .data-table select:focus {
+      outline: none;
+      border-color: #2c7eb0;
+      box-shadow: 0 0 0 2px rgba(44,126,176,0.1);
+    }
+    .icon-btn {
       background: transparent;
       border: none;
       font-size: 1.1rem;
       cursor: pointer;
-      padding: 0.2rem 0.4rem;
+      padding: 0.3rem 0.6rem;
       border-radius: 0.5rem;
+      color: #dc2626;
       transition: 0.1s;
-      color: #b91c1c;
     }
-    .icon-btn-sm:hover { background: #fee2e2; transform: scale(1.05); }
+    .icon-btn:hover { background: #fee2e2; }
 
-    /* Grid métricas móvil */
-    .metrics-row {
+    /* Métricas */
+    .metrics-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 0.8rem;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
       margin-bottom: 1rem;
     }
-    .metric-block {
+    .metric {
       background: #fafdff;
       border-radius: 1rem;
-      padding: 0.8rem;
+      padding: 1rem;
       border-left: 4px solid;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
     }
-    .metric-block .label {
-      font-size: 0.6rem;
+    .metric-label {
+      font-size: 0.7rem;
       text-transform: uppercase;
       font-weight: 700;
       color: #6b8da8;
+      letter-spacing: 0.5px;
     }
-    .metric-block .value {
-      font-size: 1.3rem;
+    .metric-value {
+      font-size: 1.5rem;
       font-weight: 800;
       color: #1f4a6e;
       line-height: 1.2;
+      margin-top: 4px;
     }
-    .blue-border { border-left-color: #3b82f6; }
-    .green-border { border-left-color: #10b981; }
-    .orange-border { border-left-color: #f59e0b; }
-    .purple-border { border-left-color: #8b5cf6; }
+    .border-blue { border-left-color: #3b82f6; }
+    .border-green { border-left-color: #10b981; }
+    .border-orange { border-left-color: #f59e0b; }
+    .border-purple { border-left-color: #8b5cf6; }
 
-    /* Gráfica responsiva + anti-corte PDF */
+    /* Gráfica */
     .graph-container {
       background: #ffffff;
       border-radius: 1rem;
-      padding: 0.5rem;
+      padding: 0.75rem;
       margin: 0.5rem 0;
       border: 1px solid #eef2f8;
-      width: 100%;
-      overflow: visible;
     }
     canvas {
       max-width: 100%;
       height: auto !important;
-      max-height: 340px;
+      max-height: 400px;
       width: 100%;
-      display: block;
     }
-    .insight-note {
-      background: #f0f6fe;
-      padding: 0.5rem 0.8rem;
+    .info-box {
+      background: #f0f9ff;
+      padding: 0.7rem 1rem;
       border-radius: 0.8rem;
-      font-size: 0.7rem;
-      margin-top: 0.6rem;
+      font-size: 0.75rem;
+      margin-top: 0.75rem;
       border-left: 3px solid #2c7da0;
     }
+
+    .empty-state {
+      text-align: center;
+      color: #94a3b8;
+      padding: 2rem;
+      background: #fafcff;
+      border-radius: 1rem;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.7rem;
+      color: #94a3b8;
+      padding-top: 1.5rem;
+      margin-top: 1rem;
+      border-top: 1px solid #e2edf2;
+    }
+
     .toast-tip {
       position: fixed;
-      bottom: 15px;
-      right: 15px;
-      background: #1e2a3a;
-      color: #facc15;
-      padding: 0.6rem 1.2rem;
+      bottom: 20px;
+      right: 20px;
+      background: #1e293b;
+      color: #fbbf24;
+      padding: 0.7rem 1.3rem;
       border-radius: 2rem;
       display: flex;
-      gap: 8px;
+      gap: 10px;
       font-weight: 500;
       z-index: 1100;
       transform: translateX(450px);
       transition: 0.25s ease;
-      font-size: 0.75rem;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      font-size: 0.8rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     }
     .toast-tip.show { transform: translateX(0); }
-    footer {
-      text-align: center;
-      font-size: 0.6rem;
-      color: #7d9ab5;
-      padding-top: 1rem;
-      margin-top: 0.8rem;
-      border-top: 1px solid #e4edf2;
-    }
-    @media (max-width: 640px) {
-      .report-inner { padding: 0.8rem; }
+
+    @media (max-width: 768px) {
+      .report-inner { padding: 1rem; }
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+      .card-header { padding: 0.8rem 1rem; }
+      .card-body { padding: 1rem; }
+      .metric-value { font-size: 1.2rem; }
       .header-title h1 { font-size: 1.3rem; }
-      .card-header h2 { font-size: 1rem; }
-      .metric-block .value { font-size: 1.1rem; }
-      .data-grid { font-size: 0.7rem; min-width: 420px; }
-      .btn-primary-glow { padding: 0.5rem 1rem; font-size: 0.75rem; }
+      .btn-outline-light, .btn-primary, .btn-secondary { padding: 0.45rem 1rem; font-size: 0.75rem; }
     }
   </style>
 </head>
@@ -286,210 +316,251 @@
 <div class="app-wrapper">
   <div id="exportContainer">
     <div class="report-inner">
-      <!-- Cabecera responsive -->
+      <!-- Header -->
       <div class="header-modern">
         <div class="header-title">
-          <h1><i class="fas fa-chart-simple"></i> BEP Multiproducto</h1>
-          <p>Costos fijos prorrateados · Margen de contribución</p>
+          <h1><i class="fas fa-chart-line"></i> Punto de Equilibrio Multiproducto</h1>
+          <p>Costos fijos prorrateados · Margen de contribución · Análisis financiero</p>
         </div>
         <div class="header-buttons">
-          <button class="btn-outline-light" id="showTipOutsideBtn"><i class="fas fa-lightbulb"></i> Consejo</button>
-          <button class="btn-outline-light" id="downloadReportBtn"><i class="fas fa-file-pdf"></i> PDF</button>
+          <button class="btn-outline-light" id="showTipBtn"><i class="fas fa-lightbulb"></i> Consejo</button>
+          <button class="btn-outline-light" id="downloadPdfBtn"><i class="fas fa-file-pdf"></i> Descargar PDF</button>
         </div>
       </div>
 
-      <!-- Panel de entrada: costos fijos y productos (campos vacíos listos para llenar) -->
-      <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem;">
-        <!-- Costos fijos -->
-        <div class="card-clean">
+      <!-- Panel de entrada dual -->
+      <div style="display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 1.5rem;">
+        <!-- Costos Fijos (totalmente vacío) -->
+        <div class="card">
           <div class="card-header">
-            <h2><i class="fas fa-coins" style="color:#2c7da0;"></i> Costos Fijos</h2>
-            <button class="btn-outline-light" id="addFixedBtn" style="background:#eef2f6; color:#1f4a6e; padding:0.25rem 0.9rem;"><i class="fas fa-plus"></i> Agregar</button>
+            <h2><i class="fas fa-coins"></i> Costos Fijos</h2>
+            <button class="btn-secondary" id="addFixedBtn"><i class="fas fa-plus-circle"></i> Agregar costo</button>
           </div>
           <div class="card-body">
             <div class="table-responsive">
-              <table class="data-grid" id="fixedTable">
-                <thead><tr><th>Concepto</th><th>Valor (USD)</th><th style="width:40px"></th></tr></thead>
-                <tbody id="fixedTbody"></tbody>
+              <table class="data-table" id="fixedCostsTable">
+                <thead>
+                  <tr><th>Concepto</th><th>Valor Mensual (USD)</th><th style="width: 45px"></th></tr>
+                </thead>
+                <tbody id="fixedCostsBody">
+                  <tr class="empty-placeholder"><td colspan="3" style="text-align:center; color:#94a3b8;">Sin costos fijos — presione "Agregar costo"</td></tr>
+                </tbody>
               </table>
-              <div class="insight-note" style="margin-top:6px;"><i class="fas fa-info-circle"></i> Gastos fijos mensuales (alquiler, nómina, etc.)</div>
             </div>
           </div>
         </div>
 
-        <!-- Productos (totalmente editable, campos vacíos de ejemplo) -->
-        <div class="card-clean">
+        <!-- Productos (totalmente vacío) -->
+        <div class="card">
           <div class="card-header">
             <h2><i class="fas fa-boxes"></i> Productos</h2>
-            <button class="btn-outline-light" id="addProductBtn" style="background:#eef2f6; color:#1f4a6e; padding:0.25rem 0.9rem;"><i class="fas fa-plus"></i> Nuevo</button>
+            <button class="btn-secondary" id="addProductBtn"><i class="fas fa-plus-circle"></i> Agregar producto</button>
           </div>
           <div class="card-body">
             <div class="table-responsive">
-              <table class="data-grid" id="prodTable">
-                <thead><tr><th>Nombre</th><th>Costo Var.</th><th>Método precio</th><th>Dato requerido</th><th></th></tr></thead>
-                <tbody id="productsTbody"></tbody>
+              <table class="data-table" id="productsTable">
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th>Costo Variable Unitario</th>
+                    <th>Método de Precio</th>
+                    <th>Valor requerido</th>
+                    <th style="width: 45px"></th>
+                  </tr>
+                </thead>
+                <tbody id="productsBody">
+                  <tr class="empty-placeholder"><td colspan="5" style="text-align:center; color:#94a3b8;">Sin productos — presione "Agregar producto"</td></tr>
+                </tbody>
               </table>
             </div>
-            <div style="display: flex; justify-content: center; margin-top: 1rem; gap: 0.8rem; flex-wrap: wrap;">
-              <button class="btn-primary-glow" id="calcBtn"><i class="fas fa-calculator"></i> Calcular equilibrio</button>
+            <div style="display: flex; justify-content: center; margin-top: 1.5rem;">
+              <button class="btn-primary" id="calculateBtn"><i class="fas fa-calculator"></i> Calcular Punto de Equilibrio</button>
             </div>
-            <div id="errorMsgZone" style="background:#fee2e2; border-radius:1rem; padding:0.5rem; margin-top:0.8rem; display:none; font-size:0.7rem; color:#b91c1c;"></div>
+            <div id="errorMessage" style="display:none; background:#fee2e2; border-radius:1rem; padding:0.75rem; margin-top:1rem; font-size:0.75rem; color:#b91c1c;"></div>
           </div>
         </div>
       </div>
 
-      <!-- Métricas -->
-      <div class="card-clean" id="metricsCard">
-        <div class="card-header"><h2><i class="fas fa-chart-line"></i> Indicadores Clave</h2></div>
-        <div class="card-body" id="metricsArea">
-          <div style="text-align:center; color:#8aaec0; padding: 1rem;">⚙️ Ejecute el cálculo para visualizar resultados</div>
+      <!-- Resultados (inicialmente ocultos) -->
+      <div id="resultsSection" style="display: none;">
+        <div class="card">
+          <div class="card-header"><h2><i class="fas fa-chart-simple"></i> Indicadores Clave</h2></div>
+          <div class="card-body" id="metricsContainer"></div>
         </div>
-      </div>
 
-      <!-- Gráfica con ajuste anti-corte -->
-      <div class="card-clean">
-        <div class="card-header">
-          <h2><i class="fas fa-chart-scatter"></i> Análisis Gráfico</h2>
-          <div style="display: flex; gap: 8px;">
-            <select id="graphSelector" style="padding:0.3rem 0.6rem; border-radius:2rem; font-size:0.7rem; border:1px solid #cbd5e1;"></select>
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-chart-scatter"></i> Análisis Gráfico</h2>
+            <select id="graphSelect" style="padding:0.4rem 0.8rem; border-radius:2rem; border:1px solid #cbd5e1; font-size:0.75rem;"></select>
+          </div>
+          <div class="card-body">
+            <div class="graph-container">
+              <canvas id="bepChart" width="900" height="380" style="width:100%; height:auto;"></canvas>
+            </div>
+            <div id="graphInsight" class="info-box"><i class="fas fa-chart-line"></i> Gráfico disponible después del cálculo</div>
           </div>
         </div>
-        <div class="card-body">
-          <div class="graph-container">
-            <canvas id="mainChartCanvas" width="800" height="360" style="width:100%; height:auto; max-height:360px;"></canvas>
-          </div>
-          <div id="graphDescription" class="insight-note"><i class="fas fa-info-circle"></i> La visualización se mostrará después del cálculo.</div>
+
+        <div class="card">
+          <div class="card-header"><h2><i class="fas fa-table-list"></i> Desglose por Producto</h2></div>
+          <div class="card-body" id="breakdownContainer"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h2><i class="fas fa-brain"></i> Interpretación Estratégica</h2></div>
+          <div class="card-body" id="interpretationContainer"></div>
         </div>
       </div>
 
-      <!-- Desglose técnico por producto -->
-      <div class="card-clean">
-        <div class="card-header"><h2><i class="fas fa-table-list"></i> Desglose técnico por producto</h2></div>
-        <div class="card-body" id="breakdownArea">
-          <div style="padding: 1rem; text-align:center; color:#8aaec0;">📋 Complete el cálculo para ver detalle de unidades y márgenes</div>
-        </div>
-      </div>
-
-      <!-- Interpretación estratégica -->
-      <div class="card-clean">
-        <div class="card-header"><h2><i class="fas fa-brain"></i> Interpretación estratégica</h2></div>
-        <div class="card-body" id="interpretArea">
-          <p style="color:#7a99b3;">📌 Realice el cálculo para obtener análisis detallado.</p>
-        </div>
-      </div>
-      <footer><i class="far fa-copyright"></i> BEP Studio · Modelo multiproducto · CF prorrateados por igual</footer>
+      <footer><i class="far fa-copyright"></i> BEP Studio · Modelo multiproducto · Los costos fijos se prorratean equitativamente entre productos</footer>
     </div>
   </div>
 </div>
-<div id="tipToast" class="toast-tip"><i class="fas fa-gem"></i> <span id="tipMessageText"></span></div>
+
+<div id="tipToast" class="toast-tip"><i class="fas fa-gem"></i> <span id="tipText"></span></div>
 
 <script>
-  // ========== MODELO DE DATOS INICIAL (ejemplos vacíos pero sugerentes, el usuario los llena) ==========
-  // Para mejor experiencia, se inician con algunos registros demostrativos pero que el usuario puede borrar fácilmente.
-  let fixedCosts = [
-    { name: "Alquiler local", value: 1200 },
-    { name: "Nómina fija", value: 2200 }
-  ];
+  // ======================== ESTADO TOTALMENTE VACÍO ========================
+  let fixedCosts = [];      // Sin datos de ejemplo
+  let products = [];        // Sin datos de ejemplo
   
-  let products = [
-    { name: "Producto 1", unitCost: 25, priceMethod: "directo", directPrice: 49, desiredMargin: 0, profitPercent: 0 },
-    { name: "Producto 2", unitCost: 12, priceMethod: "margen", directPrice: 0, desiredMargin: 15, profitPercent: 0 }
-  ];
-
   let calculatedData = null;
-  let chartGlobal = null;
-  let showEq = true;
+  let chartInstance = null;
 
-  // helpers
-  const fixedTbody = document.getElementById("fixedTbody");
-  const productsTbody = document.getElementById("productsTbody");
-  const metricsArea = document.getElementById("metricsArea");
-  const breakdownArea = document.getElementById("breakdownArea");
-  const interpretArea = document.getElementById("interpretArea");
-  const graphSelector = document.getElementById("graphSelector");
-  const graphDescription = document.getElementById("graphDescription");
-  const errorZone = document.getElementById("errorMsgZone");
-  const tipToastDiv = document.getElementById("tipToast");
-  const tipMsgSpan = document.getElementById("tipMessageText");
-  
+  // DOM elements
+  const fixedBody = document.getElementById("fixedCostsBody");
+  const productsBody = document.getElementById("productsBody");
+  const resultsSection = document.getElementById("resultsSection");
+  const errorDiv = document.getElementById("errorMessage");
+  const tipToast = document.getElementById("tipToast");
+  const tipTextSpan = document.getElementById("tipText");
+
+  // Utilities
   const formatMoney = (val) => new Intl.NumberFormat('es-EC', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(val);
-  const escapeHtml = (str) => String(str ?? "").replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;});
+  const escapeHtml = (str) => String(str ?? "").replace(/[&<>]/g, (m) => m === '&' ? '&amp;' : (m === '<' ? '&lt;' : '&gt;'));
 
-  // Render costos fijos (campos editables)
-  function renderFixed() {
-    fixedTbody.innerHTML = "";
-    fixedCosts.forEach((c, idx) => {
+  // ======================== RENDER COSTOS FIJOS ========================
+  function renderFixedCosts() {
+    if (fixedCosts.length === 0) {
+      fixedBody.innerHTML = '<tr class="empty-placeholder"><td colspan="3" style="text-align:center; color:#94a3b8; padding:1.5rem;">📭 Sin costos fijos — presione "Agregar costo"</td></tr>';
+      return;
+    }
+    fixedBody.innerHTML = "";
+    fixedCosts.forEach((item, idx) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td><input type="text" class="fix-name" data-idx="${idx}" value="${escapeHtml(c.name)}" placeholder="Ej: Arriendo"></td>
-        <td><input type="number" step="0.01" class="fix-value" data-idx="${idx}" value="${c.value}" placeholder="0.00"></td>
-        <td><button class="icon-btn-sm" data-del-fix="${idx}"><i class="fas fa-trash-alt"></i></button></td>
+        <td><input type="text" class="fixed-name" data-idx="${idx}" value="${escapeHtml(item.name)}" placeholder="Ej: Alquiler"></td>
+        <td><input type="number" step="0.01" class="fixed-value" data-idx="${idx}" value="${item.value}" placeholder="0.00"></td>
+        <td><button class="icon-btn" data-del-fixed="${idx}"><i class="fas fa-trash-alt"></i></button></td>
       `;
-      fixedTbody.appendChild(tr);
+      fixedBody.appendChild(tr);
     });
     attachFixedEvents();
   }
+
   function attachFixedEvents() {
-    document.querySelectorAll(".fix-name").forEach(inp => inp.addEventListener("change", e => { let i=e.target.dataset.idx; if(fixedCosts[i]) fixedCosts[i].name = e.target.value || "Costo"; if(calculatedData) calculateBreakEven(); }));
-    document.querySelectorAll(".fix-value").forEach(inp => inp.addEventListener("change", e => { let i=e.target.dataset.idx; if(fixedCosts[i]) fixedCosts[i].value = parseFloat(e.target.value) || 0; if(calculatedData) calculateBreakEven(); }));
-    document.querySelectorAll("[data-del-fix]").forEach(btn => btn.addEventListener("click", e => { let i=parseInt(btn.dataset.delFix); if(!isNaN(i)) { fixedCosts.splice(i,1); renderFixed(); if(calculatedData) calculateBreakEven(); } }));
+    document.querySelectorAll(".fixed-name").forEach(inp => inp.addEventListener("change", (e) => {
+      let i = e.target.dataset.idx;
+      if (fixedCosts[i]) fixedCosts[i].name = e.target.value || "Costo fijo";
+      if (calculatedData) calculateBreakEven();
+    }));
+    document.querySelectorAll(".fixed-value").forEach(inp => inp.addEventListener("change", (e) => {
+      let i = e.target.dataset.idx;
+      if (fixedCosts[i]) fixedCosts[i].value = parseFloat(e.target.value) || 0;
+      if (calculatedData) calculateBreakEven();
+    }));
+    document.querySelectorAll("[data-del-fixed]").forEach(btn => btn.addEventListener("click", (e) => {
+      let i = parseInt(btn.dataset.delFixed);
+      if (!isNaN(i)) { fixedCosts.splice(i, 1); renderFixedCosts(); if (calculatedData) calculateBreakEven(); else if (fixedCosts.length === 0 && products.length === 0) resultsSection.style.display = "none"; }
+    }));
   }
 
-  // Render productos
+  // ======================== RENDER PRODUCTOS ========================
   function renderProducts() {
-    productsTbody.innerHTML = "";
-    products.forEach((p, idx) => {
-      let dynamicInput = "";
-      if(p.priceMethod === "directo") dynamicInput = `<input type="number" step="0.01" class="prod-direct" data-idx="${idx}" value="${p.directPrice}" placeholder="Precio venta USD">`;
-      else if(p.priceMethod === "margen") dynamicInput = `<input type="number" step="0.01" class="prod-margin" data-idx="${idx}" value="${p.desiredMargin}" placeholder="Margen USD">`;
-      else dynamicInput = `<input type="number" step="0.01" class="prod-percent" data-idx="${idx}" value="${p.profitPercent}" placeholder="% utilidad s/precio">`;
+    if (products.length === 0) {
+      productsBody.innerHTML = '<tr class="empty-placeholder"><td colspan="5" style="text-align:center; color:#94a3b8; padding:1.5rem;">📦 Sin productos — presione "Agregar producto"</td></tr>';
+      return;
+    }
+    productsBody.innerHTML = "";
+    products.forEach((prod, idx) => {
+      let dynamicField = "";
+      if (prod.priceMethod === "directo") {
+        dynamicField = `<input type="number" step="0.01" class="prod-direct" data-idx="${idx}" value="${prod.directPrice}" placeholder="Precio venta USD">`;
+      } else if (prod.priceMethod === "margen") {
+        dynamicField = `<input type="number" step="0.01" class="prod-margin" data-idx="${idx}" value="${prod.desiredMargin}" placeholder="Margen USD">`;
+      } else {
+        dynamicField = `<input type="number" step="0.01" class="prod-percent" data-idx="${idx}" value="${prod.profitPercent}" placeholder="% utilidad">`;
+      }
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td><input type="text" class="prod-name" data-idx="${idx}" value="${escapeHtml(p.name)}" placeholder="Nombre"></td>
-        <td><input type="number" step="0.01" class="prod-cv" data-idx="${idx}" value="${p.unitCost}" placeholder="Costo unitario"></td>
-        <td><select class="prod-method" data-idx="${idx}"><option value="directo" ${p.priceMethod==='directo'?'selected':''}>💰 Precio directo</option><option value="margen" ${p.priceMethod==='margen'?'selected':''}>📈 Margen fijo</option><option value="porcentaje" ${p.priceMethod==='porcentaje'?'selected':''}>📐 % utilidad</option></select></td>
-        <td>${dynamicInput}</td>
-        <td><button class="icon-btn-sm" data-del-prod="${idx}"><i class="fas fa-times-circle"></i></button></td>
+        <td><input type="text" class="prod-name" data-idx="${idx}" value="${escapeHtml(prod.name)}" placeholder="Nombre producto"></td>
+        <td><input type="number" step="0.01" class="prod-cost" data-idx="${idx}" value="${prod.unitCost}" placeholder="Costo variable"></td>
+        <td><select class="prod-method-select" data-idx="${idx}">
+          <option value="directo" ${prod.priceMethod === "directo" ? "selected" : ""}>💰 Precio directo</option>
+          <option value="margen" ${prod.priceMethod === "margen" ? "selected" : ""}>📈 Margen fijo (USD)</option>
+          <option value="porcentaje" ${prod.priceMethod === "porcentaje" ? "selected" : ""}>📐 % utilidad sobre precio</option>
+        </select></td>
+        <td>${dynamicField}</td>
+        <td><button class="icon-btn" data-del-prod="${idx}"><i class="fas fa-trash-alt"></i></button></td>
       `;
-      productsTbody.appendChild(tr);
+      productsBody.appendChild(tr);
     });
     attachProductEvents();
   }
+
   function attachProductEvents() {
-    document.querySelectorAll(".prod-name").forEach(inp => inp.addEventListener("change", e => { let i=e.target.dataset.idx; if(products[i]) products[i].name = e.target.value || "Producto"; if(calculatedData) calculateBreakEven(); }));
-    document.querySelectorAll(".prod-cv").forEach(inp => inp.addEventListener("change", e => { let i=e.target.dataset.idx; if(products[i]) products[i].unitCost = parseFloat(e.target.value)||0; if(calculatedData) calculateBreakEven(); }));
-    document.querySelectorAll(".prod-method").forEach(sel => sel.addEventListener("change", e => { let i=e.target.dataset.idx; if(products[i]) { products[i].priceMethod = e.target.value; renderProducts(); if(calculatedData) calculateBreakEven(); } }));
-    document.querySelectorAll(".prod-direct, .prod-margin, .prod-percent").forEach(inp => inp.addEventListener("change", e => { let i=e.target.dataset.idx; if(!products[i]) return; if(e.target.classList.contains("prod-direct")) products[i].directPrice = parseFloat(e.target.value)||0; if(e.target.classList.contains("prod-margin")) products[i].desiredMargin = parseFloat(e.target.value)||0; if(e.target.classList.contains("prod-percent")) products[i].profitPercent = parseFloat(e.target.value)||0; if(calculatedData) calculateBreakEven(); }));
-    document.querySelectorAll("[data-del-prod]").forEach(btn => btn.addEventListener("click", e => { let i=parseInt(btn.dataset.delProd); if(!isNaN(i)) { products.splice(i,1); renderProducts(); if(calculatedData) calculateBreakEven(); } }));
+    document.querySelectorAll(".prod-name").forEach(inp => inp.addEventListener("change", (e) => { let i = e.target.dataset.idx; if (products[i]) products[i].name = e.target.value || "Producto"; if (calculatedData) calculateBreakEven(); }));
+    document.querySelectorAll(".prod-cost").forEach(inp => inp.addEventListener("change", (e) => { let i = e.target.dataset.idx; if (products[i]) products[i].unitCost = parseFloat(e.target.value) || 0; if (calculatedData) calculateBreakEven(); }));
+    document.querySelectorAll(".prod-method-select").forEach(sel => sel.addEventListener("change", (e) => { let i = e.target.dataset.idx; if (products[i]) { products[i].priceMethod = e.target.value; renderProducts(); if (calculatedData) calculateBreakEven(); } }));
+    document.querySelectorAll(".prod-direct, .prod-margin, .prod-percent").forEach(inp => inp.addEventListener("change", (e) => {
+      let i = e.target.dataset.idx; if (!products[i]) return;
+      if (e.target.classList.contains("prod-direct")) products[i].directPrice = parseFloat(e.target.value) || 0;
+      if (e.target.classList.contains("prod-margin")) products[i].desiredMargin = parseFloat(e.target.value) || 0;
+      if (e.target.classList.contains("prod-percent")) products[i].profitPercent = parseFloat(e.target.value) || 0;
+      if (calculatedData) calculateBreakEven();
+    }));
+    document.querySelectorAll("[data-del-prod]").forEach(btn => btn.addEventListener("click", (e) => { let i = parseInt(btn.dataset.delProd); if (!isNaN(i)) { products.splice(i, 1); renderProducts(); if (calculatedData) calculateBreakEven(); else if (fixedCosts.length === 0 && products.length === 0) resultsSection.style.display = "none"; } }));
   }
 
-  function showError(msg) { errorZone.innerText = msg; errorZone.style.display = "block"; setTimeout(()=> errorZone.style.display = "none", 5000); }
-
-  // ========== CÁLCULO PRINCIPAL ==========
+  // ======================== LÓGICA DE CÁLCULO ========================
   function calculateBreakEven() {
-    errorZone.style.display = "none";
+    errorDiv.style.display = "none";
+    // Validaciones
+    if (fixedCosts.length === 0) { showError("⚠️ Agregue al menos un costo fijo."); return; }
+    if (products.length === 0) { showError("⚠️ Agregue al menos un producto."); return; }
+    
     let totalFixed = 0;
-    for(let f of fixedCosts) { if(isNaN(f.value) || f.value<0) { showError("Costos fijos inválidos. Revise valores."); return; } totalFixed += f.value; }
-    if(fixedCosts.length === 0) { showError("Agregue al menos un costo fijo."); return; }
-    if(products.length === 0) { showError("Agregue al menos un producto."); return; }
-
+    for (let f of fixedCosts) {
+      if (isNaN(f.value) || f.value < 0) { showError("Revise los valores de los costos fijos (deben ser números positivos)."); return; }
+      totalFixed += f.value;
+    }
+    
     let processed = [];
-    for(let p of products) {
-      let name = p.name.trim() || "Sin nombre";
+    for (let p of products) {
+      let name = p.name.trim() || "Producto";
       let cv = p.unitCost;
-      if(isNaN(cv) || cv<0) { showError(`Producto "${name}" costo variable inválido`); return; }
+      if (isNaN(cv) || cv < 0) { showError(`"${name}": costo variable inválido.`); return; }
       let price = 0;
-      if(p.priceMethod === "directo") { price = p.directPrice; if(isNaN(price) || price <= cv) { showError(`${name}: precio directo debe ser mayor que costo variable`); return; } }
-      else if(p.priceMethod === "margen") { let margin = p.desiredMargin; if(isNaN(margin) || margin <= 0) { showError(`${name}: margen fijo debe ser positivo`); return; } price = cv + margin; }
-      else { let pct = p.profitPercent; if(isNaN(pct) || pct <= 0 || pct >= 100) { showError(`${name}: porcentaje entre 0 y 100`); return; } price = cv / (1 - pct/100); }
+      if (p.priceMethod === "directo") {
+        price = p.directPrice;
+        if (isNaN(price) || price <= cv) { showError(`"${name}": el precio debe ser mayor al costo variable.`); return; }
+      } else if (p.priceMethod === "margen") {
+        let margin = p.desiredMargin;
+        if (isNaN(margin) || margin <= 0) { showError(`"${name}": el margen debe ser positivo.`); return; }
+        price = cv + margin;
+      } else {
+        let pct = p.profitPercent;
+        if (isNaN(pct) || pct <= 0 || pct >= 100) { showError(`"${name}": porcentaje de utilidad entre 0 y 100.`); return; }
+        price = cv / (1 - pct / 100);
+      }
       processed.push({ name, cv, price, marginUnit: price - cv });
     }
-
+    
     const n = processed.length;
     const fixedPerProduct = totalFixed / n;
     let totalIncome = 0, totalVarCost = 0, totalUnits = 0;
     let details = [];
-    for(let prod of processed) {
+    for (let prod of processed) {
       let exactUnits = fixedPerProduct / prod.marginUnit;
       let unitsSell = Math.ceil(exactUnits);
       let revenue = unitsSell * prod.price;
@@ -502,138 +573,138 @@
       details.push({ ...prod, exactUnits, units: unitsSell, revenue, varTotal, marginTotal, surplus, fixedPart: fixedPerProduct });
     }
     const profit = totalIncome - (totalFixed + totalVarCost);
-    let status = profit < 0 ? "⚠️ Pérdida proyectada (redondeo)" : profit === 0 ? "✅ Equilibrio exacto" : "🎯 Utilidad positiva por redondeo";
-    calculatedData = { totalFixed, fixedPerProduct, details, totalIncome, totalVarCost, profit, totalUnits, status, fixedItems: [...fixedCosts] };
+    const status = profit < 0 ? "⚠️ Pérdida proyectada (unidades insuficientes)" : profit === 0 ? "✅ Equilibrio exacto" : "🎯 Utilidad positiva por redondeo";
+    
+    calculatedData = { totalFixed, fixedPerProduct, details, totalIncome, totalVarCost, profit, totalUnits, status };
+    resultsSection.style.display = "block";
     renderMetrics();
     renderBreakdown();
     renderInterpretation();
     populateGraphSelector();
     renderCurrentGraph();
   }
-
+  
+  function showError(msg) { errorDiv.innerText = msg; errorDiv.style.display = "block"; setTimeout(() => errorDiv.style.display = "none", 5000); }
+  
   function renderMetrics() {
-    let d = calculatedData;
-    let fixedDetail = d.fixedItems.map(f => `<strong>${escapeHtml(f.name)}</strong> ${formatMoney(f.value)}`).join(" · ");
-    metricsArea.innerHTML = `
-      <div class="metrics-row">
-        <div class="metric-block blue-border"><div class="label">💰 Costos Fijos Totales</div><div class="value">${formatMoney(d.totalFixed)}</div></div>
-        <div class="metric-block green-border"><div class="label">📌 CF por producto</div><div class="value">${formatMoney(d.fixedPerProduct)}</div></div>
-        <div class="metric-block orange-border"><div class="label">📦 Unidades totales</div><div class="value">${d.totalUnits}</div></div>
-        <div class="metric-block purple-border"><div class="label">🏆 Resultado Neto</div><div class="value">${formatMoney(d.profit)}</div></div>
+    const d = calculatedData;
+    document.getElementById("metricsContainer").innerHTML = `
+      <div class="metrics-grid">
+        <div class="metric border-blue"><div class="metric-label">💰 Costos Fijos Totales</div><div class="metric-value">${formatMoney(d.totalFixed)}</div></div>
+        <div class="metric border-green"><div class="metric-label">📌 CF por Producto</div><div class="metric-value">${formatMoney(d.fixedPerProduct)}</div></div>
+        <div class="metric border-orange"><div class="metric-label">📦 Unidades Totales</div><div class="metric-value">${d.totalUnits}</div></div>
+        <div class="metric border-purple"><div class="metric-label">🏆 Resultado Neto</div><div class="metric-value">${formatMoney(d.profit)}</div></div>
       </div>
       <div><strong>Estado:</strong> ${d.status}</div>
-      <div style="font-size:0.7rem; margin-top:0.5rem;">📋 Rubros: ${fixedDetail}</div>
     `;
   }
-
+  
   function renderBreakdown() {
-    let d = calculatedData;
-    let html = `<div class="table-responsive"><table class="data-grid"><thead><tr><th>Producto</th><th>Precio</th><th>C. Variable</th><th>Margen Unit.</th><th>CF Asignado</th><th>Unid. Exactas</th><th>Unidades Vender</th><th>Ventas</th><th>Margen Total</th><th>Excedente</th></tr></thead><tbody>`;
-    for(let p of d.details) {
-      html += `<tr><td><strong>${escapeHtml(p.name)}</strong></td><td>${formatMoney(p.price)}</td><td>${formatMoney(p.cv)}</td><td>${formatMoney(p.marginUnit)}</td><td>${formatMoney(p.fixedPart)}</td><td>${p.exactUnits.toFixed(2)}</td><td><strong>${p.units}</strong></td><td>${formatMoney(p.revenue)}</td><td>${formatMoney(p.marginTotal)}</td><td>${formatMoney(p.surplus)}</td></tr>`;
+    let html = `<div class="table-responsive"><table class="data-table"><thead><tr>
+      <th>Producto</th><th>Precio</th><th>C. Variable</th><th>Margen Unit.</th><th>CF Asignado</th><th>Unidades Exactas</th><th>Unidades a Vender</th><th>Ventas (USD)</th><th>Margen Total</th>
+    </tr></thead><tbody>`;
+    for (let p of calculatedData.details) {
+      html += `<tr>
+        <td><strong>${escapeHtml(p.name)}</strong></td>
+        <td>${formatMoney(p.price)}</td><td>${formatMoney(p.cv)}</td><td>${formatMoney(p.marginUnit)}</td>
+        <td>${formatMoney(p.fixedPart)}</td><td>${p.exactUnits.toFixed(2)}</td><td><strong>${p.units}</strong></td>
+        <td>${formatMoney(p.revenue)}</td><td>${formatMoney(p.marginTotal)}</td>
+      </tr>`;
     }
-    html += `</tbody></table></div><div class="insight-note"><i class="fas fa-chalkboard"></i> Fórmula: Unidades = (CF_total / #productos) ÷ Margen unitario</div>`;
-    breakdownArea.innerHTML = html;
+    html += `</tbody></table></div><div class="info-box"><i class="fas fa-chalkboard-user"></i> Unidades = (CF_total / N° productos) ÷ Margen unitario. El redondeo asegura cobertura total de costos.</div>`;
+    document.getElementById("breakdownContainer").innerHTML = html;
   }
-
+  
   function renderInterpretation() {
     let d = calculatedData;
-    let steps = d.details.map(p => `${p.name}: ${formatMoney(p.fixedPart)} / ${formatMoney(p.marginUnit)} = ${p.exactUnits.toFixed(2)} → ${p.units} unds`).join("<br>");
-    interpretArea.innerHTML = `<p><strong>📐 Metodología:</strong> CF totales ${formatMoney(d.totalFixed)} se dividen en ${d.details.length} partes → ${formatMoney(d.fixedPerProduct)} c/u. Cada producto cubre su CF con su margen.</p>
-    <p><strong>📋 Cálculo detallado:</strong><br>${steps}</p>
-    <p><strong>✅ Verificación:</strong> Ingresos ${formatMoney(d.totalIncome)} - Costos totales ${formatMoney(d.totalFixed+d.totalVarCost)} = Utilidad ${formatMoney(d.profit)}. ${d.profit>0 ? 'Excedente por redondeo.' : d.profit<0 ? 'Ajustar márgenes o reducir CF.' : 'Equilibrio exacto.'}</p>`;
+    let detailSteps = d.details.map(p => `${p.name}: ${formatMoney(p.fixedPart)} / ${formatMoney(p.marginUnit)} = ${p.exactUnits.toFixed(2)} → ${p.units} unidades`).join("<br>");
+    document.getElementById("interpretationContainer").innerHTML = `
+      <p><strong>📐 Metodología aplicada:</strong> Costos fijos totales (${formatMoney(d.totalFixed)}) se distribuyen en ${d.details.length} producto(s) → ${formatMoney(d.fixedPerProduct)} por producto.</p>
+      <p><strong>📋 Cálculo desagregado:</strong><br>${detailSteps}</p>
+      <p><strong>✅ Verificación financiera:</strong> Ingresos ${formatMoney(d.totalIncome)} - Costos totales ${formatMoney(d.totalFixed + d.totalVarCost)} = Utilidad ${formatMoney(d.profit)}. ${d.profit >= 0 ? "El modelo garantiza cobertura total de costos fijos." : "Revise precios o reduzca costos fijos."}</p>
+    `;
   }
-
+  
   function populateGraphSelector() {
-    if(!calculatedData) return;
-    graphSelector.innerHTML = `<option value="total">🌍 Portafolio completo</option>` + calculatedData.details.map((p,i) => `<option value="${i}">📦 ${escapeHtml(p.name)}</option>`).join("");
-    graphSelector.onchange = () => renderCurrentGraph();
+    const selector = document.getElementById("graphSelect");
+    selector.innerHTML = `<option value="total">🌍 Vista consolidada (todos los productos)</option>` + calculatedData.details.map((p,i) => `<option value="${i}">📦 ${escapeHtml(p.name)}</option>`).join("");
+    selector.onchange = () => renderCurrentGraph();
   }
-
+  
   function renderCurrentGraph() {
-    if(!calculatedData) return;
-    if(graphSelector.value === "total") renderGlobalGraph();
-    else renderSingleGraph(parseInt(graphSelector.value));
+    const val = document.getElementById("graphSelect").value;
+    if (val === "total") renderGlobalGraph();
+    else renderSingleGraph(parseInt(val));
   }
-
+  
   function renderGlobalGraph() {
     let d = calculatedData;
     let avgPrice = d.totalIncome / d.totalUnits;
     let avgVar = d.totalVarCost / d.totalUnits;
     let beUnits = d.totalFixed / (avgPrice - avgVar);
-    let maxUnits = Math.max(d.totalUnits + 15, Math.ceil(beUnits) + 25);
+    let maxU = Math.max(d.totalUnits + 15, Math.ceil(beUnits) + 25);
     let incomes = [], costs = [], points = [];
-    for(let u = 0; u <= maxUnits; u += Math.max(1, Math.floor(maxUnits/85))) {
+    for (let u = 0; u <= maxU; u += Math.max(1, Math.floor(maxU / 85))) {
       incomes.push({x: u, y: u * avgPrice});
       costs.push({x: u, y: d.totalFixed + u * avgVar});
     }
-    if(showEq && isFinite(beUnits)) points.push({x: beUnits, y: beUnits * avgPrice});
-    graphDescription.innerHTML = `<i class="fas fa-chart-line"></i> Punto equilibrio global: ${beUnits.toFixed(2)} unidades → ${formatMoney(beUnits*avgPrice)}. Unidades totales a vender: ${d.totalUnits}.`;
-    renderChart("Equilibrio Multiproducto", "Unidades totales", incomes, costs, points);
+    if (isFinite(beUnits)) points.push({x: beUnits, y: beUnits * avgPrice});
+    document.getElementById("graphInsight").innerHTML = `<i class="fas fa-chart-line"></i> Punto de equilibrio global en ${beUnits.toFixed(2)} unidades → ${formatMoney(beUnits * avgPrice)}. Unidades totales a vender: ${d.totalUnits}.`;
+    drawChart("Equilibrio Multiproducto - Portafolio", "Unidades totales", incomes, costs, points);
   }
-
+  
   function renderSingleGraph(idx) {
     let p = calculatedData.details[idx];
     let beExact = p.fixedPart / p.marginUnit;
     let maxU = Math.max(p.units + 12, Math.ceil(beExact) + 25);
     let incomes = [], costs = [], points = [];
-    for(let u = 0; u <= maxU; u += Math.max(1, Math.floor(maxU/80))) {
+    for (let u = 0; u <= maxU; u += Math.max(1, Math.floor(maxU / 80))) {
       incomes.push({x: u, y: u * p.price});
       costs.push({x: u, y: p.fixedPart + u * p.cv});
     }
-    if(showEq && isFinite(beExact)) points.push({x: beExact, y: beExact * p.price});
-    graphDescription.innerHTML = `<i class="fas fa-chart-line"></i> ${p.name}: equilibrio en ${beExact.toFixed(2)} unidades → ${formatMoney(beExact*p.price)}. Unidades a vender: ${p.units}.`;
-    renderChart(`${p.name} - Punto equilibrio`, `Unidades (${p.name})`, incomes, costs, points);
+    if (isFinite(beExact)) points.push({x: beExact, y: beExact * p.price});
+    document.getElementById("graphInsight").innerHTML = `<i class="fas fa-chart-line"></i> ${p.name}: punto de equilibrio en ${beExact.toFixed(2)} unidades → ${formatMoney(beExact * p.price)}. Unidades sugeridas: ${p.units}.`;
+    drawChart(`${p.name} - Punto de Equilibrio`, `Unidades (${p.name})`, incomes, costs, points);
   }
-
-  function renderChart(title, xLabel, incomeData, costData, pointData) {
-    const ctx = document.getElementById("mainChartCanvas").getContext("2d");
-    if(chartGlobal) chartGlobal.destroy();
-    chartGlobal = new Chart(ctx, {
+  
+  function drawChart(title, xLabel, incomeData, costData, pointsData) {
+    const ctx = document.getElementById("bepChart").getContext("2d");
+    if (chartInstance) chartInstance.destroy();
+    chartInstance = new Chart(ctx, {
       type: "line",
       data: {
         datasets: [
           { label: "Ingresos", data: incomeData, borderColor: "#10b981", borderWidth: 3, pointRadius: 0, tension: 0.2 },
-          { label: "Costos totales", data: costData, borderColor: "#ef4444", borderWidth: 3, pointRadius: 0, tension: 0.2 },
-          { label: "Punto de equilibrio", data: pointData, borderColor: "#f59e0b", backgroundColor: "#f59e0b", pointRadius: 7, showLine: false, type: 'scatter' }
+          { label: "Costos Totales", data: costData, borderColor: "#ef4444", borderWidth: 3, pointRadius: 0, tension: 0.2 },
+          { label: "Punto de Equilibrio", data: pointsData, borderColor: "#f59e0b", backgroundColor: "#f59e0b", pointRadius: 8, showLine: false, type: 'scatter' }
         ]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: true,
+        responsive: true, maintainAspectRatio: true,
         plugins: { tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${formatMoney(ctx.raw.y)}`, title: (ctx) => `Unidades: ${ctx[0].raw.x.toFixed(2)}` } } },
         scales: { x: { title: { display: true, text: xLabel }, type: 'linear' }, y: { title: { display: true, text: 'USD' }, ticks: { callback: (v) => formatMoney(v) } } }
       }
     });
   }
-
-  function showRandomTip() { const tips = ["💡 Reducir costos fijos disminuye el punto de equilibrio.", "📌 Enfoque en productos con mayor margen de contribución.", "🎯 El redondeo de unidades genera excedente positivo.", "📊 Use la gráfica para identificar el margen de seguridad."]; tipMsgSpan.innerText = tips[Math.floor(Math.random()*tips.length)]; tipToastDiv.classList.add("show"); setTimeout(()=> tipToastDiv.classList.remove("show"), 4200); }
-
-  // ========== EXPORTACIÓN PDF SIN CORTES Y FUNCIONAL ==========
-  async function downloadFullReport() {
-    if(!calculatedData) { alert("⚠️ Primero realice el cálculo (presione 'Calcular equilibrio') antes de exportar el informe."); return; }
+  
+  // PDF export
+  async function downloadPDF() {
+    if (!calculatedData) { alert("⚠️ Antes de exportar, debe realizar el cálculo."); return; }
     const element = document.getElementById("exportContainer");
-    if(chartGlobal) chartGlobal.update();
-    const opt = {
-      margin: [0.4, 0.4, 0.4, 0.4],
-      filename: `Informe_BEP_${new Date().toISOString().slice(0,19)}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: false, logging: false, windowWidth: element.scrollWidth, letterRendering: true },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
-    };
-    try {
-      await html2pdf().set(opt).from(element).save();
-    } catch(e) { alert("Error generando PDF: " + e.message); }
+    const opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: `BEP_Reporte_${new Date().toISOString().slice(0,19)}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: false, logging: false, windowWidth: element.scrollWidth }, jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' } };
+    try { await html2pdf().set(opt).from(element).save(); } catch(e) { alert("Error en PDF: " + e.message); }
   }
-
-  // Eventos iniciales
-  document.getElementById("addFixedBtn").onclick = () => { fixedCosts.push({ name: "Nuevo costo", value: 0 }); renderFixed(); };
-  document.getElementById("addProductBtn").onclick = () => { products.push({ name: "Nuevo producto", unitCost: 1, priceMethod: "directo", directPrice: 2, desiredMargin:0, profitPercent:0 }); renderProducts(); };
-  document.getElementById("calcBtn").onclick = calculateBreakEven;
-  document.getElementById("downloadReportBtn").onclick = downloadFullReport;
-  document.getElementById("showTipOutsideBtn").onclick = showRandomTip;
-
-  renderFixed();
+  
+  function showRandomTip() { const tips = ["💡 Analice productos con mayor margen de contribución.", "📉 Reducir costos fijos acelera el punto de equilibrio.", "🎯 El redondeo de unidades asegura cobertura total.", "📊 Utilice la gráfica para visualizar el margen de seguridad."]; tipTextSpan.innerText = tips[Math.floor(Math.random() * tips.length)]; tipToast.classList.add("show"); setTimeout(() => tipToast.classList.remove("show"), 4000); }
+  
+  // Event listeners
+  document.getElementById("addFixedBtn").onclick = () => { fixedCosts.push({ name: "", value: 0 }); renderFixedCosts(); };
+  document.getElementById("addProductBtn").onclick = () => { products.push({ name: "", unitCost: 0, priceMethod: "directo", directPrice: 0, desiredMargin: 0, profitPercent: 0 }); renderProducts(); };
+  document.getElementById("calculateBtn").onclick = calculateBreakEven;
+  document.getElementById("downloadPdfBtn").onclick = downloadPDF;
+  document.getElementById("showTipBtn").onclick = showRandomTip;
+  
+  renderFixedCosts();
   renderProducts();
 </script>
 </body>
