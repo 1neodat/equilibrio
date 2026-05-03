@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Punto de Equilibrio Multiproducto</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -14,21 +15,46 @@
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: auto;
       padding: 30px;
     }
 
+    h1, h2 {
+      text-align: center;
+    }
+
     .card {
-      background: #fff;
+      background: #ffffff;
       padding: 22px;
       border-radius: 14px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.08);
       margin-bottom: 24px;
     }
 
-    h1, h2 {
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #e5e7eb;
       text-align: center;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #f8fafc;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 9px;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      box-sizing: border-box;
     }
 
     button {
@@ -46,28 +72,17 @@
       background: #1d4ed8;
     }
 
-    input {
-      width: 100%;
-      padding: 9px;
-      border: 1px solid #cbd5e1;
-      border-radius: 7px;
-      box-sizing: border-box;
+    .delete {
+      background: #dc2626;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
+    .delete:hover {
+      background: #b91c1c;
     }
 
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid #e5e7eb;
+    .acciones {
       text-align: center;
-    }
-
-    th {
-      background: #f8fafc;
+      margin-top: 15px;
     }
 
     .resultado, .interpretacion {
@@ -81,12 +96,21 @@
     .error {
       color: #b91c1c;
       font-weight: bold;
-      margin-top: 10px;
+      margin-top: 12px;
+      text-align: center;
     }
 
-    .acciones {
-      text-align: center;
-      margin-top: 15px;
+    .nota {
+      background: #f8fafc;
+      border-left: 5px solid #64748b;
+      padding: 14px;
+      border-radius: 10px;
+      line-height: 1.6;
+      margin-top: 14px;
+    }
+
+    canvas {
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -94,6 +118,7 @@
 <body>
 
 <div class="container">
+
   <h1>Calculadora de Punto de Equilibrio Multiproducto</h1>
 
   <div class="card">
@@ -122,13 +147,19 @@
       <thead>
         <tr>
           <th>Producto</th>
-          <th>Precio de venta</th>
           <th>Costo variable unitario</th>
+          <th>Forma de establecer precio</th>
+          <th>Dato requerido</th>
           <th>Eliminar</th>
         </tr>
       </thead>
       <tbody id="productos"></tbody>
     </table>
+
+    <div class="nota">
+      El cálculo asume que el equilibrio se alcanza vendiendo todos los productos en conjunto:
+      la misma cantidad de unidades de cada producto.
+    </div>
 
     <div class="acciones">
       <button onclick="calcular()">Calcular punto de equilibrio</button>
@@ -155,6 +186,7 @@
       La interpretación aparecerá después del cálculo.
     </div>
   </div>
+
 </div>
 
 <script>
@@ -166,10 +198,11 @@
     contadorRubros++;
 
     const fila = document.createElement("tr");
+
     fila.innerHTML = `
       <td><input type="text" class="rubroNombre" value="Rubro ${contadorRubros}"></td>
       <td><input type="number" class="rubroValor" min="0" step="0.01" placeholder="Ej: 500"></td>
-      <td><button onclick="this.closest('tr').remove()">X</button></td>
+      <td><button class="delete" onclick="this.closest('tr').remove()">X</button></td>
     `;
 
     document.getElementById("rubros").appendChild(fila);
@@ -179,14 +212,53 @@
     contadorProductos++;
 
     const fila = document.createElement("tr");
+
     fila.innerHTML = `
       <td><input type="text" class="productoNombre" value="Producto ${contadorProductos}"></td>
-      <td><input type="number" class="precio" min="0" step="0.01" placeholder="Ej: 10"></td>
-      <td><input type="number" class="costoVariable" min="0" step="0.01" placeholder="Ej: 6"></td>
-      <td><button onclick="this.closest('tr').remove()">X</button></td>
+
+      <td>
+        <input type="number" class="costoVariable" min="0" step="0.01" placeholder="Ej: 6">
+      </td>
+
+      <td>
+        <select class="tipoPrecio" onchange="cambiarTipoPrecio(this)">
+          <option value="directo">Precio directo</option>
+          <option value="margen">Precio por margen sobre costo</option>
+          <option value="porcentaje">Precio por % de utilidad</option>
+        </select>
+      </td>
+
+      <td class="datoPrecio">
+        <input type="number" class="precioDirecto" min="0" step="0.01" placeholder="Ej: 10">
+      </td>
+
+      <td><button class="delete" onclick="this.closest('tr').remove()">X</button></td>
     `;
 
     document.getElementById("productos").appendChild(fila);
+  }
+
+  function cambiarTipoPrecio(select) {
+    const fila = select.closest("tr");
+    const contenedor = fila.querySelector(".datoPrecio");
+
+    if (select.value === "directo") {
+      contenedor.innerHTML = `
+        <input type="number" class="precioDirecto" min="0" step="0.01" placeholder="Ej: 10">
+      `;
+    }
+
+    if (select.value === "margen") {
+      contenedor.innerHTML = `
+        <input type="number" class="margenDeseado" min="0" step="0.01" placeholder="Ej: 4">
+      `;
+    }
+
+    if (select.value === "porcentaje") {
+      contenedor.innerHTML = `
+        <input type="number" class="porcentajeUtilidad" min="0" max="99" step="0.01" placeholder="Ej: 40">
+      `;
+    }
   }
 
   function calcular() {
@@ -196,10 +268,10 @@
 
     error.textContent = "";
 
-    const rubros = document.querySelectorAll("#rubros tr");
+    const filasRubros = document.querySelectorAll("#rubros tr");
     const filasProductos = document.querySelectorAll("#productos tr");
 
-    if (rubros.length === 0) {
+    if (filasRubros.length === 0) {
       error.textContent = "Ingrese al menos un rubro de costos fijos.";
       return;
     }
@@ -212,8 +284,8 @@
     let costosFijos = 0;
     let detalleRubros = "";
 
-    for (const fila of rubros) {
-      const nombre = fila.querySelector(".rubroNombre").value;
+    for (const fila of filasRubros) {
+      const nombre = fila.querySelector(".rubroNombre").value.trim();
       const valor = parseFloat(fila.querySelector(".rubroValor").value);
 
       if (!nombre || isNaN(valor) || valor < 0) {
@@ -226,121 +298,192 @@
     }
 
     let productos = [];
+    let margenTotalPorRonda = 0;
+    let ingresoTotalPorRonda = 0;
+    let costoVariableTotalPorRonda = 0;
 
     for (const fila of filasProductos) {
-      const nombre = fila.querySelector(".productoNombre").value;
-      const precio = parseFloat(fila.querySelector(".precio").value);
+      const nombre = fila.querySelector(".productoNombre").value.trim();
       const costoVariable = parseFloat(fila.querySelector(".costoVariable").value);
+      const tipoPrecio = fila.querySelector(".tipoPrecio").value;
 
-      if (!nombre || isNaN(precio) || isNaN(costoVariable)) {
-        error.textContent = "Complete correctamente todos los datos de los productos.";
+      let precio = 0;
+      let descripcionPrecio = "";
+
+      if (!nombre || isNaN(costoVariable) || costoVariable < 0) {
+        error.textContent = "Complete correctamente el nombre y el costo variable de cada producto.";
         return;
       }
 
-      if (precio <= costoVariable) {
-        error.textContent = "El precio de venta debe ser mayor que el costo variable unitario.";
+      if (tipoPrecio === "directo") {
+        precio = parseFloat(fila.querySelector(".precioDirecto").value);
+        descripcionPrecio = "Precio directo";
+      }
+
+      if (tipoPrecio === "margen") {
+        const margenDeseado = parseFloat(fila.querySelector(".margenDeseado").value);
+
+        if (isNaN(margenDeseado) || margenDeseado <= 0) {
+          error.textContent = "Ingrese un margen válido para cada producto configurado por margen.";
+          return;
+        }
+
+        precio = costoVariable + margenDeseado;
+        descripcionPrecio = "Costo variable + margen";
+      }
+
+      if (tipoPrecio === "porcentaje") {
+        const porcentaje = parseFloat(fila.querySelector(".porcentajeUtilidad").value);
+
+        if (isNaN(porcentaje) || porcentaje <= 0 || porcentaje >= 100) {
+          error.textContent = "El porcentaje de utilidad debe ser mayor que 0 y menor que 100.";
+          return;
+        }
+
+        precio = costoVariable / (1 - (porcentaje / 100));
+        descripcionPrecio = "% de utilidad sobre precio";
+      }
+
+      if (isNaN(precio) || precio <= costoVariable) {
+        error.textContent = "El precio calculado debe ser mayor que el costo variable en todos los productos.";
         return;
       }
 
-      const margen = precio - costoVariable;
+      const margenUnitario = precio - costoVariable;
 
       productos.push({
         nombre,
-        precio,
         costoVariable,
-        margen
+        tipoPrecio,
+        descripcionPrecio,
+        precio,
+        margenUnitario
       });
+
+      margenTotalPorRonda += margenUnitario;
+      ingresoTotalPorRonda += precio;
+      costoVariableTotalPorRonda += costoVariable;
     }
 
-    productos.sort((a, b) => b.margen - a.margen);
+    if (margenTotalPorRonda <= 0) {
+      error.textContent = "El margen total debe ser mayor que cero.";
+      return;
+    }
 
-    const productoOptimo = productos[0];
-    const unidadesNecesarias = Math.ceil(costosFijos / productoOptimo.margen);
-    const ingresosNecesarios = unidadesNecesarias * productoOptimo.precio;
-    const costosVariablesTotales = unidadesNecesarias * productoOptimo.costoVariable;
-    const margenGenerado = unidadesNecesarias * productoOptimo.margen;
-    const utilidad = margenGenerado - costosFijos;
+    const rondasNecesarias = Math.ceil(costosFijos / margenTotalPorRonda);
+    const margenGenerado = rondasNecesarias * margenTotalPorRonda;
+    const ingresosTotales = rondasNecesarias * ingresoTotalPorRonda;
+    const costosVariablesTotales = rondasNecesarias * costoVariableTotalPorRonda;
+    const diferencia = margenGenerado - costosFijos;
+
+    let tablaProductos = `
+      <table>
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Costo variable</th>
+            <th>Precio calculado</th>
+            <th>Margen unitario</th>
+            <th>Unidades a vender</th>
+            <th>Ventas por producto</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    productos.forEach(producto => {
+      tablaProductos += `
+        <tr>
+          <td>${producto.nombre}</td>
+          <td>${moneda(producto.costoVariable)}</td>
+          <td>${moneda(producto.precio)}</td>
+          <td>${moneda(producto.margenUnitario)}</td>
+          <td>${rondasNecesarias}</td>
+          <td>${moneda(rondasNecesarias * producto.precio)}</td>
+        </tr>
+      `;
+    });
+
+    tablaProductos += `
+        </tbody>
+      </table>
+    `;
 
     resultado.innerHTML = `
       <strong>Costos fijos totales:</strong> ${moneda(costosFijos)}<br><br>
 
-      <strong>Rubros ingresados:</strong><br>
+      <strong>Rubros de costos fijos:</strong><br>
       ${detalleRubros}<br>
 
-      <strong>Producto recomendado:</strong> ${productoOptimo.nombre}<br>
-      <strong>Margen unitario:</strong> ${moneda(productoOptimo.margen)}<br>
-      <strong>Unidades necesarias para equilibrio:</strong> ${unidadesNecesarias}<br>
-      <strong>Ventas necesarias:</strong> ${moneda(ingresosNecesarios)}<br>
+      <strong>Margen generado por vender una unidad de cada producto:</strong> ${moneda(margenTotalPorRonda)}<br>
+      <strong>Cantidad necesaria de cada producto:</strong> ${rondasNecesarias} unidades<br>
+      <strong>Ingresos totales necesarios:</strong> ${moneda(ingresosTotales)}<br>
       <strong>Costos variables totales:</strong> ${moneda(costosVariablesTotales)}<br>
-      <strong>Margen generado:</strong> ${moneda(margenGenerado)}<br>
-      <strong>Diferencia después de cubrir costos fijos:</strong> ${moneda(utilidad)}
+      <strong>Margen total generado:</strong> ${moneda(margenGenerado)}<br>
+      <strong>Diferencia después de cubrir costos fijos:</strong> ${moneda(diferencia)}<br><br>
+
+      ${tablaProductos}
     `;
 
+    let formulaProductos = productos
+      .map(p => `${moneda(p.margenUnitario)} de ${p.nombre}`)
+      .join(" + ");
+
     interpretacion.innerHTML = `
+      <p><strong>Interpretación:</strong></p>
+
+      <p>
+        El equilibrio se calcula considerando la venta conjunta de todos los productos.
+        En cada ciclo de venta se considera una unidad de cada producto.
+      </p>
+
       <p><strong>Prueba lógica:</strong></p>
+
       <p>
-        El equilibrio se alcanza cuando el margen generado cubre los costos fijos.
+        Margen total por ciclo =
+        ${formulaProductos}
+        = <strong>${moneda(margenTotalPorRonda)}</strong>
       </p>
 
       <p>
-        Margen unitario de ${productoOptimo.nombre} = 
-        Precio de venta - Costo variable =
-        ${moneda(productoOptimo.precio)} - ${moneda(productoOptimo.costoVariable)}
-        = <strong>${moneda(productoOptimo.margen)}</strong>
-      </p>
-
-      <p>
-        Unidades necesarias =
-        Costos fijos ÷ Margen unitario =
-        ${moneda(costosFijos)} ÷ ${moneda(productoOptimo.margen)}
-        = <strong>${unidadesNecesarias} unidades</strong>
+        Unidades necesarias por producto =
+        Costos fijos ÷ Margen total por ciclo =
+        ${moneda(costosFijos)} ÷ ${moneda(margenTotalPorRonda)}
+        = <strong>${rondasNecesarias} unidades de cada producto</strong>
       </p>
 
       <p>
         Verificación =
-        ${unidadesNecesarias} × ${moneda(productoOptimo.margen)}
+        ${rondasNecesarias} × ${moneda(margenTotalPorRonda)}
         = <strong>${moneda(margenGenerado)}</strong>
       </p>
 
       <p>
-        Como ${moneda(margenGenerado)} cubre los costos fijos de ${moneda(costosFijos)},
-        la empresa alcanza el punto de equilibrio vendiendo aproximadamente
-        <strong>${unidadesNecesarias} unidades de ${productoOptimo.nombre}</strong>.
+        Como el margen generado es ${moneda(margenGenerado)} y los costos fijos son ${moneda(costosFijos)},
+        la diferencia es <strong>${moneda(diferencia)}</strong>.
       </p>
 
       <p>
-        Esta solución prioriza el producto con mayor margen porque reduce la cantidad mínima de unidades necesarias.
+        Por tanto, para alcanzar el punto de equilibrio con todos los productos,
+        se deben vender aproximadamente <strong>${rondasNecesarias} unidades de cada producto</strong>.
       </p>
     `;
 
-    dibujarGrafica(costosFijos, productos);
+    dibujarGrafica(costosFijos, margenTotalPorRonda, rondasNecesarias);
   }
 
-  function dibujarGrafica(costosFijos, productos) {
+  function dibujarGrafica(costosFijos, margenTotalPorRonda, rondasNecesarias) {
     const ctx = document.getElementById("grafica").getContext("2d");
 
-    const mejorMargen = productos[0].margen;
-    const maxUnidades = Math.ceil(costosFijos / mejorMargen) + 20;
-
+    const maxRondas = rondasNecesarias + 10;
     const etiquetas = [];
-    for (let i = 0; i <= maxUnidades; i++) {
+
+    for (let i = 0; i <= maxRondas; i++) {
       etiquetas.push(i);
     }
 
-    const datasets = productos.map(producto => ({
-      label: producto.nombre,
-      data: etiquetas.map(u => producto.margen * u),
-      borderWidth: 2,
-      fill: false
-    }));
-
-    datasets.push({
-      label: "Costos fijos",
-      data: etiquetas.map(() => costosFijos),
-      borderWidth: 3,
-      borderDash: [8, 6],
-      fill: false
-    });
+    const margenAcumulado = etiquetas.map(i => i * margenTotalPorRonda);
+    const costosFijosLinea = etiquetas.map(() => costosFijos);
 
     if (grafica) {
       grafica.destroy();
@@ -350,21 +493,35 @@
       type: "line",
       data: {
         labels: etiquetas,
-        datasets: datasets
+        datasets: [
+          {
+            label: "Margen acumulado por venta conjunta",
+            data: margenAcumulado,
+            borderWidth: 3,
+            fill: false
+          },
+          {
+            label: "Costos fijos",
+            data: costosFijosLinea,
+            borderWidth: 3,
+            borderDash: [8, 6],
+            fill: false
+          }
+        ]
       },
       options: {
         responsive: true,
         plugins: {
           title: {
             display: true,
-            text: "Margen generado por producto frente a costos fijos"
+            text: "Punto de equilibrio con todos los productos"
           }
         },
         scales: {
           x: {
             title: {
               display: true,
-              text: "Unidades vendidas"
+              text: "Cantidad vendida de cada producto"
             }
           },
           y: {
@@ -387,6 +544,7 @@
   }
 
   agregarRubro();
+  agregarProducto();
   agregarProducto();
 </script>
 
