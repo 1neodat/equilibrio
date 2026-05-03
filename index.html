@@ -7,142 +7,295 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
+    :root {
+      --azul: #2563eb;
+      --azul-oscuro: #1e40af;
+      --morado: #7c3aed;
+      --verde: #16a34a;
+      --rojo: #dc2626;
+      --amarillo: #f59e0b;
+      --fondo: #eef2ff;
+      --texto: #0f172a;
+      --gris: #64748b;
+      --borde: #dbeafe;
+      --blanco: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f3f6fb;
-      color: #111827;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, #bfdbfe, transparent 35%),
+        radial-gradient(circle at top right, #ddd6fe, transparent 35%),
+        linear-gradient(135deg, #eef2ff, #f8fafc);
+      color: var(--texto);
     }
 
     .container {
-      max-width: 1250px;
+      max-width: 1280px;
       margin: auto;
-      padding: 30px;
+      padding: 32px;
     }
 
-    h1, h2 {
+    .hero {
       text-align: center;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: white;
+      padding: 36px 24px;
+      border-radius: 26px;
+      box-shadow: 0 20px 45px rgba(37, 99, 235, 0.35);
+      margin-bottom: 28px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: 36px;
+      letter-spacing: -0.5px;
+    }
+
+    .hero p {
+      margin: 12px 0 0;
+      font-size: 16px;
+      opacity: 0.92;
     }
 
     .card {
-      background: #ffffff;
-      padding: 22px;
-      border-radius: 14px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-      margin-bottom: 24px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      padding: 24px;
+      border-radius: 22px;
+      box-shadow: 0 16px 35px rgba(15, 23, 42, 0.11);
+      margin-bottom: 26px;
+      border: 1px solid rgba(219, 234, 254, 0.9);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      text-align: center;
+      font-size: 24px;
+      color: #1e3a8a;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    button {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 800;
+      box-shadow: 0 8px 18px rgba(37,99,235,0.25);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(37,99,235,0.35);
+    }
+
+    .delete {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      box-shadow: 0 8px 18px rgba(220,38,38,0.25);
+    }
+
+    .calculate {
+      background: linear-gradient(135deg, #16a34a, #15803d);
+      font-size: 16px;
+      padding: 14px 24px;
+      box-shadow: 0 10px 22px rgba(22,163,74,0.3);
     }
 
     table {
       width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-    }
-
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid #e5e7eb;
-      text-align: center;
-      vertical-align: middle;
+      border-collapse: separate;
+      border-spacing: 0 10px;
+      margin-top: 10px;
     }
 
     th {
-      background: #f8fafc;
+      background: #dbeafe;
+      color: #1e3a8a;
+      padding: 13px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    td {
+      background: #ffffff;
+      padding: 12px;
+      text-align: center;
+      border-top: 1px solid #e0e7ff;
+      border-bottom: 1px solid #e0e7ff;
+    }
+
+    td:first-child {
+      border-left: 1px solid #e0e7ff;
+      border-radius: 14px 0 0 14px;
+    }
+
+    td:last-child {
+      border-right: 1px solid #e0e7ff;
+      border-radius: 0 14px 14px 0;
     }
 
     input, select {
       width: 100%;
-      padding: 9px;
-      border: 1px solid #cbd5e1;
-      border-radius: 7px;
-      box-sizing: border-box;
+      padding: 11px;
+      border: 1px solid #bfdbfe;
+      border-radius: 11px;
+      font-size: 14px;
+      outline: none;
+      background: #f8fafc;
+      transition: border 0.2s, box-shadow 0.2s;
     }
 
-    button {
-      background: #2563eb;
-      color: white;
-      border: none;
-      padding: 11px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      margin: 5px;
-    }
-
-    button:hover {
-      background: #1d4ed8;
-    }
-
-    .delete {
-      background: #dc2626;
-    }
-
-    .delete:hover {
-      background: #b91c1c;
-    }
-
-    .acciones {
-      text-align: center;
-      margin-top: 15px;
-    }
-
-    .resultado, .interpretacion {
-      background: #eef6ff;
-      border-left: 5px solid #2563eb;
-      padding: 18px;
-      border-radius: 10px;
-      line-height: 1.7;
-    }
-
-    .error {
-      color: #b91c1c;
-      font-weight: bold;
-      margin-top: 12px;
-      text-align: center;
+    input:focus, select:focus {
+      border-color: var(--azul);
+      box-shadow: 0 0 0 4px rgba(37,99,235,0.15);
+      background: white;
     }
 
     .nota {
-      background: #f8fafc;
-      border-left: 5px solid #64748b;
-      padding: 14px;
-      border-radius: 10px;
+      background: linear-gradient(135deg, #eff6ff, #eef2ff);
+      border-left: 6px solid var(--azul);
+      padding: 16px;
+      border-radius: 16px;
       line-height: 1.6;
-      margin-top: 14px;
+      margin-top: 18px;
+      color: #1e3a8a;
+      font-weight: 600;
+    }
+
+    .error {
+      color: white;
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      padding: 13px;
+      border-radius: 14px;
+      margin-top: 16px;
+      text-align: center;
+      font-weight: 800;
+      display: none;
+    }
+
+    .resultado, .interpretacion {
+      background: linear-gradient(135deg, #ffffff, #eff6ff);
+      border: 1px solid #bfdbfe;
+      border-left: 7px solid var(--azul);
+      padding: 20px;
+      border-radius: 18px;
+      line-height: 1.75;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
-      margin-top: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 16px;
+      margin-bottom: 18px;
     }
 
     .metric {
-      background: #f8fafc;
-      border-radius: 12px;
-      padding: 15px;
-      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 20px;
+      color: white;
+      min-height: 118px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-shadow: 0 14px 26px rgba(15,23,42,0.18);
+    }
+
+    .metric:nth-child(1) {
+      background: linear-gradient(135deg, #2563eb, #1e40af);
+    }
+
+    .metric:nth-child(2) {
+      background: linear-gradient(135deg, #7c3aed, #5b21b6);
+    }
+
+    .metric:nth-child(3) {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+
+    .metric:nth-child(4) {
+      background: linear-gradient(135deg, #16a34a, #15803d);
     }
 
     .metric strong {
-      display: block;
       font-size: 13px;
-      color: #64748b;
-      margin-bottom: 6px;
+      opacity: 0.88;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
     }
 
     .metric span {
-      font-size: 20px;
-      font-weight: bold;
-      color: #0f172a;
+      font-size: 25px;
+      font-weight: 900;
     }
 
     .grafica-control {
-      max-width: 420px;
-      margin: 0 auto 20px auto;
+      max-width: 460px;
+      margin: 0 auto 18px auto;
+      background: #f8fafc;
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid #dbeafe;
     }
 
-    canvas {
-      margin-top: 20px;
+    .chart-box {
+      background: white;
+      padding: 18px;
+      border-radius: 20px;
+      border: 1px solid #dbeafe;
+      box-shadow: inset 0 0 0 1px rgba(219,234,254,0.45);
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 16px;
+    }
+
+    .pill {
+      padding: 9px 13px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .loss {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .balance {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .profit {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .highlight {
+      color: #1d4ed8;
+      font-weight: 900;
     }
   </style>
 </head>
@@ -151,12 +304,17 @@
 
 <div class="container">
 
-  <h1>Calculadora de Punto de Equilibrio Multiproducto</h1>
+  <section class="hero">
+    <h1>Calculadora Profesional de Punto de Equilibrio</h1>
+    <p>Análisis multiproducto con costos fijos, precios configurables, gráfica interactiva, desglose e interpretación financiera.</p>
+  </section>
 
   <div class="card">
     <h2>Costos fijos</h2>
 
-    <button onclick="agregarRubro()">Agregar rubro</button>
+    <div class="toolbar">
+      <button onclick="agregarRubro()">Agregar rubro</button>
+    </div>
 
     <table>
       <thead>
@@ -173,7 +331,9 @@
   <div class="card">
     <h2>Productos</h2>
 
-    <button onclick="agregarProducto()">Agregar producto</button>
+    <div class="toolbar">
+      <button onclick="agregarProducto()">Agregar producto</button>
+    </div>
 
     <table>
       <thead>
@@ -189,12 +349,11 @@
     </table>
 
     <div class="nota">
-      El cálculo considera la venta conjunta de todos los productos.  
-      Cada ciclo equivale a vender una unidad de cada producto ingresado.
+      El cálculo considera la venta conjunta de todos los productos. Cada ciclo equivale a vender una unidad de cada producto registrado.
     </div>
 
-    <div class="acciones">
-      <button onclick="calcular()">Calcular punto de equilibrio</button>
+    <div class="toolbar">
+      <button class="calculate" onclick="calcular()">Calcular punto de equilibrio</button>
     </div>
 
     <div id="error" class="error"></div>
@@ -217,12 +376,14 @@
       </select>
     </div>
 
-    <canvas id="grafica"></canvas>
+    <div class="chart-box">
+      <canvas id="grafica"></canvas>
+    </div>
 
-    <div class="nota">
-      Zona roja: pérdida.  
-      Punto amarillo: equilibrio.  
-      Zona verde: ganancia.
+    <div class="pill-row">
+      <span class="pill loss">Zona de pérdida</span>
+      <span class="pill balance">Punto de equilibrio</span>
+      <span class="pill profit">Zona de ganancia</span>
     </div>
   </div>
 
@@ -297,44 +458,28 @@
     const contenedor = fila.querySelector(".datoPrecio");
 
     if (select.value === "directo") {
-      contenedor.innerHTML = `
-        <input type="number" class="precioDirecto" min="0" step="0.01" placeholder="Ej: 10">
-      `;
+      contenedor.innerHTML = `<input type="number" class="precioDirecto" min="0" step="0.01" placeholder="Ej: 10">`;
     }
 
     if (select.value === "margen") {
-      contenedor.innerHTML = `
-        <input type="number" class="margenDeseado" min="0" step="0.01" placeholder="Ej: 4">
-      `;
+      contenedor.innerHTML = `<input type="number" class="margenDeseado" min="0" step="0.01" placeholder="Ej: 4">`;
     }
 
     if (select.value === "porcentaje") {
-      contenedor.innerHTML = `
-        <input type="number" class="porcentajeUtilidad" min="0" max="99" step="0.01" placeholder="Ej: 40">
-      `;
+      contenedor.innerHTML = `<input type="number" class="porcentajeUtilidad" min="0" max="99" step="0.01" placeholder="Ej: 40">`;
     }
   }
 
   function calcular() {
     const error = document.getElementById("error");
-    const resultado = document.getElementById("resultado");
-    const interpretacion = document.getElementById("interpretacion");
-    const desglose = document.getElementById("desglose");
-
+    error.style.display = "none";
     error.textContent = "";
 
     const filasRubros = document.querySelectorAll("#rubros tr");
     const filasProductos = document.querySelectorAll("#productos tr");
 
-    if (filasRubros.length === 0) {
-      error.textContent = "Ingrese al menos un rubro de costos fijos.";
-      return;
-    }
-
-    if (filasProductos.length === 0) {
-      error.textContent = "Ingrese al menos un producto.";
-      return;
-    }
+    if (filasRubros.length === 0) return mostrarError("Ingrese al menos un rubro de costos fijos.");
+    if (filasProductos.length === 0) return mostrarError("Ingrese al menos un producto.");
 
     let costosFijos = 0;
     let detalleRubros = "";
@@ -344,8 +489,7 @@
       const valor = parseFloat(fila.querySelector(".rubroValor").value);
 
       if (!nombre || isNaN(valor) || valor < 0) {
-        error.textContent = "Complete correctamente todos los rubros de costos fijos.";
-        return;
+        return mostrarError("Complete correctamente todos los rubros de costos fijos.");
       }
 
       costosFijos += valor;
@@ -363,45 +507,31 @@
       const tipoPrecio = fila.querySelector(".tipoPrecio").value;
 
       let precio = 0;
-      let descripcionPrecio = "";
 
       if (!nombre || isNaN(costoVariable) || costoVariable < 0) {
-        error.textContent = "Complete correctamente el nombre y el costo variable de cada producto.";
-        return;
+        return mostrarError("Complete correctamente el nombre y el costo variable de cada producto.");
       }
 
       if (tipoPrecio === "directo") {
         precio = parseFloat(fila.querySelector(".precioDirecto").value);
-        descripcionPrecio = "Precio directo";
       }
 
       if (tipoPrecio === "margen") {
         const margenDeseado = parseFloat(fila.querySelector(".margenDeseado").value);
-
-        if (isNaN(margenDeseado) || margenDeseado <= 0) {
-          error.textContent = "Ingrese un margen válido.";
-          return;
-        }
-
+        if (isNaN(margenDeseado) || margenDeseado <= 0) return mostrarError("Ingrese un margen válido.");
         precio = costoVariable + margenDeseado;
-        descripcionPrecio = "Costo + margen";
       }
 
       if (tipoPrecio === "porcentaje") {
         const porcentaje = parseFloat(fila.querySelector(".porcentajeUtilidad").value);
-
         if (isNaN(porcentaje) || porcentaje <= 0 || porcentaje >= 100) {
-          error.textContent = "El porcentaje debe ser mayor que 0 y menor que 100.";
-          return;
+          return mostrarError("El porcentaje debe ser mayor que 0 y menor que 100.");
         }
-
         precio = costoVariable / (1 - porcentaje / 100);
-        descripcionPrecio = "% utilidad sobre precio";
       }
 
       if (isNaN(precio) || precio <= costoVariable) {
-        error.textContent = "El precio calculado debe ser mayor que el costo variable.";
-        return;
+        return mostrarError("El precio calculado debe ser mayor que el costo variable.");
       }
 
       const margenUnitario = precio - costoVariable;
@@ -410,8 +540,7 @@
         nombre,
         costoVariable,
         precio,
-        margenUnitario,
-        descripcionPrecio
+        margenUnitario
       });
 
       margenTotalPorCiclo += margenUnitario;
@@ -450,7 +579,7 @@
       diferencia
     };
 
-    resultado.innerHTML = `
+    document.getElementById("resultado").innerHTML = `
       <div class="grid">
         <div class="metric">
           <strong>Costos fijos totales</strong>
@@ -473,18 +602,14 @@
         </div>
       </div>
 
-      <br>
-
       <strong>Rubros ingresados:</strong><br>
-      ${detalleRubros}
-
-      <br>
+      ${detalleRubros}<br>
 
       <strong>Resultado:</strong><br>
       Para cubrir los costos fijos, se deben vender aproximadamente 
-      <strong>${ciclosNecesarios} unidades de cada producto</strong>.
-      El margen generado será de <strong>${moneda(margenGenerado)}</strong>.
-      La diferencia frente a los costos fijos será de <strong>${moneda(diferencia)}</strong>.
+      <span class="highlight">${ciclosNecesarios} unidades de cada producto</span>.
+      El margen generado será de <span class="highlight">${moneda(margenGenerado)}</span>.
+      La diferencia frente a los costos fijos será de <span class="highlight">${moneda(diferencia)}</span>.
     `;
 
     construirDesglose();
@@ -494,7 +619,6 @@
   }
 
   function construirDesglose() {
-    const desglose = document.getElementById("desglose");
     const d = datosCalculados;
 
     let html = `
@@ -505,10 +629,10 @@
             <th>Precio</th>
             <th>Costo variable</th>
             <th>Margen unitario</th>
-            <th>Unidades a vender</th>
+            <th>Unidades</th>
             <th>Ventas</th>
             <th>Margen total</th>
-            <th>Aporte al margen conjunto</th>
+            <th>Aporte</th>
           </tr>
         </thead>
         <tbody>
@@ -517,7 +641,7 @@
     d.productos.forEach(p => {
       html += `
         <tr>
-          <td>${p.nombre}</td>
+          <td><strong>${p.nombre}</strong></td>
           <td>${moneda(p.precio)}</td>
           <td>${moneda(p.costoVariable)}</td>
           <td>${moneda(p.margenUnitario)}</td>
@@ -529,89 +653,79 @@
       `;
     });
 
-    html += `
-        </tbody>
-      </table>
-    `;
+    html += `</tbody></table>`;
 
-    desglose.innerHTML = html;
+    document.getElementById("desglose").innerHTML = html;
   }
 
   function construirInterpretacion() {
-    const interpretacion = document.getElementById("interpretacion");
     const d = datosCalculados;
 
-    const productosFormula = d.productos
-      .map(p => `${moneda(p.margenUnitario)} (${p.nombre})`)
+    const formula = d.productos
+      .map(p => `${moneda(p.margenUnitario)} de ${p.nombre}`)
       .join(" + ");
 
-    let productoMayorAporte = d.productos[0];
+    let mayor = d.productos[0];
 
     d.productos.forEach(p => {
-      if (p.margenUnitario > productoMayorAporte.margenUnitario) {
-        productoMayorAporte = p;
-      }
+      if (p.margenUnitario > mayor.margenUnitario) mayor = p;
     });
 
-    interpretacion.innerHTML = `
+    document.getElementById("interpretacion").innerHTML = `
       <p><strong>Lectura ejecutiva:</strong></p>
 
       <p>
-        La empresa alcanza el equilibrio cuando el margen generado por la venta conjunta
-        de todos los productos cubre los costos fijos. En este modelo, un ciclo de venta
-        significa vender una unidad de cada producto.
+        El negocio alcanza el equilibrio cuando el margen acumulado generado por la venta conjunta
+        de todos los productos cubre exactamente los costos fijos.
       </p>
 
       <p>
-        El costo fijo total es <strong>${moneda(d.costosFijos)}</strong>.
-        Cada ciclo conjunto genera un margen de <strong>${moneda(d.margenTotalPorCiclo)}</strong>.
-        Por tanto, se requieren <strong>${d.ciclosNecesariosExactos.toFixed(2)}</strong> ciclos exactos.
-        Como no se pueden vender fracciones completas de cada producto, el sistema redondea a
-        <strong>${d.ciclosNecesarios}</strong> unidades por producto.
+        En este cálculo, cada ciclo representa vender una unidad de cada producto. 
+        El margen de un ciclo conjunto es <span class="highlight">${moneda(d.margenTotalPorCiclo)}</span>.
       </p>
 
       <p><strong>Prueba lógica:</strong></p>
 
       <p>
-        Margen conjunto por ciclo =
-        ${productosFormula}
-        = <strong>${moneda(d.margenTotalPorCiclo)}</strong>
+        Margen conjunto por ciclo = ${formula} =
+        <span class="highlight">${moneda(d.margenTotalPorCiclo)}</span>
       </p>
 
       <p>
         Punto de equilibrio exacto =
-        Costos fijos ÷ Margen conjunto =
         ${moneda(d.costosFijos)} ÷ ${moneda(d.margenTotalPorCiclo)}
-        = <strong>${d.ciclosNecesariosExactos.toFixed(2)}</strong>
+        = <span class="highlight">${d.ciclosNecesariosExactos.toFixed(2)}</span> ciclos.
       </p>
 
       <p>
-        Verificación con unidades enteras =
+        Como se venden unidades enteras, se redondea a
+        <span class="highlight">${d.ciclosNecesarios}</span> unidades por producto.
+      </p>
+
+      <p>
+        Verificación =
         ${d.ciclosNecesarios} × ${moneda(d.margenTotalPorCiclo)}
-        = <strong>${moneda(d.margenGenerado)}</strong>
+        = <span class="highlight">${moneda(d.margenGenerado)}</span>.
       </p>
 
       <p>
         Diferencia =
-        Margen generado - Costos fijos =
         ${moneda(d.margenGenerado)} - ${moneda(d.costosFijos)}
-        = <strong>${moneda(d.diferencia)}</strong>
+        = <span class="highlight">${moneda(d.diferencia)}</span>.
       </p>
 
       <p><strong>Interpretación financiera:</strong></p>
 
       <p>
-        Antes del punto de equilibrio, la empresa opera en pérdida porque el margen acumulado
-        aún no alcanza a cubrir los costos fijos. En el punto de equilibrio, no hay pérdida ni ganancia.
-        Después de ese punto, cada ciclo adicional genera una ganancia igual al margen conjunto:
-        <strong>${moneda(d.margenTotalPorCiclo)}</strong>.
+        Antes de vender ${d.ciclosNecesarios} unidades de cada producto, el negocio está en zona de pérdida.
+        En ese punto, los costos fijos quedan cubiertos. A partir de la siguiente unidad conjunta,
+        cada ciclo adicional genera una ganancia aproximada de
+        <span class="highlight">${moneda(d.margenTotalPorCiclo)}</span>.
       </p>
 
       <p>
-        El producto con mayor margen unitario es <strong>${productoMayorAporte.nombre}</strong>,
-        con <strong>${moneda(productoMayorAporte.margenUnitario)}</strong> por unidad.
-        Sin embargo, el equilibrio mostrado no depende solo de ese producto; se calcula con la venta
-        simultánea de todos los productos ingresados.
+        El producto con mayor margen unitario es <strong>${mayor.nombre}</strong>,
+        con un margen de <span class="highlight">${moneda(mayor.margenUnitario)}</span>.
       </p>
     `;
   }
@@ -619,22 +733,17 @@
   function cargarSelectorGrafica() {
     const selector = document.getElementById("vistaGrafica");
 
-    selector.innerHTML = `
-      <option value="todos">Todos los productos</option>
-    `;
+    selector.innerHTML = `<option value="todos">Todos los productos</option>`;
 
     datosCalculados.productos.forEach((p, index) => {
-      selector.innerHTML += `
-        <option value="${index}">${p.nombre}</option>
-      `;
+      selector.innerHTML += `<option value="${index}">${p.nombre}</option>`;
     });
   }
 
   function actualizarVistaGrafica() {
     if (!datosCalculados) return;
 
-    const selector = document.getElementById("vistaGrafica");
-    const vista = selector.value;
+    const vista = document.getElementById("vistaGrafica").value;
 
     if (vista === "todos") {
       dibujarGraficaTodos();
@@ -645,66 +754,21 @@
 
   function dibujarGraficaTodos() {
     const d = datosCalculados;
-    const maxCiclos = d.ciclosNecesarios + 10;
-
+    const max = d.ciclosNecesarios + 10;
     const etiquetas = [];
-    for (let i = 0; i <= maxCiclos; i++) etiquetas.push(i);
 
-    const margenAcumulado = etiquetas.map(i => i * d.margenTotalPorCiclo);
-    const zonaPerdida = etiquetas.map(i => i <= d.ciclosNecesarios ? d.costosFijos : null);
-    const zonaGanancia = etiquetas.map(i => i >= d.ciclosNecesarios ? i * d.margenTotalPorCiclo : null);
-    const costosFijosLinea = etiquetas.map(() => d.costosFijos);
-    const puntoEquilibrio = etiquetas.map(i => i === d.ciclosNecesarios ? d.margenGenerado : null);
+    for (let i = 0; i <= max; i++) etiquetas.push(i);
 
     renderizarGrafica({
-      titulo: "Equilibrio con venta conjunta de todos los productos",
+      titulo: "Punto de equilibrio con todos los productos",
       ejeX: "Cantidad vendida de cada producto",
-      datasets: [
-        {
-          label: "Zona de pérdida",
-          data: zonaPerdida,
-          backgroundColor: "rgba(239, 68, 68, 0.18)",
-          borderColor: "rgba(239, 68, 68, 0)",
-          fill: true,
-          pointRadius: 0
-        },
-        {
-          label: "Zona de ganancia",
-          data: zonaGanancia,
-          backgroundColor: "rgba(34, 197, 94, 0.18)",
-          borderColor: "rgba(34, 197, 94, 0)",
-          fill: true,
-          pointRadius: 0
-        },
-        {
-          label: "Margen acumulado",
-          data: margenAcumulado,
-          borderColor: "#2563eb",
-          backgroundColor: "#2563eb",
-          borderWidth: 3,
-          fill: false,
-          tension: 0.25
-        },
-        {
-          label: "Costos fijos",
-          data: costosFijosLinea,
-          borderColor: "#ef4444",
-          backgroundColor: "#ef4444",
-          borderWidth: 3,
-          borderDash: [8, 6],
-          fill: false,
-          pointRadius: 0
-        },
-        {
-          label: "Punto de equilibrio",
-          data: puntoEquilibrio,
-          borderColor: "#f59e0b",
-          backgroundColor: "#f59e0b",
-          pointRadius: 7,
-          pointHoverRadius: 10,
-          showLine: false
-        }
-      ]
+      datasets: crearDatasets(
+        etiquetas,
+        d.costosFijos,
+        d.margenTotalPorCiclo,
+        d.ciclosNecesarios,
+        "Margen acumulado conjunto"
+      )
     });
   }
 
@@ -712,76 +776,78 @@
     const d = datosCalculados;
     const p = d.productos[index];
 
-    const unidadesNecesarias = Math.ceil(d.costosFijos / p.margenUnitario);
-    const maxUnidades = unidadesNecesarias + 10;
-
+    const unidades = Math.ceil(d.costosFijos / p.margenUnitario);
+    const max = unidades + 10;
     const etiquetas = [];
-    for (let i = 0; i <= maxUnidades; i++) etiquetas.push(i);
 
-    const margenAcumulado = etiquetas.map(i => i * p.margenUnitario);
-    const zonaPerdida = etiquetas.map(i => i <= unidadesNecesarias ? d.costosFijos : null);
-    const zonaGanancia = etiquetas.map(i => i >= unidadesNecesarias ? i * p.margenUnitario : null);
-    const costosFijosLinea = etiquetas.map(() => d.costosFijos);
-    const puntoEquilibrio = etiquetas.map(i => i === unidadesNecesarias ? i * p.margenUnitario : null);
+    for (let i = 0; i <= max; i++) etiquetas.push(i);
 
     renderizarGrafica({
-      titulo: `Equilibrio analizando solo ${p.nombre}`,
+      titulo: `Análisis individual: ${p.nombre}`,
       ejeX: `Unidades vendidas de ${p.nombre}`,
-      datasets: [
-        {
-          label: "Zona de pérdida",
-          data: zonaPerdida,
-          backgroundColor: "rgba(239, 68, 68, 0.18)",
-          borderColor: "rgba(239, 68, 68, 0)",
-          fill: true,
-          pointRadius: 0
-        },
-        {
-          label: "Zona de ganancia",
-          data: zonaGanancia,
-          backgroundColor: "rgba(34, 197, 94, 0.18)",
-          borderColor: "rgba(34, 197, 94, 0)",
-          fill: true,
-          pointRadius: 0
-        },
-        {
-          label: `Margen acumulado de ${p.nombre}`,
-          data: margenAcumulado,
-          borderColor: "#2563eb",
-          backgroundColor: "#2563eb",
-          borderWidth: 3,
-          fill: false,
-          tension: 0.25
-        },
-        {
-          label: "Costos fijos",
-          data: costosFijosLinea,
-          borderColor: "#ef4444",
-          backgroundColor: "#ef4444",
-          borderWidth: 3,
-          borderDash: [8, 6],
-          fill: false,
-          pointRadius: 0
-        },
-        {
-          label: "Punto de equilibrio",
-          data: puntoEquilibrio,
-          borderColor: "#f59e0b",
-          backgroundColor: "#f59e0b",
-          pointRadius: 7,
-          pointHoverRadius: 10,
-          showLine: false
-        }
-      ]
+      datasets: crearDatasets(
+        etiquetas,
+        d.costosFijos,
+        p.margenUnitario,
+        unidades,
+        `Margen acumulado de ${p.nombre}`
+      )
     });
+  }
+
+  function crearDatasets(etiquetas, costosFijos, margen, equilibrio, nombreLinea) {
+    return [
+      {
+        label: "Zona de pérdida",
+        data: etiquetas.map(i => i <= equilibrio ? costosFijos : null),
+        backgroundColor: "rgba(239, 68, 68, 0.22)",
+        borderColor: "rgba(239, 68, 68, 0)",
+        fill: true,
+        pointRadius: 0
+      },
+      {
+        label: "Zona de ganancia",
+        data: etiquetas.map(i => i >= equilibrio ? i * margen : null),
+        backgroundColor: "rgba(34, 197, 94, 0.22)",
+        borderColor: "rgba(34, 197, 94, 0)",
+        fill: true,
+        pointRadius: 0
+      },
+      {
+        label: nombreLinea,
+        data: etiquetas.map(i => i * margen),
+        borderColor: "#2563eb",
+        backgroundColor: "#2563eb",
+        borderWidth: 4,
+        pointRadius: 3,
+        pointHoverRadius: 8,
+        tension: 0.3
+      },
+      {
+        label: "Costos fijos",
+        data: etiquetas.map(() => costosFijos),
+        borderColor: "#ef4444",
+        backgroundColor: "#ef4444",
+        borderWidth: 4,
+        borderDash: [9, 6],
+        pointRadius: 0
+      },
+      {
+        label: "Punto de equilibrio",
+        data: etiquetas.map(i => i === equilibrio ? i * margen : null),
+        borderColor: "#f59e0b",
+        backgroundColor: "#f59e0b",
+        pointRadius: 9,
+        pointHoverRadius: 13,
+        showLine: false
+      }
+    ];
   }
 
   function renderizarGrafica(config) {
     const ctx = document.getElementById("grafica").getContext("2d");
 
-    if (grafica) {
-      grafica.destroy();
-    }
+    if (grafica) grafica.destroy();
 
     grafica = new Chart(ctx, {
       type: "line",
@@ -798,41 +864,73 @@
         plugins: {
           title: {
             display: true,
-            text: config.titulo
+            text: config.titulo,
+            color: "#1e3a8a",
+            font: {
+              size: 18,
+              weight: "bold"
+            }
+          },
+          legend: {
+            labels: {
+              color: "#0f172a",
+              font: {
+                weight: "bold"
+              }
+            }
           },
           tooltip: {
+            backgroundColor: "#0f172a",
+            titleColor: "#ffffff",
+            bodyColor: "#ffffff",
+            padding: 13,
             callbacks: {
               label: function(context) {
                 if (context.raw === null) return "";
                 return `${context.dataset.label}: ${moneda(context.raw)}`;
               }
             }
-          },
-          legend: {
-            position: "top"
           }
         },
         scales: {
           x: {
             title: {
               display: true,
-              text: config.ejeX
+              text: config.ejeX,
+              color: "#1e3a8a",
+              font: {
+                weight: "bold"
+              }
+            },
+            grid: {
+              color: "rgba(148, 163, 184, 0.25)"
             }
           },
           y: {
             title: {
               display: true,
-              text: "Margen acumulado"
+              text: "Margen acumulado",
+              color: "#1e3a8a",
+              font: {
+                weight: "bold"
+              }
             },
             ticks: {
-              callback: function(value) {
-                return "$" + value;
-              }
+              callback: value => "$" + value
+            },
+            grid: {
+              color: "rgba(148, 163, 184, 0.25)"
             }
           }
         }
       }
     });
+  }
+
+  function mostrarError(mensaje) {
+    const error = document.getElementById("error");
+    error.textContent = mensaje;
+    error.style.display = "block";
   }
 
   function moneda(valor) {
