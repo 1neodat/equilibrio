@@ -3,134 +3,390 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora Avanzada de Punto de Equilibrio Multiproducto | Análisis Financiero Profesional</title>
+  <title>Financial Equilibrium Pro | Punto de Equilibrio Multiproducto</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    :root {
-      --primary: #0f172a;
-      --primary-soft: #1e293b;
-      --accent: #3b82f6;
-      --accent-strong: #2563eb;
-      --success: #10b981;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-      --info: #8b5cf6;
-      --surface: #ffffff;
-      --surface-alt: #f8fafc;
-      --border: #e2e8f0;
-      --text: #0f172a;
-      --text-soft: #64748b;
-      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-      --radius-sm: 0.5rem;
-      --radius: 0.75rem;
-      --radius-lg: 1rem;
-      --radius-xl: 1.25rem;
-    }
-
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --gradient-warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+      --gradient-dark: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      --glass-bg: rgba(255, 255, 255, 0.95);
+      --glass-border: rgba(255, 255, 255, 0.2);
+      --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --radius-xl: 1.5rem;
+      --radius-lg: 1rem;
+      --radius-md: 0.75rem;
     }
 
     body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-      color: var(--text);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 2rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="10" cy="10" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="30" cy="20" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="5" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="15" r="1.8" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="25" r="2.2" fill="rgba(255,255,255,0.1)"/></svg>');
+      background-repeat: repeat;
+      opacity: 0.3;
+      pointer-events: none;
     }
 
     .container {
-      max-width: 1440px;
+      max-width: 1400px;
       margin: 0 auto;
-      padding: 2rem 1.5rem;
-    }
-
-    /* Header */
-    .hero {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-      border-radius: var(--radius-xl);
-      padding: 3rem 2rem;
-      margin-bottom: 2rem;
-      position: relative;
-      overflow: hidden;
-      box-shadow: var(--shadow-xl);
-      animation: slideIn 0.6s ease-out;
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -20%;
-      width: 80%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%);
-      border-radius: 50%;
-      animation: pulse 8s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 0.5; }
-      50% { transform: scale(1.1); opacity: 0.3; }
-    }
-
-    .hero-content {
       position: relative;
       z-index: 1;
     }
 
-    .hero h1 {
-      font-size: clamp(2rem, 5vw, 2.75rem);
-      font-weight: 800;
-      color: white;
-      letter-spacing: -0.02em;
-      margin-bottom: 0.75rem;
+    /* Header Styles */
+    .hero-section {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeInDown 0.8s ease-out;
     }
 
-    .hero p {
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 0.5rem 1rem;
+      border-radius: 100px;
+      font-size: 0.875rem;
+      color: white;
+      margin-bottom: 1rem;
+      font-weight: 500;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff 0%, #e0e7ff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-subtitle {
       font-size: 1.125rem;
-      color: #94a3b8;
-      max-width: 800px;
-      font-weight: 400;
+      color: rgba(255, 255, 255, 0.9);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Grid Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .full-width {
+      grid-column: span 2;
     }
 
     /* Cards */
-    .card {
-      background: var(--surface);
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
       border-radius: var(--radius-xl);
-      padding: 2rem;
-      margin-bottom: 1.5rem;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
-      transition: all 0.3s ease;
+      padding: 1.5rem;
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow-xl);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
       animation: fadeInUp 0.6s ease-out;
     }
 
+    .glass-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: #1e293b;
+    }
+
+    .card-header i {
+      font-size: 1.75rem;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 1px solid #e2e8f0;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .stat-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: #64748b;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1e293b;
+    }
+
+    /* Input Groups */
+    .input-group {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      align-items: center;
+      background: #f8fafc;
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      transition: all 0.3s ease;
+    }
+
+    .input-group:hover {
+      background: #ffffff;
+      box-shadow: var(--shadow-md);
+    }
+
+    .input-group input {
+      flex: 1;
+      padding: 0.625rem;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    /* Product Cards */
+    .products-container {
+      display: grid;
+      gap: 1rem;
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    .product-card {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border-radius: var(--radius-lg);
+      padding: 1rem;
+      border: 2px solid #e2e8f0;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .product-card:hover {
+      border-color: #667eea;
+      transform: translateX(4px);
+    }
+
+    .product-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .product-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #1e293b;
+    }
+
+    .product-badge {
+      background: var(--gradient-primary);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .product-fields {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .field label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+
+    .product-fields input,
+    .product-fields select {
+      padding: 0.5rem;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-primary {
+      background: var(--gradient-primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-success {
+      background: var(--gradient-success);
+      color: white;
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid #e2e8f0;
+      color: #1e293b;
+    }
+
+    .btn-outline:hover {
+      border-color: #667eea;
+      background: rgba(102, 126, 234, 0.1);
+    }
+
+    /* Results Section */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .metric-card {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      text-align: center;
+      border: 1px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #667eea;
+      margin-top: 0.5rem;
+    }
+
+    /* Chart Container */
+    .chart-container {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    /* Animations */
     @keyframes fadeInUp {
       from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(30px);
       }
       to {
         opacity: 1;
@@ -138,735 +394,412 @@
       }
     }
 
-    .card:hover {
-      box-shadow: var(--shadow-lg);
-      transform: translateY(-2px);
-    }
-
-    .card h2 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .card h2 i {
-      color: var(--accent);
-      font-size: 1.5rem;
-    }
-
-    /* Buttons */
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
-    }
-
-    button {
-      font-family: 'Inter', sans-serif;
-      font-weight: 600;
-      font-size: 0.875rem;
-      padding: 0.75rem 1.25rem;
-      border-radius: var(--radius);
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      letter-spacing: 0.01em;
-      white-space: nowrap;
-    }
-
-    button:active {
-      transform: scale(0.97);
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-      box-shadow: var(--shadow-sm);
-    }
-    .btn-primary:hover {
-      background: var(--primary-soft);
-      box-shadow: var(--shadow);
-      transform: translateY(-1px);
-    }
-
-    .btn-accent {
-      background: var(--accent);
-      color: white;
-    }
-    .btn-accent:hover {
-      background: var(--accent-strong);
-      transform: translateY(-1px);
-    }
-
-    .btn-success {
-      background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
-      color: white;
-      font-size: 1rem;
-      padding: 0.875rem 1.75rem;
-    }
-    .btn-success:hover {
-      box-shadow: var(--shadow-md);
-      transform: translateY(-1px);
-    }
-
-    .btn-danger {
-      background: transparent;
-      color: var(--danger);
-      border: 1px solid #fecaca;
-      padding: 0.5rem 0.75rem;
-    }
-    .btn-danger:hover {
-      background: #fef2f2;
-      border-color: var(--danger);
-      transform: scale(1.05);
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--primary);
-      border: 1px solid var(--border);
-    }
-    .btn-outline:hover {
-      background: var(--surface-alt);
-      border-color: #cbd5e1;
-      transform: translateY(-1px);
-    }
-
-    /* Tables */
-    .table-container {
-      overflow-x: auto;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.875rem;
-    }
-
-    th {
-      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-      color: var(--text-soft);
-      font-weight: 600;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 1rem;
-      text-align: left;
-      border-bottom: 2px solid var(--border);
-    }
-
-    td {
-      padding: 0.875rem 1rem;
-      border-bottom: 1px solid #f1f5f9;
-      vertical-align: middle;
-    }
-
-    tbody tr {
-      transition: all 0.2s ease;
-    }
-
-    tbody tr:hover {
-      background: linear-gradient(90deg, #f8fafc 0%, #ffffff 100%);
-      transform: scale(1.01);
-    }
-
-    input, select {
-      font-family: 'Inter', sans-serif;
-      width: 100%;
-      padding: 0.625rem 0.75rem;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-size: 0.875rem;
-      background: var(--surface);
-      color: var(--text);
-      transition: all 0.2s ease;
-    }
-
-    input:focus, select:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
-      transform: scale(1.02);
-    }
-
-    input::placeholder {
-      color: #94a3b8;
-    }
-
-    /* Metrics Grid */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .metric {
-      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-      border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-sm);
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .metric::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(59,130,246,0.1), transparent);
-      transition: left 0.5s ease;
-    }
-
-    .metric:hover::before {
-      left: 100%;
-    }
-
-    .metric:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .metric strong {
-      display: block;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-soft);
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-    }
-
-    .metric span {
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: var(--primary);
-    }
-
-    .metric.accent { border-left: 4px solid var(--accent); }
-    .metric.success { border-left: 4px solid var(--success); }
-    .metric.warning { border-left: 4px solid var(--warning); }
-    .metric.info { border-left: 4px solid var(--info); }
-
-    /* Result & Interpretation Boxes */
-    .result-box, .interpretation-box {
-      background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      border: 1px solid var(--border);
-      line-height: 1.8;
-      font-size: 0.95rem;
-    }
-
-    .nota {
-      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-      border-left: 4px solid var(--accent);
-      padding: 1rem 1.25rem;
-      border-radius: 0 var(--radius) var(--radius) 0;
-      margin: 1.5rem 0;
-      color: #1e40af;
-      font-weight: 500;
-      font-size: 0.9rem;
-      transition: all 0.3s ease;
-    }
-
-    .nota:hover {
-      transform: translateX(4px);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .error-message {
-      background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-      color: #991b1b;
-      padding: 1rem 1.25rem;
-      border-radius: var(--radius);
-      margin-top: 1rem;
-      font-weight: 500;
-      border: 1px solid #fecaca;
-      display: none;
-      animation: shake 0.5s ease;
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
-
-    /* Chart */
-    .chart-wrapper {
-      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-      padding: 1.5rem;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      margin: 1rem 0;
-      transition: all 0.3s ease;
-    }
-
-    .chart-wrapper:hover {
-      box-shadow: var(--shadow-md);
-    }
-
-    .pill-row {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 1rem;
-    }
-
-    .pill {
-      padding: 0.375rem 0.875rem;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      transition: all 0.2s ease;
-    }
-
-    .pill:hover {
-      transform: scale(1.05);
-    }
-
-    .pill.loss { background: #fee2e2; color: #991b1b; }
-    .pill.balance { background: #fef3c7; color: #92400e; }
-    .pill.profit { background: #d1fae5; color: #065f46; }
-
-    .highlight {
-      color: var(--accent-strong);
-      font-weight: 700;
-    }
-
-    select.selector-grafica {
-      max-width: 300px;
-      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    }
-
-    /* Loading Animation */
-    .loading {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255,255,255,.3);
-      border-radius: 50%;
-      border-top-color: white;
-      animation: spin 1s ease-in-out infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     /* Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
+    .products-container::-webkit-scrollbar {
+      width: 6px;
     }
 
-    ::-webkit-scrollbar-track {
-      background: #f1f5f9;
-      border-radius: 4px;
+    .products-container::-webkit-scrollbar-track {
+      background: #e2e8f0;
+      border-radius: 10px;
     }
 
-    ::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 4px;
+    .products-container::-webkit-scrollbar-thumb {
+      background: #667eea;
+      border-radius: 10px;
     }
 
-    ::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
-    }
-
-    @media (max-width: 640px) {
-      .container { padding: 1rem; }
-      .hero { padding: 2rem 1.5rem; }
-      .card { padding: 1.25rem; }
-      button { padding: 0.625rem 1rem; font-size: 0.8rem; }
-      .metric span { font-size: 1.25rem; }
-      .grid { grid-template-columns: 1fr; }
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      .full-width {
+        grid-column: span 1;
+      }
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+      body {
+        padding: 1rem;
+      }
+      h1 {
+        font-size: 2rem;
+      }
     }
   </style>
 </head>
 <body>
 <div class="container">
-  <section class="hero">
-    <div class="hero-content">
-      <h1><i class="fas fa-chart-line"></i> Punto de Equilibrio Multiproducto</h1>
-      <p>Análisis financiero profesional: costos fijos, margen de contribución y visualización interactiva por producto y total consolidado.</p>
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-badge">
+      <i class="fas fa-chart-line"></i> Análisis Financiero Avanzado
     </div>
-  </section>
+    <h1>
+      <i class="fas fa-balance-scale"></i> Punto de Equilibrio<br>
+      Multiproducto
+    </h1>
+    <p class="hero-subtitle">Calcula el punto de equilibrio para múltiples productos con análisis interactivo y visualizaciones profesionales</p>
+  </div>
 
-  <!-- Costos Fijos Section -->
-  <div class="card">
-    <h2><i class="fas fa-coins"></i> Costos Fijos</h2>
-    <div class="toolbar">
-      <button class="btn-primary" onclick="agregarRubro()">
-        <i class="fas fa-plus"></i> Agregar rubro
-      </button>
-      <button class="btn-outline" onclick="limpiarRubros()">
-        <i class="fas fa-trash-alt"></i> Limpiar todos
-      </button>
+  <div class="dashboard-grid">
+    <!-- Costos Fijos Section -->
+    <div class="glass-card">
+      <div class="card-header">
+        <h2><i class="fas fa-coins"></i> Costos Fijos</h2>
+        <button class="btn btn-primary" onclick="agregarRubro()">
+          <i class="fas fa-plus"></i> Agregar
+        </button>
+      </div>
+      <div id="rubrosContainer" style="max-height: 300px; overflow-y: auto;"></div>
     </div>
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th><i class="fas fa-tag"></i> Concepto</th>
-            <th><i class="fas fa-dollar-sign"></i> Valor (USD)</th>
-            <th style="width: 80px;"><i class="fas fa-cog"></i> Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="rubros"></tbody>
-      </table>
+
+    <!-- Productos Section -->
+    <div class="glass-card">
+      <div class="card-header">
+        <h2><i class="fas fa-boxes"></i> Productos</h2>
+        <button class="btn btn-primary" onclick="agregarProducto()">
+          <i class="fas fa-plus"></i> Agregar
+        </button>
+      </div>
+      <div id="productosContainer" class="products-container"></div>
+      <div style="margin-top: 1rem;">
+        <button class="btn btn-success" onclick="calcular()" style="width: 100%;">
+          <i class="fas fa-calculator"></i> Calcular Análisis
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- Productos Section -->
-  <div class="card">
-    <h2><i class="fas fa-boxes"></i> Productos</h2>
-    <div class="toolbar">
-      <button class="btn-primary" onclick="agregarProducto()">
-        <i class="fas fa-plus"></i> Agregar producto
-      </button>
-      <button class="btn-outline" onclick="limpiarProductos()">
-        <i class="fas fa-trash-alt"></i> Limpiar todos
+  <!-- Resultados Section -->
+  <div class="glass-card full-width" id="resultadosSection" style="display: none;">
+    <div class="card-header">
+      <h2><i class="fas fa-chart-pie"></i> Dashboard de Resultados</h2>
+      <button class="btn btn-outline" onclick="exportarResultados()">
+        <i class="fas fa-download"></i> Exportar
       </button>
     </div>
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th><i class="fas fa-box"></i> Producto</th>
-            <th><i class="fas fa-chart-line"></i> Costo Variable Unitario</th>
-            <th><i class="fas fa-calculator"></i> Método de Precio</th>
-            <th><i class="fas fa-chart-simple"></i> Dato Requerido</th>
-            <th style="width: 80px;"><i class="fas fa-cog"></i></th>
-          </tr>
-        </thead>
-        <tbody id="productos"></tbody>
-      </table>
+    
+    <div class="stats-grid" id="statsGrid"></div>
+    
+    <div class="results-grid">
+      <div>
+        <h3 style="margin-bottom: 1rem;"><i class="fas fa-table"></i> Desglose por Producto</h3>
+        <div id="desgloseTable" style="overflow-x: auto;"></div>
+      </div>
+      <div>
+        <h3 style="margin-bottom: 1rem;"><i class="fas fa-chart-line"></i> Interpretación</h3>
+        <div id="interpretacion" style="background: #f8fafc; padding: 1rem; border-radius: var(--radius-md);"></div>
+      </div>
     </div>
-    <div class="nota">
-      <i class="fas fa-lightbulb"></i> <strong>Información clave:</strong> El costo fijo total se reparte equitativamente entre los productos. El punto de equilibrio se calcula con base en el <strong>margen de contribución unitario</strong> (Precio - Costo Variable). Un mayor margen implica menos unidades necesarias para cubrir la parte proporcional del costo fijo.
-    </div>
-    <div class="toolbar">
-      <button class="btn-success" onclick="calcularConAnimacion()">
-        <i class="fas fa-play"></i> Calcular punto de equilibrio
-      </button>
-      <button class="btn-outline" onclick="exportarResultados()">
-        <i class="fas fa-download"></i> Exportar resultados
-      </button>
-    </div>
-    <div id="error" class="error-message"></div>
-  </div>
 
-  <!-- Resultados Generales Section -->
-  <div class="card">
-    <h2><i class="fas fa-chart-pie"></i> Resultados Generales</h2>
-    <div id="resultado" class="result-box">
-      <p style="color: #64748b; text-align: center; padding: 2rem;">
-        <i class="fas fa-info-circle"></i> Ingrese los datos y presione <strong>"Calcular punto de equilibrio"</strong> para ver los resultados.
-      </p>
+    <!-- Gráfica Section -->
+    <div style="margin-top: 1.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3><i class="fas fa-chart-line"></i> Visualización Gráfica</h3>
+        <div style="display: flex; gap: 0.5rem;">
+          <select id="selectorGrafica" class="btn-outline" style="padding: 0.5rem;" onchange="actualizarGraficaSeleccionada()">
+            <option value="total">📊 Vista General</option>
+          </select>
+          <button class="btn-outline" onclick="alternarPuntoEquilibrio()" style="padding: 0.5rem;">
+            <i class="fas fa-chart-simple"></i> Punto EQ
+          </button>
+          <button class="btn-outline" onclick="descargarGrafica()" style="padding: 0.5rem;">
+            <i class="fas fa-camera"></i>
+          </button>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas id="graficaEquilibrio"></canvas>
+      </div>
     </div>
   </div>
 
-  <!-- Gráfica Section -->
-  <div class="card">
-    <h2><i class="fas fa-chart-line"></i> Gráfica Interactiva</h2>
-    <div class="toolbar">
-      <select id="selectorGrafica" class="selector-grafica" onchange="actualizarGraficaSeleccionada()">
-        <option value="total">📈 Vista Total Multiproducto</option>
-      </select>
-      <button class="btn-outline" onclick="alternarPuntoEquilibrio()">
-        <i class="fas fa-chart-simple"></i> Mostrar / Ocultar punto de equilibrio
-      </button>
-      <button class="btn-outline" onclick="descargarGrafica()">
-        <i class="fas fa-camera"></i> Descargar gráfica
-      </button>
-    </div>
-    <div class="chart-wrapper">
-      <canvas id="graficaEquilibrio"></canvas>
-    </div>
-    <div id="lecturaGrafica" class="nota" style="margin-top: 1rem;">
-      <i class="fas fa-chart-simple"></i> La interpretación de la gráfica se mostrará aquí tras el cálculo.
-    </div>
-  </div>
-
-  <!-- Desglose Section -->
-  <div class="card">
-    <h2><i class="fas fa-table"></i> Desglose por Producto</h2>
-    <div id="desglose" class="table-container">
-      <p style="color: #64748b; text-align: center; padding: 2rem;">
-        <i class="fas fa-info-circle"></i> El detalle por producto aparecerá después del cálculo.
-      </p>
-    </div>
-  </div>
-
-  <!-- Interpretación Section -->
-  <div class="card">
-    <h2><i class="fas fa-comment-dots"></i> Interpretación</h2>
-    <div id="interpretacion" class="interpretation-box">
-      <p style="color: #64748b; text-align: center;">
-        <i class="fas fa-info-circle"></i> La interpretación detallada se generará tras el cálculo.
-      </p>
-    </div>
-  </div>
+  <div id="error" style="display: none;" class="glass-card" style="background: #fee2e2; color: #991b1b;"></div>
 </div>
 
 <script>
-  let contadorRubros = 0;
-  let contadorProductos = 0;
+  let rubros = [];
+  let productos = [];
+  let productoCounter = 1;
+  let rubroCounter = 1;
   let graficaEquilibrio = null;
   let datosCalculados = null;
   let mostrarPunto = true;
 
   function agregarRubro() {
-    contadorRubros++;
-    const fila = document.createElement("tr");
-    fila.style.animation = "slideIn 0.3s ease-out";
-    fila.innerHTML = `
-      <td><input type="text" class="rubroNombre" value="Rubro ${contadorRubros}" placeholder="Ej: Alquiler"></td>
-      <td><input type="number" class="rubroValor" min="0" step="0.01" placeholder="0.00"></td>
-      <td><button class="btn-danger" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button></td>
-    `;
-    document.getElementById("rubros").appendChild(fila);
+    const id = rubroCounter++;
+    rubros.push({ id, nombre: `Rubro ${id}`, valor: 0 });
+    renderRubros();
   }
 
-  function limpiarRubros() {
-    document.getElementById("rubros").innerHTML = '';
-    contadorRubros = 0;
+  function eliminarRubro(id) {
+    rubros = rubros.filter(r => r.id !== id);
+    renderRubros();
   }
 
-  function agregarProducto() {
-    contadorProductos++;
-    const fila = document.createElement("tr");
-    fila.style.animation = "slideIn 0.3s ease-out";
-    fila.innerHTML = `
-      <td><input type="text" class="productoNombre" value="Producto ${contadorProductos}" placeholder="Nombre"></td>
-      <td><input type="number" class="costoVariable" min="0" step="0.01" placeholder="0.00"></td>
-      <td>
-        <select class="tipoPrecio" onchange="cambiarTipoPrecio(this)">
-          <option value="directo">💲 Precio directo</option>
-          <option value="margen">📊 Margen sobre costo</option>
-          <option value="porcentaje">📐 % Utilidad sobre precio</option>
-        </select>
-      </td>
-      <td class="datoPrecio">
-        <input type="number" class="precioDirecto" min="0" step="0.01" placeholder="0.00">
-      </td>
-      <td><button class="btn-danger" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button></td>
-    `;
-    document.getElementById("productos").appendChild(fila);
-  }
-
-  function limpiarProductos() {
-    document.getElementById("productos").innerHTML = '';
-    contadorProductos = 0;
-  }
-
-  function cambiarTipoPrecio(select) {
-    const fila = select.closest("tr");
-    const contenedor = fila.querySelector(".datoPrecio");
-    if (select.value === "directo") {
-      contenedor.innerHTML = `<input type="number" class="precioDirecto" min="0" step="0.01" placeholder="0.00">`;
-    } else if (select.value === "margen") {
-      contenedor.innerHTML = `<input type="number" class="margenDeseado" min="0" step="0.01" placeholder="Margen USD">`;
-    } else if (select.value === "porcentaje") {
-      contenedor.innerHTML = `<input type="number" class="porcentajeUtilidad" min="0" max="99" step="0.01" placeholder="% utilidad">`;
+  function actualizarRubro(id, campo, valor) {
+    const rubro = rubros.find(r => r.id === id);
+    if (rubro) {
+      rubro[campo] = campo === 'valor' ? parseFloat(valor) || 0 : valor;
     }
   }
 
-  function mostrarError(mensaje) {
-    const error = document.getElementById("error");
-    error.textContent = mensaje;
-    error.style.display = "block";
-    setTimeout(() => {
-      error.style.display = "none";
-    }, 5000);
+  function renderRubros() {
+    const container = document.getElementById('rubrosContainer');
+    if (rubros.length === 0) {
+      container.innerHTML = '<div style="text-align: center; padding: 2rem; color: #64748b;"><i class="fas fa-info-circle"></i> No hay rubros agregados</div>';
+      return;
+    }
+    container.innerHTML = rubros.map(rubro => `
+      <div class="input-group">
+        <input type="text" value="${rubro.nombre}" placeholder="Concepto" onchange="actualizarRubro(${rubro.id}, 'nombre', this.value)" style="flex: 1;">
+        <input type="number" value="${rubro.valor}" placeholder="Valor USD" onchange="actualizarRubro(${rubro.id}, 'valor', this.value)" style="flex: 1;">
+        <button class="btn" style="background: #fee2e2; color: #dc2626; padding: 0.5rem;" onclick="eliminarRubro(${rubro.id})">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    `).join('');
+  }
+
+  function agregarProducto() {
+    const id = productoCounter++;
+    productos.push({
+      id,
+      nombre: `Producto ${id}`,
+      costoVariable: 0,
+      tipoPrecio: 'directo',
+      valorPrecio: 0
+    });
+    renderProductos();
+  }
+
+  function eliminarProducto(id) {
+    productos = productos.filter(p => p.id !== id);
+    renderProductos();
+  }
+
+  function actualizarProducto(id, campo, valor) {
+    const producto = productos.find(p => p.id === id);
+    if (producto) {
+      if (campo === 'costoVariable') {
+        producto.costoVariable = parseFloat(valor) || 0;
+      } else if (campo === 'tipoPrecio') {
+        producto.tipoPrecio = valor;
+        producto.valorPrecio = 0;
+      } else if (campo === 'valorPrecio') {
+        producto.valorPrecio = parseFloat(valor) || 0;
+      } else if (campo === 'nombre') {
+        producto.nombre = valor;
+      }
+      renderProductos();
+    }
+  }
+
+  function renderProductos() {
+    const container = document.getElementById('productosContainer');
+    if (productos.length === 0) {
+      container.innerHTML = '<div style="text-align: center; padding: 2rem; color: #64748b;"><i class="fas fa-box-open"></i> No hay productos agregados</div>';
+      return;
+    }
+    container.innerHTML = productos.map(producto => `
+      <div class="product-card">
+        <div class="product-header">
+          <input type="text" value="${producto.nombre}" onchange="actualizarProducto(${producto.id}, 'nombre', this.value)" style="font-weight: 700; font-size: 1rem; border: none; background: transparent; padding: 0;">
+          <span class="product-badge">ID: ${producto.id}</span>
+        </div>
+        <div class="product-fields">
+          <div class="field">
+            <label><i class="fas fa-chart-line"></i> Costo Variable</label>
+            <input type="number" value="${producto.costoVariable}" placeholder="USD" onchange="actualizarProducto(${producto.id}, 'costoVariable', this.value)">
+          </div>
+          <div class="field">
+            <label><i class="fas fa-calculator"></i> Método Precio</label>
+            <select onchange="actualizarProducto(${producto.id}, 'tipoPrecio', this.value)">
+              <option value="directo" ${producto.tipoPrecio === 'directo' ? 'selected' : ''}>💲 Precio Directo</option>
+              <option value="margen" ${producto.tipoPrecio === 'margen' ? 'selected' : ''}>📊 Margen sobre Costo</option>
+              <option value="porcentaje" ${producto.tipoPrecio === 'porcentaje' ? 'selected' : ''}>📐 % Utilidad s/Precio</option>
+            </select>
+          </div>
+          <div class="field">
+            <label><i class="fas fa-dollar-sign"></i> ${producto.tipoPrecio === 'directo' ? 'Precio' : producto.tipoPrecio === 'margen' ? 'Margen USD' : '% Utilidad'}</label>
+            <input type="number" value="${producto.valorPrecio}" placeholder="Valor" onchange="actualizarProducto(${producto.id}, 'valorPrecio', this.value)">
+          </div>
+        </div>
+        <button class="btn" style="background: #fee2e2; color: #dc2626; width: 100%; margin-top: 0.5rem; padding: 0.5rem;" onclick="eliminarProducto(${producto.id})">
+          <i class="fas fa-trash"></i> Eliminar Producto
+        </button>
+      </div>
+    `).join('');
   }
 
   function moneda(valor) {
     return valor.toLocaleString("es-EC", { style: "currency", currency: "USD", minimumFractionDigits: 2 });
   }
 
-  function calcularConAnimacion() {
-    const btn = event.target.closest('button');
-    const originalHtml = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Calculando...';
-    btn.disabled = true;
-    
-    setTimeout(() => {
-      calcular();
-      btn.innerHTML = originalHtml;
-      btn.disabled = false;
-    }, 500);
-  }
-
   function calcular() {
-    const error = document.getElementById("error");
-    error.style.display = "none";
-    error.textContent = "";
-
-    const filasRubros = document.querySelectorAll("#rubros tr");
-    const filasProductos = document.querySelectorAll("#productos tr");
-    if (filasRubros.length === 0) return mostrarError("⚠️ Ingrese al menos un rubro de costos fijos.");
-    if (filasProductos.length === 0) return mostrarError("⚠️ Ingrese al menos un producto.");
-
-    let costosFijos = 0;
-    let detalleRubros = "";
-    for (const fila of filasRubros) {
-      const nombre = fila.querySelector(".rubroNombre").value.trim();
-      const valor = parseFloat(fila.querySelector(".rubroValor").value);
-      if (!nombre || isNaN(valor) || valor < 0) return mostrarError("Complete correctamente todos los rubros de costos fijos.");
-      costosFijos += valor;
-      detalleRubros += `<strong>${nombre}:</strong> ${moneda(valor)}<br>`;
+    if (rubros.length === 0) {
+      mostrarError("⚠️ Agregue al menos un rubro de costo fijo");
+      return;
+    }
+    if (productos.length === 0) {
+      mostrarError("⚠️ Agregue al menos un producto");
+      return;
     }
 
-    let productos = [];
-    for (const fila of filasProductos) {
-      const nombre = fila.querySelector(".productoNombre").value.trim();
-      const costoVariable = parseFloat(fila.querySelector(".costoVariable").value);
-      const tipoPrecio = fila.querySelector(".tipoPrecio").value;
-      if (!nombre || isNaN(costoVariable) || costoVariable < 0) return mostrarError("Complete correctamente cada producto.");
-      let precio = 0, metodoPrecio = "";
-      if (tipoPrecio === "directo") {
-        precio = parseFloat(fila.querySelector(".precioDirecto").value);
-        metodoPrecio = "Precio directo";
-      } else if (tipoPrecio === "margen") {
-        const margen = parseFloat(fila.querySelector(".margenDeseado").value);
-        if (isNaN(margen) || margen <= 0) return mostrarError("Margen inválido.");
-        precio = costoVariable + margen;
-        metodoPrecio = "Costo + margen";
-      } else if (tipoPrecio === "porcentaje") {
-        const pct = parseFloat(fila.querySelector(".porcentajeUtilidad").value);
-        if (isNaN(pct) || pct <= 0 || pct >= 100) return mostrarError("Porcentaje entre 0 y 100.");
-        precio = costoVariable / (1 - pct / 100);
-        metodoPrecio = "% sobre precio";
+    let costosFijos = rubros.reduce((sum, r) => sum + r.valor, 0);
+    let productosData = [];
+
+    for (const p of productos) {
+      let precio = 0;
+      if (p.tipoPrecio === 'directo') {
+        precio = p.valorPrecio;
+      } else if (p.tipoPrecio === 'margen') {
+        precio = p.costoVariable + p.valorPrecio;
+      } else if (p.tipoPrecio === 'porcentaje') {
+        if (p.valorPrecio >= 100) {
+          mostrarError(`El porcentaje para ${p.nombre} debe ser menor a 100%`);
+          return;
+        }
+        precio = p.costoVariable / (1 - p.valorPrecio / 100);
       }
-      if (isNaN(precio) || precio <= costoVariable) return mostrarError(`Precio inválido para ${nombre}.`);
-      productos.push({ nombre, costoVariable, precio, margenUnitario: precio - costoVariable, metodoPrecio });
+
+      if (precio <= p.costoVariable) {
+        mostrarError(`El precio de ${p.nombre} debe ser mayor al costo variable`);
+        return;
+      }
+
+      productosData.push({
+        nombre: p.nombre,
+        costoVariable: p.costoVariable,
+        precio: precio,
+        margenUnitario: precio - p.costoVariable
+      });
     }
 
-    const cantidadProductos = productos.length;
+    const cantidadProductos = productosData.length;
     const costoFijoPorProducto = costosFijos / cantidadProductos;
-    let ingresosTotales = 0, costosVariablesTotales = 0, margenGenerado = 0, unidadesTotales = 0;
-    productos.forEach(p => {
+    
+    productosData.forEach(p => {
       p.parteCostoFijo = costoFijoPorProducto;
       p.unidadesExactas = costoFijoPorProducto / p.margenUnitario;
       p.unidades = Math.ceil(p.unidadesExactas);
       p.ventas = p.precio * p.unidades;
       p.costoVariableTotal = p.costoVariable * p.unidades;
       p.margenTotal = p.margenUnitario * p.unidades;
-      p.excedente = p.margenTotal - p.parteCostoFijo;
-      ingresosTotales += p.ventas;
-      costosVariablesTotales += p.costoVariableTotal;
-      margenGenerado += p.margenTotal;
-      unidadesTotales += p.unidades;
     });
-    productos.forEach(p => { p.aporteMargen = p.margenTotal / margenGenerado; });
+
+    const ingresosTotales = productosData.reduce((sum, p) => sum + p.ventas, 0);
+    const costosVariablesTotales = productosData.reduce((sum, p) => sum + p.costoVariableTotal, 0);
     const costosTotales = costosFijos + costosVariablesTotales;
     const utilidad = ingresosTotales - costosTotales;
-    const estado = utilidad < 0 ? "Pérdida" : utilidad === 0 ? "Equilibrio exacto" : "Equilibrio cubierto con excedente";
 
-    datosCalculados = { costosFijos, detalleRubros, productos, cantidadProductos, costoFijoPorProducto, ingresosTotales, costosVariablesTotales, margenGenerado, costosTotales, utilidad, estado, unidadesTotales };
-    construirResultado();
-    construirDesglose();
-    construirInterpretacion();
+    datosCalculados = {
+      costosFijos,
+      productosData,
+      ingresosTotales,
+      costosVariablesTotales,
+      costosTotales,
+      utilidad,
+      unidadesTotales: productosData.reduce((sum, p) => sum + p.unidades, 0)
+    };
+
+    mostrarResultados();
     cargarSelectorGrafica();
     actualizarGraficaSeleccionada();
+    document.getElementById('resultadosSection').style.display = 'block';
+    document.getElementById('resultadosSection').scrollIntoView({ behavior: 'smooth' });
   }
 
-  function construirResultado() {
+  function mostrarResultados() {
     const d = datosCalculados;
-    document.getElementById("resultado").innerHTML = `
-      <div class="grid">
-        <div class="metric accent">
-          <strong><i class="fas fa-chart-line"></i> Costos fijos totales</strong>
-          <span>${moneda(d.costosFijos)}</span>
-        </div>
-        <div class="metric info">
-          <strong><i class="fas fa-chart-pie"></i> Parte por producto</strong>
-          <span>${moneda(d.costoFijoPorProducto)}</span>
-        </div>
-        <div class="metric warning">
-          <strong><i class="fas fa-boxes"></i> Unidades totales</strong>
-          <span>${d.unidadesTotales}</span>
-        </div>
-        <div class="metric success">
-          <strong><i class="fas fa-chart-simple"></i> Resultado</strong>
-          <span>${moneda(d.utilidad)}</span>
-        </div>
+    
+    // Stats Grid
+    const statsHtml = `
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-coins"></i></div>
+        <div class="stat-label">Costos Fijos Totales</div>
+        <div class="stat-value">${moneda(d.costosFijos)}</div>
       </div>
-      <p><i class="fas fa-list"></i> <strong>Rubros:</strong><br>${d.detalleRubros}</p>
-      <p><i class="fas fa-info-circle"></i> <strong>Estado:</strong> <span class="highlight">${d.estado}</span></p>
-      <p><i class="fas fa-chart-line"></i> <strong>Ingresos necesarios:</strong> ${moneda(d.ingresosTotales)} &nbsp;|&nbsp; <strong>Costos totales:</strong> ${moneda(d.costosTotales)} &nbsp;|&nbsp; <strong>Margen generado:</strong> ${moneda(d.margenGenerado)}</p>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+        <div class="stat-label">Ingresos Requeridos</div>
+        <div class="stat-value">${moneda(d.ingresosTotales)}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-boxes"></i></div>
+        <div class="stat-label">Unidades Totales</div>
+        <div class="stat-value">${d.unidadesTotales}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-chart-simple"></i></div>
+        <div class="stat-label">Utilidad Generada</div>
+        <div class="stat-value" style="color: ${d.utilidad >= 0 ? '#10b981' : '#ef4444'}">${moneda(d.utilidad)}</div>
+      </div>
     `;
-  }
+    document.getElementById('statsGrid').innerHTML = statsHtml;
 
-  function construirDesglose() {
-    const d = datosCalculados;
-    let html = `<table><thead><tr>
-      <th><i class="fas fa-box"></i> Producto</th>
-      <th><i class="fas fa-calculator"></i> Método</th>
-      <th><i class="fas fa-dollar-sign"></i> Precio</th>
-      <th><i class="fas fa-chart-line"></i> Costo Var.</th>
-      <th><i class="fas fa-chart-simple"></i> Margen Unit.</th>
-      <th><i class="fas fa-chart-pie"></i> Parte CF</th>
-      <th><i class="fas fa-percent"></i> Unid. Exactas</th>
-      <th><i class="fas fa-boxes"></i> Unid. a Vender</th>
-      <th><i class="fas fa-chart-line"></i> Ventas</th>
-      <th><i class="fas fa-chart-simple"></i> Margen Total</th>
-      <th><i class="fas fa-chart-line"></i> Excedente</th>
-    </tr></thead><tbody>`;
-    d.productos.forEach(p => {
-      html += `<tr>
-        <td><strong>${p.nombre}</strong></td>
-        <td>${p.metodoPrecio}</td>
-        <td>${moneda(p.precio)}</td>
-        <td>${moneda(p.costoVariable)}</td>
-        <td>${moneda(p.margenUnitario)}</td>
-        <td>${moneda(p.parteCostoFijo)}</td>
-        <td>${p.unidadesExactas.toFixed(2)}</td>
-        <td><strong>${p.unidades}</strong></td>
-        <td>${moneda(p.ventas)}</td>
-        <td>${moneda(p.margenTotal)}</td>
-        <td>${moneda(p.excedente)}</td>
-      </tr>`;
+    // Desglose Table
+    let tableHtml = `<table style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr style="background: #f1f5f9;">
+          <th style="padding: 0.75rem; text-align: left;">Producto</th>
+          <th style="padding: 0.75rem; text-align: left;">Precio</th>
+          <th style="padding: 0.75rem; text-align: left;">Costo Var.</th>
+          <th style="padding: 0.75rem; text-align: left;">Margen</th>
+          <th style="padding: 0.75rem; text-align: left;">Unidades</th>
+          <th style="padding: 0.75rem; text-align: left;">Ventas</th>
+        </tr>
+      </thead>
+      <tbody>`;
+    
+    d.productosData.forEach(p => {
+      tableHtml += `
+        <tr style="border-bottom: 1px solid #e2e8f0;">
+          <td style="padding: 0.75rem;"><strong>${p.nombre}</strong></td>
+          <td style="padding: 0.75rem;">${moneda(p.precio)}</td>
+          <td style="padding: 0.75rem;">${moneda(p.costoVariable)}</td>
+          <td style="padding: 0.75rem;">${moneda(p.margenUnitario)}</td>
+          <td style="padding: 0.75rem;"><strong>${p.unidades}</strong> (${p.unidadesExactas.toFixed(2)})</td>
+          <td style="padding: 0.75rem;">${moneda(p.ventas)}</td>
+        </tr>
+      `;
     });
-    html += '</tbody></table>';
-    document.getElementById("desglose").innerHTML = html;
-  }
+    
+    tableHtml += `</tbody></table>`;
+    document.getElementById('desgloseTable').innerHTML = tableHtml;
 
-  function construirInterpretacion() {
-    const d = datosCalculados;
-    const formula = d.productos.map(p => `${p.nombre}: ${moneda(p.parteCostoFijo)} ÷ ${moneda(p.margenUnitario)} = ${p.unidadesExactas.toFixed(2)} → <strong>${p.unidades} unidades</strong>`).join("<br>");
-    document.getElementById("interpretacion").innerHTML = `
-      <p><i class="fas fa-brain"></i> <strong>Lógica aplicada:</strong> El punto de equilibrio se basa en el <span class="highlight">margen de contribución unitario</span> (Precio - Costo variable). Repartimos el costo fijo total entre todos los productos y calculamos cuántas unidades de cada uno se necesitan para cubrir esa porción.</p>
-      <p><i class="fas fa-calculator"></i> <strong>Fórmula:</strong> Unidades = Parte del costo fijo ÷ Margen unitario</p>
-      <p><i class="fas fa-list"></i> <strong>Cálculo por producto:</strong><br>${formula}</p>
-      <p><i class="fas fa-check-circle"></i> <strong>Verificación:</strong> Ingresos totales = ${moneda(d.ingresosTotales)} | Costos totales = ${moneda(d.costosTotales)} | Resultado = <span class="highlight">${moneda(d.utilidad)}</span> ${d.utilidad > 0 ? '(excedente por redondeo de unidades)' : ''}</p>
+    // Interpretación
+    const interpretacionHtml = `
+      <p><strong><i class="fas fa-chart-line"></i> Análisis del Punto de Equilibrio</strong></p>
+      <p style="margin-top: 0.5rem;">Para alcanzar el punto de equilibrio, se requieren:</p>
+      <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+        ${d.productosData.map(p => `<li><strong>${p.nombre}:</strong> ${p.unidades} unidades (${moneda(p.ventas)} en ventas)</li>`).join('')}
+      </ul>
+      <p style="margin-top: 1rem;"><strong><i class="fas fa-chart-simple"></i> Estado:</strong> ${d.utilidad >= 0 ? '✅ Beneficio generado' : '⚠️ Pérdida proyectada'}</p>
+      <p style="margin-top: 0.5rem;"><strong><i class="fas fa-check-circle"></i> Verificación:</strong> Ingresos ${moneda(d.ingresosTotales)} - Costos ${moneda(d.costosTotales)} = ${moneda(d.utilidad)}</p>
     `;
+    document.getElementById('interpretacion').innerHTML = interpretacionHtml;
   }
 
   function cargarSelectorGrafica() {
     const selector = document.getElementById("selectorGrafica");
-    selector.innerHTML = `<option value="total"><i class="fas fa-chart-line"></i> Vista Total Multiproducto</option>`;
-    datosCalculados.productos.forEach((p, i) => { selector.innerHTML += `<option value="${i}"><i class="fas fa-box"></i> ${p.nombre}</option>`; });
+    selector.innerHTML = `<option value="total">📊 Vista General Multiproducto</option>`;
+    datosCalculados.productosData.forEach((p, i) => {
+      selector.innerHTML += `<option value="${i}">📦 ${p.nombre}</option>`;
+    });
   }
 
   function actualizarGraficaSeleccionada() {
@@ -875,61 +808,95 @@
     valor === "total" ? dibujarGraficaTotal() : dibujarGraficaProducto(parseInt(valor));
   }
 
-  function alternarPuntoEquilibrio() {
-    mostrarPunto = !mostrarPunto;
-    actualizarGraficaSeleccionada();
-  }
-
   function dibujarGraficaTotal() {
     const d = datosCalculados;
     const precioProm = d.ingresosTotales / d.unidadesTotales;
     const costoProm = d.costosVariablesTotales / d.unidadesTotales;
     const eqExacto = d.costosFijos / (precioProm - costoProm);
-    const maxU = d.unidadesTotales + 20;
+    const maxU = Math.max(d.unidadesTotales + 20, eqExacto + 20);
     const ingresos = [], costos = [], punto = [];
-    for (let i = 0; i <= maxU; i++) {
+    
+    for (let i = 0; i <= maxU; i += Math.ceil(maxU / 100)) {
       ingresos.push({ x: i, y: i * precioProm });
       costos.push({ x: i, y: d.costosFijos + i * costoProm });
     }
     if (mostrarPunto) punto.push({ x: eqExacto, y: eqExacto * precioProm });
-    document.getElementById("lecturaGrafica").innerHTML = `<i class="fas fa-chart-line"></i> <strong>Vista total:</strong> Punto de equilibrio en <strong>${eqExacto.toFixed(2)} unidades</strong> (${moneda(eqExacto * precioProm)}).`;
-    renderizarGrafica({ titulo: "Punto de Equilibrio Total", ejeX: "Unidades Totales", ingresos, costos, punto });
+    
+    renderizarGrafica({
+      titulo: "Punto de Equilibrio - Vista General",
+      ejeX: "Unidades Totales",
+      ingresos, costos, punto
+    });
   }
 
   function dibujarGraficaProducto(index) {
-    const p = datosCalculados.productos[index];
+    const p = datosCalculados.productosData[index];
     const eqExacto = p.parteCostoFijo / p.margenUnitario;
-    const maxU = p.unidades + 20;
+    const maxU = Math.max(p.unidades + 20, eqExacto + 20);
     const ingresos = [], costos = [], punto = [];
-    for (let i = 0; i <= maxU; i++) {
+    
+    for (let i = 0; i <= maxU; i += Math.ceil(maxU / 100)) {
       ingresos.push({ x: i, y: i * p.precio });
       costos.push({ x: i, y: p.parteCostoFijo + i * p.costoVariable });
     }
     if (mostrarPunto) punto.push({ x: eqExacto, y: eqExacto * p.precio });
-    document.getElementById("lecturaGrafica").innerHTML = `<i class="fas fa-box"></i> <strong>${p.nombre}:</strong> Equilibrio en <strong>${eqExacto.toFixed(2)} unidades</strong> (${moneda(eqExacto * p.precio)}). Requiere <strong>${p.unidades} unidades</strong>.`;
-    renderizarGrafica({ titulo: `Punto de Equilibrio: ${p.nombre}`, ejeX: `Unidades de ${p.nombre}`, ingresos, costos, punto });
+    
+    renderizarGrafica({
+      titulo: `Punto de Equilibrio - ${p.nombre}`,
+      ejeX: `Unidades de ${p.nombre}`,
+      ingresos, costos, punto
+    });
   }
 
   function renderizarGrafica(config) {
     const ctx = document.getElementById("graficaEquilibrio").getContext("2d");
     if (graficaEquilibrio) graficaEquilibrio.destroy();
+    
     graficaEquilibrio = new Chart(ctx, {
       type: "line",
       data: {
         datasets: [
-          { label: "Ingresos Totales", data: config.ingresos, borderColor: "#10b981", backgroundColor: "rgba(16, 185, 129, 0.1)", borderWidth: 3, pointRadius: 0, tension: 0.2, fill: true },
-          { label: "Costos Totales", data: config.costos, borderColor: "#ef4444", backgroundColor: "rgba(239, 68, 68, 0.1)", borderWidth: 3, pointRadius: 0, tension: 0.2, fill: true },
-          { label: "Punto de Equilibrio", data: config.punto, borderColor: "#f59e0b", backgroundColor: "#f59e0b", pointRadius: 6, pointHoverRadius: 8, showLine: false }
+          {
+            label: "Ingresos",
+            data: config.ingresos,
+            borderColor: "#10b981",
+            backgroundColor: "rgba(16, 185, 129, 0.1)",
+            borderWidth: 3,
+            pointRadius: 0,
+            tension: 0.4,
+            fill: true
+          },
+          {
+            label: "Costos",
+            data: config.costos,
+            borderColor: "#ef4444",
+            backgroundColor: "rgba(239, 68, 68, 0.1)",
+            borderWidth: 3,
+            pointRadius: 0,
+            tension: 0.4,
+            fill: true
+          },
+          {
+            label: "Punto de Equilibrio",
+            data: config.punto,
+            borderColor: "#f59e0b",
+            backgroundColor: "#f59e0b",
+            pointRadius: 8,
+            pointHoverRadius: 12,
+            showLine: false,
+            type: 'scatter'
+          }
         ]
       },
       options: {
         responsive: true,
+        maintainAspectRatio: true,
         plugins: {
-          tooltip: { 
-            callbacks: { 
-              title: (ctx) => `Unidades: ${ctx[0].raw.x.toFixed(2)}`, 
-              label: (ctx) => `${ctx.dataset.label}: ${moneda(ctx.raw.y)}` 
-            } 
+          tooltip: {
+            callbacks: {
+              label: (context) => `${context.dataset.label}: ${moneda(context.raw.y)}`,
+              title: (context) => `Unidades: ${context[0].raw.x.toFixed(0)}`
+            }
           },
           legend: {
             position: 'top',
@@ -937,33 +904,39 @@
           }
         },
         scales: {
-          x: { type: 'linear', title: { display: true, text: config.ejeX, font: { weight: 'bold' } }, grid: { color: '#e2e8f0' } },
-          y: { title: { display: true, text: 'Valor (USD)', font: { weight: 'bold' } }, ticks: { callback: (v) => moneda(v) }, grid: { color: '#e2e8f0' } }
+          x: {
+            title: { display: true, text: config.ejeX, font: { weight: 'bold' } },
+            grid: { color: "#e2e8f0" }
+          },
+          y: {
+            title: { display: true, text: "Valor (USD)", font: { weight: 'bold' } },
+            ticks: { callback: (v) => moneda(v) },
+            grid: { color: "#e2e8f0" }
+          }
         }
       }
     });
   }
 
+  function alternarPuntoEquilibrio() {
+    mostrarPunto = !mostrarPunto;
+    actualizarGraficaSeleccionada();
+  }
+
   function descargarGrafica() {
     const canvas = document.getElementById("graficaEquilibrio");
     const link = document.createElement('a');
-    link.download = 'grafica-punto-equilibrio.png';
+    link.download = 'analisis-equilibrio.png';
     link.href = canvas.toDataURL();
     link.click();
   }
 
   function exportarResultados() {
-    if (!datosCalculados) {
-      mostrarError("Primero debe calcular los resultados");
-      return;
-    }
-    
-    const d = datosCalculados;
-    let csv = "Producto,Método,Precio,Costo Variable,Margen Unitario,Unidades Exactas,Unidades a Vender,Ventas,Excedente\n";
-    d.productos.forEach(p => {
-      csv += `"${p.nombre}",${p.metodoPrecio},${p.precio},${p.costoVariable},${p.margenUnitario},${p.unidadesExactas.toFixed(2)},${p.unidades},${p.ventas},${p.excedente}\n`;
+    if (!datosCalculados) return;
+    let csv = "Producto,Precio,Costo Variable,Margen Unitario,Unidades Exactas,Unidades a Vender,Ventas\n";
+    datosCalculados.productosData.forEach(p => {
+      csv += `"${p.nombre}",${p.precio},${p.costoVariable},${p.margenUnitario},${p.unidadesExactas.toFixed(2)},${p.unidades},${p.ventas}\n`;
     });
-    
     const blob = new Blob([csv], { type: 'text/csv' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
@@ -972,10 +945,46 @@
     URL.revokeObjectURL(link.href);
   }
 
+  function mostrarError(mensaje) {
+    const errorDiv = document.getElementById('error');
+    errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${mensaje}`;
+    errorDiv.style.display = 'block';
+    errorDiv.style.background = '#fee2e2';
+    errorDiv.style.color = '#991b1b';
+    errorDiv.style.padding = '1rem';
+    errorDiv.style.borderRadius = 'var(--radius-md)';
+    setTimeout(() => {
+      errorDiv.style.display = 'none';
+    }, 5000);
+  }
+
   // Inicializar con datos de ejemplo
+  agregarRubro();
   agregarRubro();
   agregarProducto();
   agregarProducto();
+  
+  // Set example values
+  setTimeout(() => {
+    if (rubros[0]) {
+      rubros[0].nombre = "Alquiler";
+      rubros[0].valor = 2000;
+      rubros[1].nombre = "Salarios";
+      rubros[1].valor = 3000;
+      renderRubros();
+    }
+    if (productos[0]) {
+      productos[0].nombre = "Producto A";
+      productos[0].costoVariable = 50;
+      productos[0].tipoPrecio = "directo";
+      productos[0].valorPrecio = 100;
+      productos[1].nombre = "Producto B";
+      productos[1].costoVariable = 30;
+      productos[1].tipoPrecio = "directo";
+      productos[1].valorPrecio = 80;
+      renderProductos();
+    }
+  }, 100);
 </script>
 </body>
 </html>
