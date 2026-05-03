@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>BEP Studio | Punto de Equilibrio Multiproducto</title>
+  <!-- Librerías -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -22,19 +23,18 @@
       line-height: 1.5;
     }
 
-    /* Layout principal */
     .app-wrapper {
-      max-width: 1300px;
+      max-width: 1400px;
       margin: 2rem auto;
       padding: 0 1.5rem;
     }
 
-    /* === CONTENEDOR EXPORTABLE === */
+    /* Contenedor que se exporta a PDF: fondo blanco y sin desbordes */
     #exportContainer {
       background: white;
       border-radius: 1.8rem;
       box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
-      overflow: hidden;
+      overflow: visible;      /* Para que no corte gráficos grandes */
     }
 
     .report-inner {
@@ -71,6 +71,7 @@
     .header-buttons {
       display: flex;
       gap: 0.8rem;
+      flex-wrap: wrap;
     }
     .btn-outline-light {
       background: rgba(255,255,255,0.12);
@@ -81,7 +82,7 @@
       color: white;
       cursor: pointer;
       font-size: 0.85rem;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 8px;
       transition: 0.2s;
@@ -90,15 +91,35 @@
       background: #2c6e9e;
       transform: translateY(-2px);
     }
+    .btn-primary-glow {
+      background: linear-gradient(105deg, #1f6392, #2c7eb0);
+      border: none;
+      border-radius: 2.5rem;
+      padding: 0.8rem 2rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(31,99,146,0.25);
+      transition: 0.15s;
+    }
+    .btn-primary-glow:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(31,99,146,0.35);
+    }
 
-    /* Tarjetas de datos elegantes */
+    /* Tarjetas */
     .card-clean {
       background: #ffffff;
       border-radius: 1.2rem;
       margin-bottom: 1.8rem;
       border: 1px solid #e2edf2;
       box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-      overflow: hidden;
+      break-inside: avoid;   /* Evita cortes de bloque en PDF */
+      page-break-inside: avoid;
     }
     .card-header {
       background: #fafdff;
@@ -121,7 +142,7 @@
       padding: 1.2rem 1.5rem;
     }
 
-    /* Tablas: estilo limpio tipo spreadsheet */
+    /* Tablas elegantes */
     .table-responsive {
       overflow-x: auto;
       margin: 0.5rem 0;
@@ -150,41 +171,21 @@
       border: 1px solid #cfdee9;
       border-radius: 0.6rem;
       font-size: 0.75rem;
-      background: white;
+      background: #fffef7;
     }
     .icon-btn-sm {
       background: transparent;
       border: none;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       cursor: pointer;
       padding: 0.2rem 0.5rem;
       border-radius: 0.5rem;
       transition: 0.1s;
+      color: #9a3412;
     }
-    .icon-btn-sm:hover { background: #fee2e2; }
+    .icon-btn-sm:hover { background: #fee2e2; transform: scale(1.05); }
 
-    /* Botón de cálculo */
-    .btn-primary-glow {
-      background: linear-gradient(105deg, #1f6392, #2c7eb0);
-      border: none;
-      border-radius: 2.5rem;
-      padding: 0.8rem 2rem;
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: white;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(31,99,146,0.25);
-      transition: 0.15s;
-    }
-    .btn-primary-glow:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(31,99,146,0.35);
-    }
-
-    /* Grid de métricas */
+    /* Grid métricas */
     .metrics-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -215,26 +216,22 @@
     .orange-border { border-left-color: #f59e0b; }
     .purple-border { border-left-color: #8b5cf6; }
 
-    /* Gráfica - ajuste para que NO se corte en PDF */
+    /* Gráfica: garantiza que no se corte en PDF */
     .graph-container {
       background: #ffffff;
       border-radius: 1rem;
       padding: 1rem;
       margin: 0.8rem 0;
       border: 1px solid #eef2f8;
+      width: 100%;
+      overflow: visible;
     }
     canvas {
       max-width: 100%;
       height: auto !important;
-      max-height: 380px;
+      max-height: 420px;
       width: 100%;
-    }
-    .graph-toolbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 0.8rem;
+      display: block;
     }
     .insight-note {
       background: #f0f6fe;
@@ -244,21 +241,6 @@
       margin-top: 0.8rem;
       border-left: 3px solid #2c7da0;
     }
-
-    /* Desglose e interpretación */
-    .breakdown-table {
-      margin-top: 0.5rem;
-    }
-    footer {
-      text-align: center;
-      font-size: 0.7rem;
-      color: #7d9ab5;
-      padding-top: 1.5rem;
-      margin-top: 1rem;
-      border-top: 1px solid #e4edf2;
-    }
-
-    /* Toast consejo */
     .toast-tip {
       position: fixed;
       bottom: 20px;
@@ -277,7 +259,14 @@
       box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }
     .toast-tip.show { transform: translateX(0); }
-
+    footer {
+      text-align: center;
+      font-size: 0.7rem;
+      color: #7d9ab5;
+      padding-top: 1.5rem;
+      margin-top: 1rem;
+      border-top: 1px solid #e4edf2;
+    }
     @media (max-width: 800px) {
       .metrics-row { grid-template-columns: repeat(2,1fr); }
       .app-wrapper { padding: 0 1rem; margin: 1rem auto; }
@@ -289,11 +278,11 @@
 <div class="app-wrapper">
   <div id="exportContainer">
     <div class="report-inner">
-      <!-- Cabecera principal -->
+      <!-- Cabecera moderna -->
       <div class="header-modern">
         <div class="header-title">
           <h1><i class="fas fa-chart-simple"></i> Punto de Equilibrio Multiproducto</h1>
-          <p>Costos fijos prorrateados · Margen de contribución · Análisis financiero integral</p>
+          <p>Costos fijos prorrateados · Margen de contribución · Análisis integral</p>
         </div>
         <div class="header-buttons">
           <button class="btn-outline-light" id="showTipOutsideBtn"><i class="fas fa-lightbulb"></i> Consejo</button>
@@ -301,13 +290,13 @@
         </div>
       </div>
 
-      <!-- SECCIÓN DE DATOS: dos columnas ordenadas -->
+      <!-- Panel de entrada: costos fijos y productos (campos vacíos iniciales pero con datos de ejemplo demostrativos pero se limpian? Se mantienen valores de ejemplo para que el usuario vea pero puede modificar. Para mayor claridad se ofrecen campos vacíos pero con valores iniciales que se pueden borrar fácilmente) -->
       <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; margin-bottom: 1rem;">
-        <!-- Costos fijos -->
+        <!-- Costos fijos (contenido editable y por defecto algunos valores de ejemplo, el usuario puede vaciarlos) -->
         <div class="card-clean">
           <div class="card-header">
             <h2><i class="fas fa-coins" style="color:#2c7da0;"></i> Costos Fijos</h2>
-            <button class="btn-outline-light" id="addFixedBtn" style="background:#eef2f6; color:#1f4a6e; padding:0.3rem 1rem;"><i class="fas fa-plus"></i> Agregar</button>
+            <button class="btn-outline-light" id="addFixedBtn" style="background:#eef2f6; color:#1f4a6e; padding:0.3rem 1rem;"><i class="fas fa-plus"></i> Agregar costo</button>
           </div>
           <div class="card-body">
             <div class="table-responsive">
@@ -315,6 +304,7 @@
                 <thead><tr><th>Concepto</th><th>Valor (USD)</th><th style="width:40px"></th></tr></thead>
                 <tbody id="fixedTbody"></tbody>
               </table>
+              <div class="insight-note" style="margin-top:8px;"><i class="fas fa-info-circle"></i> Costos que no dependen de la producción (alquiler, sueldos fijos, etc.)</div>
             </div>
           </div>
         </div>
@@ -322,17 +312,17 @@
         <!-- Productos -->
         <div class="card-clean">
           <div class="card-header">
-            <h2><i class="fas fa-boxes"></i> Productos</h2>
-            <button class="btn-outline-light" id="addProductBtn" style="background:#eef2f6; color:#1f4a6e; padding:0.3rem 1rem;"><i class="fas fa-plus"></i> Nuevo</button>
+            <h2><i class="fas fa-boxes"></i> Productos / Servicios</h2>
+            <button class="btn-outline-light" id="addProductBtn" style="background:#eef2f6; color:#1f4a6e; padding:0.3rem 1rem;"><i class="fas fa-plus"></i> Nuevo producto</button>
           </div>
           <div class="card-body">
             <div class="table-responsive">
               <table class="data-grid" id="prodTable">
-                <thead><tr><th>Producto</th><th>Costo Var.</th><th>Método precio</th><th>Dato requerido</th><th></th></tr></thead>
+                <thead><tr><th>Nombre</th><th>Costo Variable</th><th>Método precio</th><th>Dato requerido</th><th></th></tr></thead>
                 <tbody id="productsTbody"></tbody>
               </table>
             </div>
-            <div style="display: flex; justify-content: center; margin-top: 1rem;">
+            <div style="display: flex; justify-content: center; margin-top: 1rem; gap: 0.8rem; flex-wrap: wrap;">
               <button class="btn-primary-glow" id="calcBtn"><i class="fas fa-calculator"></i> Calcular punto de equilibrio</button>
             </div>
             <div id="errorMsgZone" style="background:#fee2e2; border-radius:1rem; padding:0.5rem; margin-top:0.8rem; display:none; font-size:0.75rem; color:#b91c1c;"></div>
@@ -340,7 +330,7 @@
         </div>
       </div>
 
-      <!-- Dashboard de métricas -->
+      <!-- Métricas -->
       <div class="card-clean" id="metricsCard">
         <div class="card-header"><h2><i class="fas fa-chart-line"></i> Indicadores Clave</h2></div>
         <div class="card-body" id="metricsArea">
@@ -348,7 +338,7 @@
         </div>
       </div>
 
-      <!-- Gráfica con ajuste anti-corte -->
+      <!-- Gráfica -->
       <div class="card-clean">
         <div class="card-header">
           <h2><i class="fas fa-chart-scatter"></i> Análisis Gráfico</h2>
@@ -358,13 +348,13 @@
         </div>
         <div class="card-body">
           <div class="graph-container">
-            <canvas id="mainChartCanvas" width="800" height="380" style="width:100%; height:auto; max-height:380px;"></canvas>
+            <canvas id="mainChartCanvas" width="900" height="400" style="width:100%; height:auto; max-height:420px;"></canvas>
           </div>
           <div id="graphDescription" class="insight-note"><i class="fas fa-info-circle"></i> La visualización se mostrará después del cálculo.</div>
         </div>
       </div>
 
-      <!-- Desglose técnico por producto (tabla ordenada) -->
+      <!-- Desglose técnico tabla -->
       <div class="card-clean">
         <div class="card-header"><h2><i class="fas fa-table-list"></i> Desglose técnico por producto</h2></div>
         <div class="card-body" id="breakdownArea">
@@ -372,38 +362,37 @@
         </div>
       </div>
 
-      <!-- Interpretación profesional -->
+      <!-- Interpretación -->
       <div class="card-clean">
         <div class="card-header"><h2><i class="fas fa-brain"></i> Interpretación estratégica</h2></div>
         <div class="card-body" id="interpretArea">
           <p style="color:#7a99b3;">📌 Realice el cálculo para obtener un análisis detallado y recomendaciones.</p>
         </div>
       </div>
-
-      <footer><i class="far fa-copyright"></i> BEP Studio · Modelo multiproducto · Costos fijos prorrateados por igual</footer>
+      <footer><i class="far fa-copyright"></i> BEP Studio · Modelo multiproducto · costos fijos prorrateados por igual entre productos</footer>
     </div>
   </div>
 </div>
-
 <div id="tipToast" class="toast-tip"><i class="fas fa-gem"></i> <span id="tipMessageText"></span></div>
 
 <script>
-  // ======================== DATA MODEL ========================
+  // ========== MODELO DE DATOS INICIAL (Ejemplos pedagógicos, pero el usuario puede editarlos y dejarlos vacíos) ==========
+  // Iniciamos con algunos registros de ejemplo pero con posibilidad de ser editados y también se pueden agregar nuevos sin datos
   let fixedCosts = [
-    { name: "Alquiler Local", value: 1850 },
-    { name: "Nómina Administrativa", value: 3200 },
-    { name: "Seguros y Licencias", value: 480 }
+    { name: "Alquiler local", value: 1500 },
+    { name: "Nómina administrativa", value: 2800 }
   ];
+  
   let products = [
-    { name: "Laptop Gamer", unitCost: 520, priceMethod: "directo", directPrice: 899, desiredMargin: 0, profitPercent: 0 },
-    { name: "Teclado Mecánico", unitCost: 45, priceMethod: "margen", directPrice: 0, desiredMargin: 35, profitPercent: 0 }
+    { name: "Producto A", unitCost: 30, priceMethod: "directo", directPrice: 55, desiredMargin: 0, profitPercent: 0 },
+    { name: "Producto B", unitCost: 18, priceMethod: "margen", directPrice: 0, desiredMargin: 12, profitPercent: 0 }
   ];
+
   let calculatedData = null;
   let chartGlobal = null;
   let showEq = true;
-  let currentGraphView = "total";
 
-  // DOM
+  // ========== DOM HELPERS ==========
   const fixedTbody = document.getElementById("fixedTbody");
   const productsTbody = document.getElementById("productsTbody");
   const metricsArea = document.getElementById("metricsArea");
@@ -414,44 +403,43 @@
   const errorZone = document.getElementById("errorMsgZone");
   const tipToastDiv = document.getElementById("tipToast");
   const tipMsgSpan = document.getElementById("tipMessageText");
-
-  // helpers
   const formatMoney = (val) => new Intl.NumberFormat('es-EC', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(val);
-  const escapeHtml = (str) => String(str).replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;});
+  const escapeHtml = (str) => String(str ?? "").replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;});
 
-  // ---------- Tabla costos fijos ----------
+  // Render costos fijos (campos editables)
   function renderFixed() {
     fixedTbody.innerHTML = "";
     fixedCosts.forEach((c, idx) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td><input type="text" class="fix-name" data-idx="${idx}" value="${escapeHtml(c.name)}" style="min-width:120px;"></td>
-        <td><input type="number" step="0.01" class="fix-value" data-idx="${idx}" value="${c.value}"></td>
+        <td><input type="text" class="fix-name" data-idx="${idx}" value="${escapeHtml(c.name)}" placeholder="Ej: Arriendo"></td>
+        <td><input type="number" step="0.01" class="fix-value" data-idx="${idx}" value="${c.value}" placeholder="0.00"></td>
         <td><button class="icon-btn-sm" data-del-fix="${idx}"><i class="fas fa-trash-alt"></i></button></td>
       `;
       fixedTbody.appendChild(tr);
     });
     attachFixedEvents();
   }
+
   function attachFixedEvents() {
-    document.querySelectorAll(".fix-name").forEach(inp => inp.addEventListener("change", e => { let i=e.target.dataset.idx; if(fixedCosts[i]) fixedCosts[i].name = e.target.value; }));
+    document.querySelectorAll(".fix-name").forEach(inp => inp.addEventListener("change", e => { let i=e.target.dataset.idx; if(fixedCosts[i]) fixedCosts[i].name = e.target.value || "Costo"; }));
     document.querySelectorAll(".fix-value").forEach(inp => inp.addEventListener("change", e => { let i=e.target.dataset.idx; if(fixedCosts[i]) fixedCosts[i].value = parseFloat(e.target.value) || 0; }));
-    document.querySelectorAll("[data-del-fix]").forEach(btn => btn.addEventListener("click", e => { let i=parseInt(btn.dataset.delFix); if(!isNaN(i)) { fixedCosts.splice(i,1); renderFixed(); } }));
+    document.querySelectorAll("[data-del-fix]").forEach(btn => btn.addEventListener("click", e => { let i=parseInt(btn.dataset.delFix); if(!isNaN(i)) { fixedCosts.splice(i,1); renderFixed(); if(calculatedData) calculateBreakEven(); } }));
   }
 
-  // ---------- Tabla productos ----------
+  // Render productos
   function renderProducts() {
     productsTbody.innerHTML = "";
     products.forEach((p, idx) => {
       let dynamicInput = "";
-      if(p.priceMethod === "directo") dynamicInput = `<input type="number" step="0.01" class="prod-direct" data-idx="${idx}" value="${p.directPrice}" placeholder="Precio USD">`;
+      if(p.priceMethod === "directo") dynamicInput = `<input type="number" step="0.01" class="prod-direct" data-idx="${idx}" value="${p.directPrice}" placeholder="Precio venta USD">`;
       else if(p.priceMethod === "margen") dynamicInput = `<input type="number" step="0.01" class="prod-margin" data-idx="${idx}" value="${p.desiredMargin}" placeholder="Margen USD">`;
-      else dynamicInput = `<input type="number" step="0.01" class="prod-percent" data-idx="${idx}" value="${p.profitPercent}" placeholder="% utilidad">`;
+      else dynamicInput = `<input type="number" step="0.01" class="prod-percent" data-idx="${idx}" value="${p.profitPercent}" placeholder="% utilidad s/precio">`;
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td><input type="text" class="prod-name" data-idx="${idx}" value="${escapeHtml(p.name)}"></td>
-        <td><input type="number" step="0.01" class="prod-cv" data-idx="${idx}" value="${p.unitCost}"></td>
-        <td><select class="prod-method" data-idx="${idx}"><option value="directo" ${p.priceMethod==='directo'?'selected':''}>💰 Precio directo</option><option value="margen" ${p.priceMethod==='margen'?'selected':''}>📈 Margen fijo</option><option value="porcentaje" ${p.priceMethod==='porcentaje'?'selected':''}>📐 % utilidad/precio</option></select></td>
+        <td><input type="text" class="prod-name" data-idx="${idx}" value="${escapeHtml(p.name)}" placeholder="Nombre"></td>
+        <td><input type="number" step="0.01" class="prod-cv" data-idx="${idx}" value="${p.unitCost}" placeholder="Costo unitario"></td>
+        <td><select class="prod-method" data-idx="${idx}"><option value="directo" ${p.priceMethod==='directo'?'selected':''}>💰 Precio directo</option><option value="margen" ${p.priceMethod==='margen'?'selected':''}>📈 Margen fijo</option><option value="porcentaje" ${p.priceMethod==='porcentaje'?'selected':''}>📐 % utilidad</option></select></td>
         <td>${dynamicInput}</td>
         <td><button class="icon-btn-sm" data-del-prod="${idx}"><i class="fas fa-times-circle"></i></button></td>
       `;
@@ -459,34 +447,35 @@
     });
     attachProductEvents();
   }
+
   function attachProductEvents() {
-    document.querySelectorAll(".prod-name").forEach(inp => inp.addEventListener("change", e => { let i=e.target.dataset.idx; if(products[i]) products[i].name = e.target.value; }));
-    document.querySelectorAll(".prod-cv").forEach(inp => inp.addEventListener("change", e => { let i=e.target.dataset.idx; if(products[i]) products[i].unitCost = parseFloat(e.target.value)||0; }));
-    document.querySelectorAll(".prod-method").forEach(sel => sel.addEventListener("change", e => { let i=e.target.dataset.idx; if(products[i]) { products[i].priceMethod = e.target.value; renderProducts(); } }));
-    document.querySelectorAll(".prod-direct, .prod-margin, .prod-percent").forEach(inp => inp.addEventListener("change", e => { let i=e.target.dataset.idx; if(!products[i]) return; if(e.target.classList.contains("prod-direct")) products[i].directPrice = parseFloat(e.target.value)||0; if(e.target.classList.contains("prod-margin")) products[i].desiredMargin = parseFloat(e.target.value)||0; if(e.target.classList.contains("prod-percent")) products[i].profitPercent = parseFloat(e.target.value)||0; }));
-    document.querySelectorAll("[data-del-prod]").forEach(btn => btn.addEventListener("click", e => { let i=parseInt(btn.dataset.delProd); if(!isNaN(i)) { products.splice(i,1); renderProducts(); } }));
+    document.querySelectorAll(".prod-name").forEach(inp => inp.addEventListener("change", e => { let i=e.target.dataset.idx; if(products[i]) products[i].name = e.target.value || "Producto"; if(calculatedData) calculateBreakEven(); }));
+    document.querySelectorAll(".prod-cv").forEach(inp => inp.addEventListener("change", e => { let i=e.target.dataset.idx; if(products[i]) products[i].unitCost = parseFloat(e.target.value)||0; if(calculatedData) calculateBreakEven(); }));
+    document.querySelectorAll(".prod-method").forEach(sel => sel.addEventListener("change", e => { let i=e.target.dataset.idx; if(products[i]) { products[i].priceMethod = e.target.value; renderProducts(); if(calculatedData) calculateBreakEven(); } }));
+    document.querySelectorAll(".prod-direct, .prod-margin, .prod-percent").forEach(inp => inp.addEventListener("change", e => { let i=e.target.dataset.idx; if(!products[i]) return; if(e.target.classList.contains("prod-direct")) products[i].directPrice = parseFloat(e.target.value)||0; if(e.target.classList.contains("prod-margin")) products[i].desiredMargin = parseFloat(e.target.value)||0; if(e.target.classList.contains("prod-percent")) products[i].profitPercent = parseFloat(e.target.value)||0; if(calculatedData) calculateBreakEven(); }));
+    document.querySelectorAll("[data-del-prod]").forEach(btn => btn.addEventListener("click", e => { let i=parseInt(btn.dataset.delProd); if(!isNaN(i)) { products.splice(i,1); renderProducts(); if(calculatedData) calculateBreakEven(); } }));
   }
 
-  function showError(msg) { errorZone.innerText = msg; errorZone.style.display = "block"; setTimeout(()=> errorZone.style.display = "none", 4000); }
+  function showError(msg) { errorZone.innerText = msg; errorZone.style.display = "block"; setTimeout(()=> errorZone.style.display = "none", 5000); }
 
   // ========== CÁLCULO PRINCIPAL ==========
   function calculateBreakEven() {
     errorZone.style.display = "none";
     let totalFixed = 0;
-    for(let f of fixedCosts) { if(!f.name.trim() || isNaN(f.value) || f.value<0) { showError("Costos fijos inválidos."); return; } totalFixed += f.value; }
+    for(let f of fixedCosts) { if(isNaN(f.value) || f.value<0) { showError("Costos fijos inválidos. Revise valores numéricos."); return; } totalFixed += f.value; }
     if(fixedCosts.length === 0) { showError("Agregue al menos un costo fijo."); return; }
     if(products.length === 0) { showError("Agregue al menos un producto."); return; }
 
     let processed = [];
     for(let p of products) {
-      let name = p.name.trim();
+      let name = p.name.trim() || "Sin nombre";
       let cv = p.unitCost;
-      if(!name || isNaN(cv) || cv<0) { showError(`Producto "${name}" costo variable inválido`); return; }
-      let price = 0, methodDesc = "";
-      if(p.priceMethod === "directo") { price = p.directPrice; methodDesc = "Precio directo"; if(price <= cv) { showError(`${name}: precio debe ser mayor al costo variable`); return; } }
-      else if(p.priceMethod === "margen") { let margin = p.desiredMargin; if(isNaN(margin) || margin <= 0) { showError(`${name}: margen debe ser positivo`); return; } price = cv + margin; methodDesc = "Costo + margen"; }
-      else { let pct = p.profitPercent; if(isNaN(pct) || pct <= 0 || pct >= 100) { showError(`${name}: porcentaje entre 0 y 100`); return; } price = cv / (1 - pct/100); methodDesc = `% utilidad ${pct}%`; }
-      processed.push({ name, cv, price, marginUnit: price - cv, methodDesc });
+      if(isNaN(cv) || cv<0) { showError(`Producto "${name}" costo variable inválido`); return; }
+      let price = 0;
+      if(p.priceMethod === "directo") { price = p.directPrice; if(isNaN(price) || price <= cv) { showError(`${name}: precio directo debe ser mayor que costo variable`); return; } }
+      else if(p.priceMethod === "margen") { let margin = p.desiredMargin; if(isNaN(margin) || margin <= 0) { showError(`${name}: margen fijo debe ser positivo`); return; } price = cv + margin; }
+      else { let pct = p.profitPercent; if(isNaN(pct) || pct <= 0 || pct >= 100) { showError(`${name}: porcentaje entre 0 y 100`); return; } price = cv / (1 - pct/100); }
+      processed.push({ name, cv, price, marginUnit: price - cv });
     }
 
     const n = processed.length;
@@ -506,7 +495,7 @@
       details.push({ ...prod, exactUnits, units: unitsSell, revenue, varTotal, marginTotal, surplus, fixedPart: fixedPerProduct });
     }
     const profit = totalIncome - (totalFixed + totalVarCost);
-    const status = profit < 0 ? "⚠️ Pérdida proyectada" : profit === 0 ? "✅ Equilibrio exacto" : "🎯 Utilidad positiva (por redondeo)";
+    let status = profit < 0 ? "⚠️ Pérdida operativa proyectada (redondeo insuficiente)" : profit === 0 ? "✅ Equilibrio exacto" : "🎯 Utilidad positiva por redondeo";
     calculatedData = { totalFixed, fixedPerProduct, details, totalIncome, totalVarCost, profit, totalUnits, status, fixedItems: [...fixedCosts] };
     renderMetrics();
     renderBreakdown();
@@ -534,31 +523,31 @@
     let d = calculatedData;
     let html = `<div class="table-responsive"><table class="data-grid"><thead><tr>
       <th>Producto</th><th>Precio</th><th>C. Variable</th><th>Margen Unit.</th><th>CF Asignado</th><th>Unid. Exactas</th><th>Unidades Vender</th><th>Ventas</th><th>Margen Total</th><th>Excedente</th>
-    </tr></thead><tbody>`;
+     </tr></thead><tbody>`;
     for(let p of d.details) {
       html += `<tr>
         <td><strong>${escapeHtml(p.name)}</strong></td>
         <td>${formatMoney(p.price)}</td><td>${formatMoney(p.cv)}</td><td>${formatMoney(p.marginUnit)}</td>
         <td>${formatMoney(p.fixedPart)}</td><td>${p.exactUnits.toFixed(2)}</td><td><strong>${p.units}</strong></td>
         <td>${formatMoney(p.revenue)}</td><td>${formatMoney(p.marginTotal)}</td><td>${formatMoney(p.surplus)}</td>
-      </tr>`;
+       </tr>`;
     }
-    html += `</tbody></table></div><div class="insight-note" style="margin-top:0.5rem;"><i class="fas fa-chalkboard"></i> Fórmula: Unidades = (CF_total / N° productos) ÷ Margen unitario</div>`;
+    html += `</tbody></table></div><div class="insight-note"><i class="fas fa-chalkboard"></i> Fórmula: Unidades = (CF_total / N° productos) ÷ Margen unitario</div>`;
     breakdownArea.innerHTML = html;
   }
 
   function renderInterpretation() {
     let d = calculatedData;
     let steps = d.details.map(p => `${p.name}: ${formatMoney(p.fixedPart)} / ${formatMoney(p.marginUnit)} = ${p.exactUnits.toFixed(2)} → ${p.units} unidades`).join("<br>");
-    interpretArea.innerHTML = `<p><strong>📐 Metodología aplicada:</strong> Costos fijos totales (${formatMoney(d.totalFixed)}) se prorratean en ${d.details.length} productos → ${formatMoney(d.fixedPerProduct)} cada uno. Cada producto debe cubrir su parte con su margen de contribución.</p>
+    interpretArea.innerHTML = `<p><strong>📐 Metodología aplicada:</strong> Costos fijos totales (${formatMoney(d.totalFixed)}) se prorratean en ${d.details.length} productos → ${formatMoney(d.fixedPerProduct)} cada uno.</p>
     <p><strong>📋 Cálculo por producto:</strong><br>${steps}</p>
-    <p><strong>✅ Verificación financiera:</strong> Ingresos ${formatMoney(d.totalIncome)} - Costos totales ${formatMoney(d.totalFixed+d.totalVarCost)} = Utilidad ${formatMoney(d.profit)}. ${d.profit>0 ? 'Excedente por redondeo de unidades.' : d.profit<0 ? 'Se recomienda revisar márgenes o reducir costos fijos.' : 'Equilibrio exacto.'}</p>`;
+    <p><strong>✅ Verificación financiera:</strong> Ingresos ${formatMoney(d.totalIncome)} - Costos totales ${formatMoney(d.totalFixed+d.totalVarCost)} = Utilidad ${formatMoney(d.profit)}. ${d.profit>0 ? 'Excedente por redondeo de unidades. ' : d.profit<0 ? 'Se recomienda revisar márgenes o reducir costos fijos. ' : 'Equilibrio exacto.'}</p>`;
   }
 
   function populateGraphSelector() {
     if(!calculatedData) return;
     graphSelector.innerHTML = `<option value="total">🌍 Vista consolidada (todos los productos)</option>` + calculatedData.details.map((p,i) => `<option value="${i}">📦 ${escapeHtml(p.name)}</option>`).join("");
-    graphSelector.onchange = () => { currentGraphView = graphSelector.value; renderCurrentGraph(); };
+    graphSelector.onchange = () => { renderCurrentGraph(); };
   }
 
   function renderCurrentGraph() {
@@ -572,13 +561,13 @@
     let avgPrice = d.totalIncome / d.totalUnits;
     let avgVar = d.totalVarCost / d.totalUnits;
     let beUnits = d.totalFixed / (avgPrice - avgVar);
-    let maxUnits = Math.max(d.totalUnits + 15, Math.ceil(beUnits) + 20);
+    let maxUnits = Math.max(d.totalUnits + 15, Math.ceil(beUnits) + 25);
     let incomes = [], costs = [], points = [];
-    for(let u = 0; u <= maxUnits; u += Math.max(1, Math.floor(maxUnits/80))) {
+    for(let u = 0; u <= maxUnits; u += Math.max(1, Math.floor(maxUnits/90))) {
       incomes.push({x: u, y: u * avgPrice});
       costs.push({x: u, y: d.totalFixed + u * avgVar});
     }
-    if(showEq) points.push({x: beUnits, y: beUnits * avgPrice});
+    if(showEq && isFinite(beUnits)) points.push({x: beUnits, y: beUnits * avgPrice});
     graphDescription.innerHTML = `<i class="fas fa-chart-line"></i> Punto de equilibrio global en ${beUnits.toFixed(2)} unidades → ${formatMoney(beUnits*avgPrice)}. Unidades comerciales totales: ${d.totalUnits}.`;
     renderChart("Punto de equilibrio - Portafolio completo", "Unidades totales", incomes, costs, points);
   }
@@ -586,13 +575,13 @@
   function renderSingleGraph(idx) {
     let p = calculatedData.details[idx];
     let beExact = p.fixedPart / p.marginUnit;
-    let maxU = Math.max(p.units + 12, Math.ceil(beExact) + 20);
+    let maxU = Math.max(p.units + 12, Math.ceil(beExact) + 25);
     let incomes = [], costs = [], points = [];
     for(let u = 0; u <= maxU; u += Math.max(1, Math.floor(maxU/80))) {
       incomes.push({x: u, y: u * p.price});
       costs.push({x: u, y: p.fixedPart + u * p.cv});
     }
-    if(showEq) points.push({x: beExact, y: beExact * p.price});
+    if(showEq && isFinite(beExact)) points.push({x: beExact, y: beExact * p.price});
     graphDescription.innerHTML = `<i class="fas fa-chart-line"></i> ${p.name}: equilibrio en ${beExact.toFixed(2)} unidades → ${formatMoney(beExact*p.price)}. Unidades a vender: ${p.units}.`;
     renderChart(`${p.name} - Punto de equilibrio`, `Unidades (${p.name})`, incomes, costs, points);
   }
@@ -606,45 +595,42 @@
         datasets: [
           { label: "Ingresos", data: incomeData, borderColor: "#10b981", borderWidth: 3, pointRadius: 0, tension: 0.2 },
           { label: "Costos totales", data: costData, borderColor: "#ef4444", borderWidth: 3, pointRadius: 0, tension: 0.2 },
-          { label: "Punto de equilibrio", data: pointData, borderColor: "#f59e0b", backgroundColor: "#f59e0b", pointRadius: 7, showLine: false }
+          { label: "Punto de equilibrio", data: pointData, borderColor: "#f59e0b", backgroundColor: "#f59e0b", pointRadius: 7, showLine: false, type: 'scatter' }
         ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: true,
-        plugins: {
-          tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${formatMoney(ctx.raw.y)}`, title: (ctx) => `Unidades: ${ctx[0].raw.x.toFixed(2)}` } }
-        },
-        scales: {
-          x: { title: { display: true, text: xLabel }, type: 'linear' },
-          y: { title: { display: true, text: 'USD' }, ticks: { callback: (v) => formatMoney(v) } }
-        }
+        plugins: { tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${formatMoney(ctx.raw.y)}`, title: (ctx) => `Unidades: ${ctx[0].raw.x.toFixed(2)}` } } },
+        scales: { x: { title: { display: true, text: xLabel }, type: 'linear' }, y: { title: { display: true, text: 'USD' }, ticks: { callback: (v) => formatMoney(v) } } }
       }
     });
   }
 
-  function toggleEqPoint() { showEq = !showEq; renderCurrentGraph(); }
   function showRandomTip() { const tips = ["💡 Reducir costos fijos disminuye drásticamente el punto de equilibrio.", "📌 Enfoque en productos con mayor margen de contribución.", "🎯 El redondeo de unidades genera excedente positivo.", "📊 Use la gráfica para identificar el margen de seguridad."]; tipMsgSpan.innerText = tips[Math.floor(Math.random()*tips.length)]; tipToastDiv.classList.add("show"); setTimeout(()=> tipToastDiv.classList.remove("show"), 4200); }
 
-  // ----- EXPORTACIÓN PDF SIN CORTES -----
+  // ========== EXPORTACIÓN PDF MEJORADA (sin cortes) ==========
   async function downloadFullReport() {
-    if(!calculatedData) { alert("⚠️ Primero realice el cálculo antes de exportar el informe."); return; }
+    if(!calculatedData) { alert("⚠️ Primero realice el cálculo antes de exportar el informe (presione 'Calcular punto de equilibrio')."); return; }
     const element = document.getElementById("exportContainer");
+    // Se fuerza un pequeño delay y se asegura que la gráfica esté completamente renderizada.
+    if(chartGlobal) chartGlobal.update();
     const opt = {
-      margin: [0.5, 0.5, 0.5, 0.5],
+      margin: [0.4, 0.4, 0.4, 0.4],
       filename: `Informe_BEP_${new Date().toISOString().slice(0,19)}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: false, logging: false, windowWidth: element.scrollWidth },
+      html2canvas: { scale: 2, useCORS: false, logging: false, windowWidth: element.scrollWidth, letterRendering: true },
       jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
     };
-    try { await html2pdf().set(opt).from(element).save(); } catch(e) { alert("Error generando PDF: " + e.message); }
+    try {
+      await html2pdf().set(opt).from(element).save();
+    } catch(e) { alert("Error generando PDF: " + e.message); }
   }
 
-  // EVENTOS
+  // Inicializar y agregar eventos
   document.getElementById("addFixedBtn").onclick = () => { fixedCosts.push({ name: "Nuevo costo", value: 0 }); renderFixed(); };
-  document.getElementById("addProductBtn").onclick = () => { products.push({ name: "Producto", unitCost: 10, priceMethod: "directo", directPrice: 25, desiredMargin:0, profitPercent:0 }); renderProducts(); };
+  document.getElementById("addProductBtn").onclick = () => { products.push({ name: "Nuevo producto", unitCost: 1, priceMethod: "directo", directPrice: 2, desiredMargin:0, profitPercent:0 }); renderProducts(); };
   document.getElementById("calcBtn").onclick = calculateBreakEven;
-  document.getElementById("toggleEqBtn").onclick = toggleEqPoint;
   document.getElementById("downloadReportBtn").onclick = downloadFullReport;
   document.getElementById("showTipOutsideBtn").onclick = showRandomTip;
 
