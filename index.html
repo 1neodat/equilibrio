@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Punto de Equilibrio Multiproducto</title>
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -12,7 +10,7 @@
       margin: 0;
       font-family: Arial, sans-serif;
       background: #f3f6fb;
-      color: #1f2937;
+      color: #111827;
     }
 
     .container {
@@ -21,58 +19,50 @@
       padding: 30px;
     }
 
-    h1 {
-      text-align: center;
-      color: #0f172a;
-    }
-
     .card {
-      background: #ffffff;
+      background: #fff;
       padding: 22px;
       border-radius: 14px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.08);
       margin-bottom: 24px;
     }
 
-    label {
-      font-weight: bold;
-      display: block;
-      margin-bottom: 6px;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      margin-bottom: 14px;
-      font-size: 15px;
+    h1, h2 {
+      text-align: center;
     }
 
     button {
       background: #2563eb;
       color: white;
       border: none;
-      padding: 12px 18px;
+      padding: 11px 16px;
       border-radius: 8px;
       cursor: pointer;
       font-weight: bold;
-      margin-right: 8px;
+      margin: 5px;
     }
 
     button:hover {
       background: #1d4ed8;
     }
 
+    input {
+      width: 100%;
+      padding: 9px;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      box-sizing: border-box;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 14px;
+      margin-top: 15px;
     }
 
     th, td {
-      border-bottom: 1px solid #e5e7eb;
       padding: 10px;
+      border-bottom: 1px solid #e5e7eb;
       text-align: center;
     }
 
@@ -80,12 +70,12 @@
       background: #f8fafc;
     }
 
-    .resultado {
+    .resultado, .interpretacion {
       background: #eef6ff;
       border-left: 5px solid #2563eb;
       padding: 18px;
       border-radius: 10px;
-      line-height: 1.6;
+      line-height: 1.7;
     }
 
     .error {
@@ -94,275 +84,311 @@
       margin-top: 10px;
     }
 
-    .interpretacion {
-      background: #f8fafc;
-      padding: 18px;
-      border-radius: 10px;
-      line-height: 1.7;
-    }
-
-    canvas {
-      margin-top: 20px;
+    .acciones {
+      text-align: center;
+      margin-top: 15px;
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>Calculadora de Punto de Equilibrio Multiproducto</h1>
 
-    <div class="card">
-      <label for="costosFijos">Costos fijos totales</label>
-      <input type="number" id="costosFijos" placeholder="Ejemplo: 1000" min="0" step="0.01">
+<div class="container">
+  <h1>Calculadora de Punto de Equilibrio Multiproducto</h1>
 
-      <button onclick="agregarProducto()">Agregar producto</button>
-      <button onclick="calcular()">Calcular</button>
+  <div class="card">
+    <h2>Costos fijos</h2>
 
-      <div id="error" class="error"></div>
+    <button onclick="agregarRubro()">Agregar rubro</button>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Producto</th>
-            <th>Precio de venta</th>
-            <th>Costo variable</th>
-            <th>Unidades propuestas</th>
-            <th>Eliminar</th>
-          </tr>
-        </thead>
-        <tbody id="productos"></tbody>
-      </table>
+    <table>
+      <thead>
+        <tr>
+          <th>Rubro</th>
+          <th>Valor</th>
+          <th>Eliminar</th>
+        </tr>
+      </thead>
+      <tbody id="rubros"></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Productos</h2>
+
+    <button onclick="agregarProducto()">Agregar producto</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Precio de venta</th>
+          <th>Costo variable unitario</th>
+          <th>Eliminar</th>
+        </tr>
+      </thead>
+      <tbody id="productos"></tbody>
+    </table>
+
+    <div class="acciones">
+      <button onclick="calcular()">Calcular punto de equilibrio</button>
     </div>
 
-    <div class="card">
-      <h2>Resultados</h2>
-      <div id="resultado" class="resultado">
-        Ingrese los datos y presione calcular.
-      </div>
-    </div>
+    <div id="error" class="error"></div>
+  </div>
 
-    <div class="card">
-      <h2>Gráfica</h2>
-      <canvas id="grafica"></canvas>
-    </div>
-
-    <div class="card">
-      <h2>Interpretación y prueba lógica</h2>
-      <div id="interpretacion" class="interpretacion">
-        La interpretación aparecerá después del cálculo.
-      </div>
+  <div class="card">
+    <h2>Resultados</h2>
+    <div id="resultado" class="resultado">
+      Ingrese la información y presione calcular.
     </div>
   </div>
 
-  <script>
-    let contador = 0;
-    let grafica = null;
+  <div class="card">
+    <h2>Gráfica</h2>
+    <canvas id="grafica"></canvas>
+  </div>
 
-    function agregarProducto() {
-      contador++;
+  <div class="card">
+    <h2>Interpretación y prueba lógica</h2>
+    <div id="interpretacion" class="interpretacion">
+      La interpretación aparecerá después del cálculo.
+    </div>
+  </div>
+</div>
 
-      const tbody = document.getElementById("productos");
+<script>
+  let contadorRubros = 0;
+  let contadorProductos = 0;
+  let grafica = null;
 
-      const fila = document.createElement("tr");
-      fila.innerHTML = `
-        <td><input type="text" value="Producto ${contador}" class="nombre"></td>
-        <td><input type="number" min="0" step="0.01" class="precio" placeholder="Ej: 10"></td>
-        <td><input type="number" min="0" step="0.01" class="costo" placeholder="Ej: 6"></td>
-        <td><input type="number" min="0" step="1" class="unidades" placeholder="Ej: 50"></td>
-        <td><button onclick="this.closest('tr').remove()">X</button></td>
-      `;
+  function agregarRubro() {
+    contadorRubros++;
 
-      tbody.appendChild(fila);
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
+      <td><input type="text" class="rubroNombre" value="Rubro ${contadorRubros}"></td>
+      <td><input type="number" class="rubroValor" min="0" step="0.01" placeholder="Ej: 500"></td>
+      <td><button onclick="this.closest('tr').remove()">X</button></td>
+    `;
+
+    document.getElementById("rubros").appendChild(fila);
+  }
+
+  function agregarProducto() {
+    contadorProductos++;
+
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
+      <td><input type="text" class="productoNombre" value="Producto ${contadorProductos}"></td>
+      <td><input type="number" class="precio" min="0" step="0.01" placeholder="Ej: 10"></td>
+      <td><input type="number" class="costoVariable" min="0" step="0.01" placeholder="Ej: 6"></td>
+      <td><button onclick="this.closest('tr').remove()">X</button></td>
+    `;
+
+    document.getElementById("productos").appendChild(fila);
+  }
+
+  function calcular() {
+    const error = document.getElementById("error");
+    const resultado = document.getElementById("resultado");
+    const interpretacion = document.getElementById("interpretacion");
+
+    error.textContent = "";
+
+    const rubros = document.querySelectorAll("#rubros tr");
+    const filasProductos = document.querySelectorAll("#productos tr");
+
+    if (rubros.length === 0) {
+      error.textContent = "Ingrese al menos un rubro de costos fijos.";
+      return;
     }
 
-    function calcular() {
-      const error = document.getElementById("error");
-      const resultado = document.getElementById("resultado");
-      const interpretacion = document.getElementById("interpretacion");
+    if (filasProductos.length === 0) {
+      error.textContent = "Ingrese al menos un producto.";
+      return;
+    }
 
-      error.textContent = "";
+    let costosFijos = 0;
+    let detalleRubros = "";
 
-      const costosFijos = parseFloat(document.getElementById("costosFijos").value);
+    for (const fila of rubros) {
+      const nombre = fila.querySelector(".rubroNombre").value;
+      const valor = parseFloat(fila.querySelector(".rubroValor").value);
 
-      if (isNaN(costosFijos) || costosFijos <= 0) {
-        error.textContent = "Ingrese costos fijos válidos.";
+      if (!nombre || isNaN(valor) || valor < 0) {
+        error.textContent = "Complete correctamente todos los rubros de costos fijos.";
         return;
       }
 
-      const filas = document.querySelectorAll("#productos tr");
+      costosFijos += valor;
+      detalleRubros += `${nombre}: ${moneda(valor)}<br>`;
+    }
 
-      if (filas.length === 0) {
-        error.textContent = "Agregue al menos un producto.";
+    let productos = [];
+
+    for (const fila of filasProductos) {
+      const nombre = fila.querySelector(".productoNombre").value;
+      const precio = parseFloat(fila.querySelector(".precio").value);
+      const costoVariable = parseFloat(fila.querySelector(".costoVariable").value);
+
+      if (!nombre || isNaN(precio) || isNaN(costoVariable)) {
+        error.textContent = "Complete correctamente todos los datos de los productos.";
         return;
       }
 
-      let productos = [];
-      let margenTotal = 0;
-      let ingresosTotales = 0;
-      let costosVariablesTotales = 0;
-      let unidadesTotales = 0;
-
-      for (const fila of filas) {
-        const nombre = fila.querySelector(".nombre").value;
-        const precio = parseFloat(fila.querySelector(".precio").value);
-        const costo = parseFloat(fila.querySelector(".costo").value);
-        const unidades = parseFloat(fila.querySelector(".unidades").value);
-
-        if (!nombre || isNaN(precio) || isNaN(costo) || isNaN(unidades)) {
-          error.textContent = "Complete todos los datos de cada producto.";
-          return;
-        }
-
-        if (precio <= costo) {
-          error.textContent = "El precio de venta debe ser mayor que el costo variable en todos los productos.";
-          return;
-        }
-
-        const margenUnitario = precio - costo;
-        const margenProducto = margenUnitario * unidades;
-        const ingresoProducto = precio * unidades;
-        const costoVariableProducto = costo * unidades;
-
-        productos.push({
-          nombre,
-          precio,
-          costo,
-          unidades,
-          margenUnitario,
-          margenProducto,
-          ingresoProducto,
-          costoVariableProducto
-        });
-
-        margenTotal += margenProducto;
-        ingresosTotales += ingresoProducto;
-        costosVariablesTotales += costoVariableProducto;
-        unidadesTotales += unidades;
+      if (precio <= costoVariable) {
+        error.textContent = "El precio de venta debe ser mayor que el costo variable unitario.";
+        return;
       }
 
-      const utilidad = margenTotal - costosFijos;
-      const estado = utilidad < 0 ? "PÉRDIDA" : utilidad === 0 ? "EQUILIBRIO EXACTO" : "GANANCIA";
+      const margen = precio - costoVariable;
 
-      resultado.innerHTML = `
-        <strong>Ingresos totales:</strong> ${moneda(ingresosTotales)}<br>
-        <strong>Costos variables totales:</strong> ${moneda(costosVariablesTotales)}<br>
-        <strong>Costos fijos:</strong> ${moneda(costosFijos)}<br>
-        <strong>Margen total generado:</strong> ${moneda(margenTotal)}<br>
-        <strong>Utilidad / pérdida:</strong> ${moneda(utilidad)}<br>
-        <strong>Estado:</strong> ${estado}
-      `;
-
-      let prueba = `
-        <p><strong>Regla lógica:</strong></p>
-        <p>El equilibrio se alcanza cuando la suma de los márgenes de contribución cubre exactamente los costos fijos.</p>
-        <p><strong>Fórmula:</strong></p>
-        <p>
-          Margen total = 
-          ${productos.map(p => `(${moneda(p.margenUnitario)} × ${p.unidades} unidades de ${p.nombre})`).join(" + ")}
-        </p>
-        <p><strong>Cálculo:</strong></p>
-        <p>
-          Margen total = ${moneda(margenTotal)}<br>
-          Costos fijos = ${moneda(costosFijos)}<br>
-          Resultado = ${moneda(margenTotal)} - ${moneda(costosFijos)} = <strong>${moneda(utilidad)}</strong>
-        </p>
-      `;
-
-      if (utilidad < 0) {
-        prueba += `
-          <p><strong>Interpretación:</strong> la combinación ingresada no alcanza el punto de equilibrio. 
-          Falta cubrir ${moneda(Math.abs(utilidad))}. La empresa todavía estaría en pérdida.</p>
-        `;
-      } else if (utilidad === 0) {
-        prueba += `
-          <p><strong>Interpretación:</strong> la combinación ingresada cubre exactamente todos los costos. 
-          No hay pérdida ni ganancia.</p>
-        `;
-      } else {
-        prueba += `
-          <p><strong>Interpretación:</strong> la combinación ingresada supera el punto de equilibrio. 
-          Después de cubrir los costos fijos, queda una ganancia de ${moneda(utilidad)}.</p>
-        `;
-      }
-
-      interpretacion.innerHTML = prueba;
-
-      dibujarGrafica(costosFijos, productos);
+      productos.push({
+        nombre,
+        precio,
+        costoVariable,
+        margen
+      });
     }
 
-    function dibujarGrafica(costosFijos, productos) {
-      const ctx = document.getElementById("grafica").getContext("2d");
+    productos.sort((a, b) => b.margen - a.margen);
 
-      const maxUnidades = Math.max(...productos.map(p => p.unidades), 10);
-      const etiquetas = [];
+    const productoOptimo = productos[0];
+    const unidadesNecesarias = Math.ceil(costosFijos / productoOptimo.margen);
+    const ingresosNecesarios = unidadesNecesarias * productoOptimo.precio;
+    const costosVariablesTotales = unidadesNecesarias * productoOptimo.costoVariable;
+    const margenGenerado = unidadesNecesarias * productoOptimo.margen;
+    const utilidad = margenGenerado - costosFijos;
 
-      for (let i = 0; i <= maxUnidades; i++) {
-        etiquetas.push(i);
-      }
+    resultado.innerHTML = `
+      <strong>Costos fijos totales:</strong> ${moneda(costosFijos)}<br><br>
 
-      const datasets = productos.map(producto => {
-        return {
-          label: producto.nombre,
-          data: etiquetas.map(u => producto.margenUnitario * u),
-          borderWidth: 2,
-          fill: false
-        };
-      });
+      <strong>Rubros ingresados:</strong><br>
+      ${detalleRubros}<br>
 
-      datasets.push({
-        label: "Costos fijos",
-        data: etiquetas.map(() => costosFijos),
-        borderWidth: 3,
-        borderDash: [8, 6],
-        fill: false
-      });
+      <strong>Producto recomendado:</strong> ${productoOptimo.nombre}<br>
+      <strong>Margen unitario:</strong> ${moneda(productoOptimo.margen)}<br>
+      <strong>Unidades necesarias para equilibrio:</strong> ${unidadesNecesarias}<br>
+      <strong>Ventas necesarias:</strong> ${moneda(ingresosNecesarios)}<br>
+      <strong>Costos variables totales:</strong> ${moneda(costosVariablesTotales)}<br>
+      <strong>Margen generado:</strong> ${moneda(margenGenerado)}<br>
+      <strong>Diferencia después de cubrir costos fijos:</strong> ${moneda(utilidad)}
+    `;
 
-      if (grafica) {
-        grafica.destroy();
-      }
+    interpretacion.innerHTML = `
+      <p><strong>Prueba lógica:</strong></p>
+      <p>
+        El equilibrio se alcanza cuando el margen generado cubre los costos fijos.
+      </p>
 
-      grafica = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: etiquetas,
-          datasets: datasets
+      <p>
+        Margen unitario de ${productoOptimo.nombre} = 
+        Precio de venta - Costo variable =
+        ${moneda(productoOptimo.precio)} - ${moneda(productoOptimo.costoVariable)}
+        = <strong>${moneda(productoOptimo.margen)}</strong>
+      </p>
+
+      <p>
+        Unidades necesarias =
+        Costos fijos ÷ Margen unitario =
+        ${moneda(costosFijos)} ÷ ${moneda(productoOptimo.margen)}
+        = <strong>${unidadesNecesarias} unidades</strong>
+      </p>
+
+      <p>
+        Verificación =
+        ${unidadesNecesarias} × ${moneda(productoOptimo.margen)}
+        = <strong>${moneda(margenGenerado)}</strong>
+      </p>
+
+      <p>
+        Como ${moneda(margenGenerado)} cubre los costos fijos de ${moneda(costosFijos)},
+        la empresa alcanza el punto de equilibrio vendiendo aproximadamente
+        <strong>${unidadesNecesarias} unidades de ${productoOptimo.nombre}</strong>.
+      </p>
+
+      <p>
+        Esta solución prioriza el producto con mayor margen porque reduce la cantidad mínima de unidades necesarias.
+      </p>
+    `;
+
+    dibujarGrafica(costosFijos, productos);
+  }
+
+  function dibujarGrafica(costosFijos, productos) {
+    const ctx = document.getElementById("grafica").getContext("2d");
+
+    const mejorMargen = productos[0].margen;
+    const maxUnidades = Math.ceil(costosFijos / mejorMargen) + 20;
+
+    const etiquetas = [];
+    for (let i = 0; i <= maxUnidades; i++) {
+      etiquetas.push(i);
+    }
+
+    const datasets = productos.map(producto => ({
+      label: producto.nombre,
+      data: etiquetas.map(u => producto.margen * u),
+      borderWidth: 2,
+      fill: false
+    }));
+
+    datasets.push({
+      label: "Costos fijos",
+      data: etiquetas.map(() => costosFijos),
+      borderWidth: 3,
+      borderDash: [8, 6],
+      fill: false
+    });
+
+    if (grafica) {
+      grafica.destroy();
+    }
+
+    grafica = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: etiquetas,
+        datasets: datasets
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: "Margen generado por producto frente a costos fijos"
+          }
         },
-        options: {
-          responsive: true,
-          plugins: {
+        scales: {
+          x: {
             title: {
               display: true,
-              text: "Margen generado por producto frente a costos fijos"
+              text: "Unidades vendidas"
             }
           },
-          scales: {
-            x: {
-              title: {
-                display: true,
-                text: "Unidades vendidas"
-              }
-            },
-            y: {
-              title: {
-                display: true,
-                text: "Margen acumulado en dinero"
-              }
+          y: {
+            title: {
+              display: true,
+              text: "Margen acumulado"
             }
           }
         }
-      });
-    }
+      }
+    });
+  }
 
-    function moneda(valor) {
-      return valor.toLocaleString("es-EC", {
-        style: "currency",
-        currency: "USD",
-        minimumFractionDigits: 2
-      });
-    }
+  function moneda(valor) {
+    return valor.toLocaleString("es-EC", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2
+    });
+  }
 
-    agregarProducto();
-    agregarProducto();
-  </script>
+  agregarRubro();
+  agregarProducto();
+</script>
+
 </body>
 </html>
