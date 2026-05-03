@@ -3,1067 +3,471 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora Profesional de Punto de Equilibrio Multiproducto</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+  <title>Punto de Equilibrio Multiproducto | Cálculo Automático</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
-    :root {
-      --azul: #2563eb;
-      --azul-oscuro: #1e40af;
-      --morado: #7c3aed;
-      --verde: #16a34a;
-      --verde-oscuro: #15803d;
-      --rojo: #dc2626;
-      --rojo-oscuro: #991b1b;
-      --amarillo: #f59e0b;
-      --fondo: #eef2ff;
-      --texto: #0f172a;
-      --gris: #64748b;
-      --borde: #bfdbfe;
-      --blanco: #ffffff;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      margin: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
-      background:
-        radial-gradient(circle at top left, #93c5fd, transparent 35%),
-        radial-gradient(circle at top right, #c4b5fd, transparent 35%),
-        linear-gradient(135deg, #eef2ff, #f8fafc);
-      color: var(--texto);
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      background: #e2e8f0;
+      padding: 2rem;
+      color: #0f172a;
     }
-
-    .container {
-      max-width: 1280px;
-      margin: auto;
-      padding: 32px;
-    }
-
+    .container { max-width: 1300px; margin: 0 auto; }
     .hero {
-      text-align: center;
-      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      background: linear-gradient(135deg, #0c4a6e, #075985);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
       color: white;
-      padding: 36px 24px;
-      border-radius: 26px;
-      box-shadow: 0 20px 45px rgba(37, 99, 235, 0.35);
-      margin-bottom: 28px;
+      text-align: center;
     }
-
-    .hero h1 {
-      margin: 0;
-      font-size: 35px;
-    }
-
-    .hero p {
-      margin: 12px 0 0;
-      font-size: 16px;
-      opacity: 0.95;
-    }
-
+    .hero h1 { font-size: 2rem; }
+    .hero p { margin-top: 0.5rem; }
     .card {
-      background: rgba(255,255,255,0.97);
-      backdrop-filter: blur(12px);
-      padding: 24px;
-      border-radius: 22px;
-      box-shadow: 0 16px 35px rgba(15, 23, 42, 0.13);
-      margin-bottom: 26px;
-      border: 1px solid rgba(96, 165, 250, 0.75);
+      background: white;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border: 1px solid #cbd5e1;
     }
-
     .card h2 {
-      margin-top: 0;
-      text-align: center;
-      font-size: 24px;
-      color: #1e3a8a;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: #0c4a6e;
+      border-left: 5px solid #2563eb;
+      padding-left: 1rem;
     }
-
-    .toolbar {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
+    .toolbar { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 1rem; }
     button {
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
-      color: white;
+      background: #1e5a7d;
       border: none;
-      padding: 12px 18px;
-      border-radius: 12px;
+      padding: 0.5rem 1.2rem;
+      border-radius: 2rem;
+      font-weight: 700;
+      color: white;
       cursor: pointer;
-      font-weight: 800;
-      box-shadow: 0 8px 18px rgba(37,99,235,0.28);
-      transition: transform 0.15s, box-shadow 0.15s;
     }
-
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(37,99,235,0.4);
-    }
-
-    .delete {
-      background: linear-gradient(135deg, #ef4444, #b91c1c);
-      box-shadow: 0 8px 18px rgba(220,38,38,0.3);
-    }
-
-    .calculate {
-      background: linear-gradient(135deg, #16a34a, #15803d);
-      font-size: 16px;
-      padding: 14px 24px;
-      box-shadow: 0 10px 22px rgba(22,163,74,0.35);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0 10px;
-      margin-top: 10px;
-    }
-
+    button:hover { background: #0f3f5a; transform: translateY(-1px); }
+    .calculate { background: #15803d; font-size: 1rem; padding: 0.7rem 1.8rem; }
+    .delete { background: #b91c1c; }
+    table { width: 100%; border-collapse: collapse; }
     th {
-      background: #bfdbfe;
-      color: #172554;
-      padding: 13px;
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
+      background: #e6f0fa;
+      padding: 0.8rem;
+      font-weight: 800;
+      color: #0c4a6e;
+      font-size: 0.85rem;
     }
-
-    td {
-      background: #ffffff;
-      padding: 12px;
-      text-align: center;
-      border-top: 1px solid #93c5fd;
-      border-bottom: 1px solid #93c5fd;
-    }
-
-    td:first-child {
-      border-left: 1px solid #93c5fd;
-      border-radius: 14px 0 0 14px;
-    }
-
-    td:last-child {
-      border-right: 1px solid #93c5fd;
-      border-radius: 0 14px 14px 0;
-    }
-
+    td { padding: 0.6rem; border-bottom: 1px solid #e2e8f0; }
     input, select {
       width: 100%;
-      padding: 11px;
-      border: 1px solid #93c5fd;
-      border-radius: 11px;
-      font-size: 14px;
-      outline: none;
-      background: #f8fafc;
-      transition: border 0.2s, box-shadow 0.2s;
+      padding: 0.5rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 0.6rem;
+      font-size: 0.85rem;
     }
-
-    input:focus, select:focus {
-      border-color: var(--azul);
-      box-shadow: 0 0 0 4px rgba(37,99,235,0.18);
-      background: white;
-    }
-
+    select { cursor: pointer; }
     .nota {
-      background: linear-gradient(135deg, #dbeafe, #ede9fe);
-      border-left: 6px solid var(--azul);
-      padding: 16px;
-      border-radius: 16px;
-      line-height: 1.6;
-      margin-top: 18px;
-      color: #172554;
-      font-weight: 700;
+      background: #eff6ff;
+      border-radius: 0.8rem;
+      padding: 0.8rem;
+      margin-top: 1rem;
+      border-left: 4px solid #2563eb;
+      font-size: 0.85rem;
     }
-
-    .error {
-      color: white;
-      background: linear-gradient(135deg, #ef4444, #b91c1c);
-      padding: 13px;
-      border-radius: 14px;
-      margin-top: 16px;
-      text-align: center;
-      font-weight: 800;
-      display: none;
-    }
-
-    .resultado, .interpretacion {
-      background: linear-gradient(135deg, #ffffff, #dbeafe);
-      border: 1px solid #93c5fd;
-      border-left: 7px solid var(--azul);
-      padding: 20px;
-      border-radius: 18px;
-      line-height: 1.75;
-    }
-
-    .grid {
+    .metric-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 16px;
-      margin-bottom: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
     }
-
-    .metric {
-      border-radius: 18px;
-      padding: 20px;
+    .metric-card {
+      background: #f8fafc;
+      border-radius: 1rem;
+      padding: 1rem;
+      border: 1px solid #cbd5e1;
+    }
+    .metric-card .label { font-size: 0.7rem; text-transform: uppercase; font-weight: 800; color: #475569; }
+    .metric-card .value { font-size: 1.6rem; font-weight: 800; color: #0f172a; }
+    .result-box { background: #f8fafc; padding: 1rem; border-radius: 1rem; border-left: 4px solid #2563eb; }
+    .chart-container { background: white; border-radius: 1rem; padding: 1rem; margin-top: 1rem; }
+    canvas { max-height: 400px; width: 100%; }
+    .error {
+      background: #dc2626;
       color: white;
-      min-height: 118px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      box-shadow: 0 14px 26px rgba(15,23,42,0.22);
+      padding: 0.7rem;
+      border-radius: 0.8rem;
+      margin-top: 1rem;
+      display: none;
+      font-weight: 700;
+      text-align: center;
     }
-
-    .metric:nth-child(1) {
-      background: linear-gradient(135deg, #2563eb, #1e40af);
-    }
-
-    .metric:nth-child(2) {
-      background: linear-gradient(135deg, #7c3aed, #5b21b6);
-    }
-
-    .metric:nth-child(3) {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-    }
-
-    .metric:nth-child(4) {
-      background: linear-gradient(135deg, #16a34a, #15803d);
-    }
-
-    .metric strong {
-      font-size: 13px;
-      opacity: 0.9;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-    }
-
-    .metric span {
-      font-size: 25px;
-      font-weight: 900;
-    }
-
-    .chart-box {
-      background: white;
-      padding: 18px;
-      border-radius: 20px;
-      border: 2px solid #93c5fd;
-      box-shadow: 0 10px 24px rgba(15,23,42,0.08);
-      margin-bottom: 18px;
-    }
-
-    .pill-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 16px;
-    }
-
-    .pill {
-      padding: 9px 13px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .loss {
-      background: #fecaca;
-      color: #7f1d1d;
-    }
-
-    .balance {
-      background: #fde68a;
-      color: #78350f;
-    }
-
-    .profit {
-      background: #bbf7d0;
-      color: #14532d;
-    }
-
-    .highlight {
-      color: #1d4ed8;
-      font-weight: 900;
-    }
+    .highlight { background: #fef08a; padding: 0.2rem 0.4rem; border-radius: 0.3rem; font-weight: 800; }
+    .precio-input-cell { min-width: 130px; }
+    .margen-cell { font-weight: 700; color: #15803d; }
   </style>
 </head>
-
 <body>
-
 <div class="container">
-
-  <section class="hero">
-    <h1>Calculadora Profesional de Punto de Equilibrio</h1>
-    <p>Análisis multiproducto con costos fijos, precios configurables, cálculo por margen, gráficas claras e interpretación financiera.</p>
-  </section>
-
-  <div class="card">
-    <h2>Costos fijos</h2>
-
-    <div class="toolbar">
-      <button onclick="agregarRubro()">Agregar rubro</button>
-    </div>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Rubro</th>
-          <th>Valor</th>
-          <th>Eliminar</th>
-        </tr>
-      </thead>
-      <tbody id="rubros"></tbody>
-    </table>
+  <div class="hero">
+    <h1>📊 Punto de Equilibrio Multiproducto</h1>
+    <p>El precio se puede definir de 3 formas: Directo | Margen sobre costo | % de utilidad</p>
   </div>
 
   <div class="card">
-    <h2>Productos</h2>
-
-    <div class="toolbar">
-      <button onclick="agregarProducto()">Agregar producto</button>
-    </div>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Producto</th>
-          <th>Costo variable unitario</th>
-          <th>Forma de establecer precio</th>
-          <th>Dato requerido</th>
-          <th>Eliminar</th>
-        </tr>
-      </thead>
-      <tbody id="productos"></tbody>
-    </table>
-
-    <div class="nota">
-      El cálculo reparte el costo fijo entre todos los productos y calcula las unidades necesarias según el margen unitario. Un producto con mayor margen requiere menos unidades; uno con menor margen requiere más.
-    </div>
-
-    <div class="toolbar">
-      <button class="calculate" onclick="calcular()">Calcular punto de equilibrio</button>
-    </div>
-
-    <div id="error" class="error"></div>
-  </div>
-
-  <div class="card">
-    <h2>Resultados generales</h2>
-    <div id="resultado" class="resultado">
-      Ingrese la información y presione calcular.
+    <h2>📁 Costos Fijos</h2>
+    <div class="toolbar"><button onclick="agregarRubro()">+ Agregar rubro</button></div>
+    <div style="overflow-x:auto;">
+      <table style="width:100%">
+        <thead><tr><th>Rubro</th><th>Valor (USD)</th><th></th></tr></thead>
+        <tbody id="rubrosBody"></tbody>
+      </table>
     </div>
   </div>
 
   <div class="card">
-    <h2>Gráfica de equilibrio general</h2>
-    <div class="chart-box">
-      <canvas id="graficaEquilibrio"></canvas>
-    </div>
-
-    <div class="pill-row">
-      <span class="pill loss">Costos totales</span>
-      <span class="pill balance">Punto de equilibrio</span>
-      <span class="pill profit">Ingresos totales</span>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>Unidades requeridas por producto</h2>
-    <div class="chart-box">
-      <canvas id="graficaUnidades"></canvas>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>Desglose por producto</h2>
-    <div id="desglose" class="resultado">
-      El desglose aparecerá después del cálculo.
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>Interpretación y prueba lógica</h2>
-    <div id="interpretacion" class="interpretacion">
-      La interpretación aparecerá después del cálculo.
-    </div>
-  </div>
-
-</div>
-
-<script>
-  let contadorRubros = 0;
-  let contadorProductos = 0;
-  let graficaEquilibrio = null;
-  let graficaUnidades = null;
-  let datosCalculados = null;
-
-  function agregarRubro() {
-    contadorRubros++;
-
-    const fila = document.createElement("tr");
-
-    fila.innerHTML = `
-      <td><input type="text" class="rubroNombre" value="Rubro ${contadorRubros}"></td>
-      <td><input type="number" class="rubroValor" min="0" step="0.01" placeholder="Ej: 500"></td>
-      <td><button class="delete" onclick="this.closest('tr').remove()">X</button></td>
-    `;
-
-    document.getElementById("rubros").appendChild(fila);
-  }
-
-  function agregarProducto() {
-    contadorProductos++;
-
-    const fila = document.createElement("tr");
-
-    fila.innerHTML = `
-      <td><input type="text" class="productoNombre" value="Producto ${contadorProductos}"></td>
-
-      <td>
-        <input type="number" class="costoVariable" min="0" step="0.01" placeholder="Ej: 50">
-      </td>
-
-      <td>
-        <select class="tipoPrecio" onchange="cambiarTipoPrecio(this)">
-          <option value="directo">Precio directo</option>
-          <option value="margen">Precio por margen sobre costo</option>
-          <option value="porcentaje">Precio por % utilidad sobre precio</option>
-        </select>
-      </td>
-
-      <td class="datoPrecio">
-        <input type="number" class="precioDirecto" min="0" step="0.01" placeholder="Ej: 100">
-      </td>
-
-      <td><button class="delete" onclick="this.closest('tr').remove()">X</button></td>
-    `;
-
-    document.getElementById("productos").appendChild(fila);
-  }
-
-  function cambiarTipoPrecio(select) {
-    const fila = select.closest("tr");
-    const contenedor = fila.querySelector(".datoPrecio");
-
-    if (select.value === "directo") {
-      contenedor.innerHTML = `<input type="number" class="precioDirecto" min="0" step="0.01" placeholder="Ej: 100">`;
-    }
-
-    if (select.value === "margen") {
-      contenedor.innerHTML = `<input type="number" class="margenDeseado" min="0" step="0.01" placeholder="Ej: 50">`;
-    }
-
-    if (select.value === "porcentaje") {
-      contenedor.innerHTML = `<input type="number" class="porcentajeUtilidad" min="0" max="99" step="0.01" placeholder="Ej: 40">`;
-    }
-  }
-
-  function calcular() {
-    const error = document.getElementById("error");
-    error.style.display = "none";
-    error.textContent = "";
-
-    const filasRubros = document.querySelectorAll("#rubros tr");
-    const filasProductos = document.querySelectorAll("#productos tr");
-
-    if (filasRubros.length === 0) return mostrarError("Ingrese al menos un rubro de costos fijos.");
-    if (filasProductos.length === 0) return mostrarError("Ingrese al menos un producto.");
-
-    let costosFijos = 0;
-    let detalleRubros = "";
-
-    for (const fila of filasRubros) {
-      const nombre = fila.querySelector(".rubroNombre").value.trim();
-      const valor = parseFloat(fila.querySelector(".rubroValor").value);
-
-      if (!nombre || isNaN(valor) || valor < 0) {
-        return mostrarError("Complete correctamente todos los rubros de costos fijos.");
-      }
-
-      costosFijos += valor;
-      detalleRubros += `${nombre}: ${moneda(valor)}<br>`;
-    }
-
-    let productos = [];
-
-    for (const fila of filasProductos) {
-      const nombre = fila.querySelector(".productoNombre").value.trim();
-      const costoVariable = parseFloat(fila.querySelector(".costoVariable").value);
-      const tipoPrecio = fila.querySelector(".tipoPrecio").value;
-
-      let precio = 0;
-      let metodoPrecio = "";
-
-      if (!nombre || isNaN(costoVariable) || costoVariable < 0) {
-        return mostrarError("Complete correctamente el nombre y el costo variable de cada producto.");
-      }
-
-      if (tipoPrecio === "directo") {
-        precio = parseFloat(fila.querySelector(".precioDirecto").value);
-        metodoPrecio = "Precio directo";
-      }
-
-      if (tipoPrecio === "margen") {
-        const margenDeseado = parseFloat(fila.querySelector(".margenDeseado").value);
-
-        if (isNaN(margenDeseado) || margenDeseado <= 0) {
-          return mostrarError("Ingrese un margen válido.");
-        }
-
-        precio = costoVariable + margenDeseado;
-        metodoPrecio = "Costo + margen";
-      }
-
-      if (tipoPrecio === "porcentaje") {
-        const porcentaje = parseFloat(fila.querySelector(".porcentajeUtilidad").value);
-
-        if (isNaN(porcentaje) || porcentaje <= 0 || porcentaje >= 100) {
-          return mostrarError("El porcentaje debe ser mayor que 0 y menor que 100.");
-        }
-
-        precio = costoVariable / (1 - porcentaje / 100);
-        metodoPrecio = "% utilidad sobre precio";
-      }
-
-      if (isNaN(precio) || precio <= costoVariable) {
-        return mostrarError("El precio calculado debe ser mayor que el costo variable.");
-      }
-
-      const margenUnitario = precio - costoVariable;
-
-      productos.push({
-        nombre,
-        costoVariable,
-        precio,
-        margenUnitario,
-        metodoPrecio
-      });
-    }
-
-    const cantidadProductos = productos.length;
-    const costoFijoPorProducto = costosFijos / cantidadProductos;
-
-    let ingresosTotales = 0;
-    let costosVariablesTotales = 0;
-    let margenGenerado = 0;
-    let unidadesTotales = 0;
-
-    productos.forEach(p => {
-      p.parteCostoFijo = costoFijoPorProducto;
-      p.unidadesExactas = costoFijoPorProducto / p.margenUnitario;
-      p.unidades = Math.ceil(p.unidadesExactas);
-      p.ventas = p.precio * p.unidades;
-      p.costoVariableTotal = p.costoVariable * p.unidades;
-      p.margenTotal = p.margenUnitario * p.unidades;
-      p.excedente = p.margenTotal - p.parteCostoFijo;
-
-      ingresosTotales += p.ventas;
-      costosVariablesTotales += p.costoVariableTotal;
-      margenGenerado += p.margenTotal;
-      unidadesTotales += p.unidades;
-    });
-
-    const costosTotales = costosFijos + costosVariablesTotales;
-    const utilidad = ingresosTotales - costosTotales;
-    const estado = utilidad < 0 ? "Pérdida" : utilidad === 0 ? "Equilibrio exacto" : "Equilibrio cubierto con excedente";
-
-    productos.forEach(p => {
-      p.aporteMargen = p.margenTotal / margenGenerado;
-    });
-
-    datosCalculados = {
-      costosFijos,
-      detalleRubros,
-      productos,
-      cantidadProductos,
-      costoFijoPorProducto,
-      ingresosTotales,
-      costosVariablesTotales,
-      margenGenerado,
-      costosTotales,
-      utilidad,
-      estado,
-      unidadesTotales
-    };
-
-    construirResultado();
-    construirDesglose();
-    construirInterpretacion();
-    dibujarGraficaEquilibrio();
-    dibujarGraficaUnidades();
-  }
-
-  function construirResultado() {
-    const d = datosCalculados;
-
-    document.getElementById("resultado").innerHTML = `
-      <div class="grid">
-        <div class="metric">
-          <strong>Costos fijos totales</strong>
-          <span>${moneda(d.costosFijos)}</span>
-        </div>
-
-        <div class="metric">
-          <strong>Parte por producto</strong>
-          <span>${moneda(d.costoFijoPorProducto)}</span>
-        </div>
-
-        <div class="metric">
-          <strong>Unidades totales</strong>
-          <span>${d.unidadesTotales}</span>
-        </div>
-
-        <div class="metric">
-          <strong>Resultado</strong>
-          <span>${moneda(d.utilidad)}</span>
-        </div>
-      </div>
-
-      <strong>Rubros ingresados:</strong><br>
-      ${d.detalleRubros}<br>
-
-      <strong>Estado:</strong> <span class="highlight">${d.estado}</span><br>
-      <strong>Ingresos necesarios:</strong> ${moneda(d.ingresosTotales)}<br>
-      <strong>Costos variables totales:</strong> ${moneda(d.costosVariablesTotales)}<br>
-      <strong>Costos totales:</strong> ${moneda(d.costosTotales)}<br>
-      <strong>Margen total generado:</strong> ${moneda(d.margenGenerado)}
-    `;
-  }
-
-  function construirDesglose() {
-    const d = datosCalculados;
-
-    let html = `
-      <table>
+    <h2>📦 Productos</h2>
+    <div class="toolbar"><button onclick="agregarProducto()">+ Agregar producto</button></div>
+    <div style="overflow-x:auto;">
+      <table style="width:100%">
         <thead>
           <tr>
             <th>Producto</th>
-            <th>Método</th>
-            <th>Precio</th>
-            <th>Costo variable</th>
-            <th>Margen unitario</th>
-            <th>Parte del costo fijo</th>
-            <th>Unidades exactas</th>
-            <th>Unidades a vender</th>
-            <th>Ventas</th>
-            <th>Margen total</th>
-            <th>Excedente</th>
+            <th>Costo Variable</th>
+            <th>Forma de precio</th>
+            <th>Dato requerido</th>
+            <th>Margen Unitario</th>
+            <th></th>
           </tr>
         </thead>
-        <tbody>
-    `;
-
-    d.productos.forEach(p => {
-      html += `
-        <tr>
-          <td><strong>${p.nombre}</strong></td>
-          <td>${p.metodoPrecio}</td>
-          <td>${moneda(p.precio)}</td>
-          <td>${moneda(p.costoVariable)}</td>
-          <td>${moneda(p.margenUnitario)}</td>
-          <td>${moneda(p.parteCostoFijo)}</td>
-          <td>${p.unidadesExactas.toFixed(2)}</td>
-          <td><strong>${p.unidades}</strong></td>
-          <td>${moneda(p.ventas)}</td>
-          <td>${moneda(p.margenTotal)}</td>
-          <td>${moneda(p.excedente)}</td>
-        </tr>
-      `;
-    });
-
-    html += `
-        </tbody>
+        <tbody id="productosBody"></tbody>
       </table>
-    `;
+    </div>
+    <div class="nota">
+      💡 <strong>Tres formas de definir el precio:</strong><br>
+      • <strong>Precio directo:</strong> Ingresa el precio de venta directamente<br>
+      • <strong>Margen sobre costo:</strong> Ingresa el valor adicional al costo (ej: costo=60, margen=40 → precio=100)<br>
+      • <strong>% de utilidad:</strong> Ingresa el porcentaje de ganancia sobre el precio (ej: costo=60, %=40 → precio=100)
+    </div>
+    <div class="toolbar" style="justify-content: center; margin-top: 1rem;">
+      <button class="calculate" onclick="calcular()">🚀 Calcular Punto de Equilibrio</button>
+    </div>
+    <div id="errorMsg" class="error"></div>
+  </div>
 
-    document.getElementById("desglose").innerHTML = html;
+  <div class="card">
+    <h2>📈 Resultados</h2>
+    <div id="resultadoPanel" class="result-box">Complete los datos y presione calcular.</div>
+  </div>
+
+  <div class="card">
+    <h2>📊 Gráfica del Punto de Equilibrio</h2>
+    <div class="chart-container">
+      <canvas id="graficaCanvas"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📋 Unidades a vender por producto</h2>
+    <div id="desglosePanel" class="result-box">Se mostrará después del cálculo.</div>
+  </div>
+</div>
+
+<script>
+  let rubros = [];
+  let productos = [];
+  let nextRubroId = 1;
+  let nextProductoId = 1;
+  let chart = null;
+
+  function init() {
+    rubros = [
+      { id: nextRubroId++, nombre: "Alquiler", valor: 1800 },
+      { id: nextRubroId++, nombre: "Nómina", valor: 3200 },
+      { id: nextRubroId++, nombre: "Seguros", valor: 450 }
+    ];
+    productos = [
+      { id: nextProductoId++, nombre: "Producto A", costoVar: 60, tipoPrecio: "directo", valorPrecio: 100 },
+      { id: nextProductoId++, nombre: "Producto B", costoVar: 30, tipoPrecio: "margen", valorPrecio: 20 },
+      { id: nextProductoId++, nombre: "Producto C", costoVar: 80, tipoPrecio: "porcentaje", valorPrecio: 40 }
+    ];
+    renderRubros();
+    renderProductos();
   }
 
-  function construirInterpretacion() {
-    const d = datosCalculados;
-
-    const formula = d.productos
-      .map(p => `${p.nombre}: ${moneda(p.parteCostoFijo)} ÷ ${moneda(p.margenUnitario)} = ${p.unidadesExactas.toFixed(2)} unidades → ${p.unidades} unidades enteras`)
-      .join("<br>");
-
-    document.getElementById("interpretacion").innerHTML = `
-      <p><strong>Lógica aplicada:</strong></p>
-
-      <p>
-        El cálculo no usa el precio como criterio principal. Usa el margen unitario:
-        <span class="highlight">Precio - Costo variable</span>.
-      </p>
-
-      <p>
-        Un producto con mayor precio no necesariamente es más rentable. Si también tiene un costo alto,
-        su margen puede ser bajo. Por eso el criterio correcto es el margen.
-      </p>
-
-      <p>
-        Para distribuir el equilibrio entre varios productos sin asumir ventas iguales, el sistema divide
-        el costo fijo entre los productos y calcula cuántas unidades necesita cada uno para cubrir su parte.
-      </p>
-
-      <p><strong>Fórmula:</strong></p>
-
-      <p>
-        Unidades por producto = Parte del costo fijo ÷ Margen unitario
-      </p>
-
-      <p><strong>Prueba lógica:</strong></p>
-
-      <p>
-        Costos fijos totales = <span class="highlight">${moneda(d.costosFijos)}</span><br>
-        Número de productos = <span class="highlight">${d.cantidadProductos}</span><br>
-        Parte del costo fijo por producto =
-        ${moneda(d.costosFijos)} ÷ ${d.cantidadProductos}
-        = <span class="highlight">${moneda(d.costoFijoPorProducto)}</span>
-      </p>
-
-      <p>${formula}</p>
-
-      <p>
-        Verificación final:<br>
-        Ingresos totales = <span class="highlight">${moneda(d.ingresosTotales)}</span><br>
-        Costos totales = <span class="highlight">${moneda(d.costosTotales)}</span><br>
-        Resultado = <span class="highlight">${moneda(d.utilidad)}</span>
-      </p>
-
-      <p>
-        Si el resultado es positivo, se debe al redondeo de unidades, porque no se pueden vender fracciones de productos.
-      </p>
-    `;
+  function agregarRubro() {
+    rubros.push({ id: nextRubroId++, nombre: "Nuevo Rubro", valor: 0 });
+    renderRubros();
   }
 
-  function dibujarGraficaEquilibrio() {
-    const d = datosCalculados;
+  function renderRubros() {
+    const tbody = document.getElementById("rubrosBody");
+    tbody.innerHTML = "";
+    rubros.forEach((r, idx) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><input type="text" value="${r.nombre}" onchange="rubros[${idx}].nombre = this.value"></td>
+        <td><input type="number" step="0.01" value="${r.valor}" onchange="rubros[${idx}].valor = parseFloat(this.value) || 0"></td>
+        <td><button class="delete" onclick="eliminarRubro(${idx})">✖</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
 
-    const maxUnidades = d.unidadesTotales + 10;
-    const precioPromedio = d.ingresosTotales / d.unidadesTotales;
-    const costoPromedio = d.costosVariablesTotales / d.unidadesTotales;
-    const margenPromedio = precioPromedio - costoPromedio;
-    const equilibrioExacto = d.costosFijos / margenPromedio;
+  function eliminarRubro(idx) { rubros.splice(idx,1); renderRubros(); }
 
+  function agregarProducto() {
+    productos.push({ 
+      id: nextProductoId++, 
+      nombre: "Nuevo Producto", 
+      costoVar: 0, 
+      tipoPrecio: "directo", 
+      valorPrecio: 0 
+    });
+    renderProductos();
+  }
+
+  function cambiarTipoPrecio(idx, nuevoTipo) {
+    productos[idx].tipoPrecio = nuevoTipo;
+    productos[idx].valorPrecio = 0;
+    renderProductos();
+  }
+
+  function renderProductos() {
+    const tbody = document.getElementById("productosBody");
+    tbody.innerHTML = "";
+    productos.forEach((p, idx) => {
+      // Calcular precio y margen actuales para mostrar
+      let precioActual = 0;
+      if (p.tipoPrecio === "directo") precioActual = p.valorPrecio;
+      else if (p.tipoPrecio === "margen") precioActual = p.costoVar + p.valorPrecio;
+      else if (p.tipoPrecio === "porcentaje") {
+        if (p.valorPrecio > 0 && p.valorPrecio < 100) precioActual = p.costoVar / (1 - p.valorPrecio / 100);
+        else precioActual = 0;
+      }
+      const margenActual = precioActual - p.costoVar;
+      
+      let inputPrecioHtml = "";
+      if (p.tipoPrecio === "directo") 
+        inputPrecioHtml = `<input type="number" step="0.01" placeholder="Precio de venta" value="${p.valorPrecio || ''}" onchange="actualizarValorPrecio(${idx}, this.value)">`;
+      else if (p.tipoPrecio === "margen") 
+        inputPrecioHtml = `<input type="number" step="0.01" placeholder="Margen adicional (USD)" value="${p.valorPrecio || ''}" onchange="actualizarValorPrecio(${idx}, this.value)">`;
+      else 
+        inputPrecioHtml = `<input type="number" step="0.1" placeholder="% de utilidad (ej: 40)" value="${p.valorPrecio || ''}" onchange="actualizarValorPrecio(${idx}, this.value)">`;
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><input type="text" value="${p.nombre}" onchange="productos[${idx}].nombre = this.value; actualizarMargenDisplay(${idx})"></td>
+        <td><input type="number" step="0.01" value="${p.costoVar}" onchange="productos[${idx}].costoVar = parseFloat(this.value) || 0; actualizarMargenDisplay(${idx})"></td>
+        <td>
+          <select onchange="cambiarTipoPrecio(${idx}, this.value)">
+            <option value="directo" ${p.tipoPrecio === 'directo' ? 'selected' : ''}>Precio directo</option>
+            <option value="margen" ${p.tipoPrecio === 'margen' ? 'selected' : ''}>Margen sobre costo (USD)</option>
+            <option value="porcentaje" ${p.tipoPrecio === 'porcentaje' ? 'selected' : ''}>% de utilidad sobre precio</option>
+          </select>
+        </td>
+        <td class="precio-input-cell">${inputPrecioHtml}</td>
+        <td class="margen-cell" id="margen_${idx}">${margenActual > 0 ? moneda(margenActual) : '—'}</td>
+        <td><button class="delete" onclick="eliminarProducto(${idx})">✖</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function actualizarValorPrecio(idx, valor) {
+    productos[idx].valorPrecio = parseFloat(valor) || 0;
+    actualizarMargenDisplay(idx);
+  }
+
+  function actualizarMargenDisplay(idx) {
+    const p = productos[idx];
+    let precio = 0;
+    if (p.tipoPrecio === "directo") precio = p.valorPrecio;
+    else if (p.tipoPrecio === "margen") precio = p.costoVar + p.valorPrecio;
+    else if (p.tipoPrecio === "porcentaje") {
+      if (p.valorPrecio > 0 && p.valorPrecio < 100) precio = p.costoVar / (1 - p.valorPrecio / 100);
+    }
+    const margen = precio - p.costoVar;
+    const cell = document.getElementById(`margen_${idx}`);
+    if (cell) cell.innerText = (margen > 0 && isFinite(margen)) ? moneda(margen) : '—';
+  }
+
+  function eliminarProducto(idx) { productos.splice(idx,1); renderProductos(); }
+
+  function calcular() {
+    const errorDiv = document.getElementById("errorMsg");
+    errorDiv.style.display = "none";
+
+    // Sumar costos fijos
+    let costosFijos = 0;
+    for (let r of rubros) {
+      if (isNaN(r.valor) || r.valor < 0) { mostrarError("Revise los costos fijos"); return; }
+      costosFijos += r.valor;
+    }
+
+    if (productos.length === 0) { mostrarError("Agregue al menos un producto"); return; }
+
+    // Calcular precios y márgenes de cada producto
+    let productosValidos = [];
+    for (let p of productos) {
+      const costo = p.costoVar;
+      if (isNaN(costo) || costo < 0) { mostrarError(`Costo variable inválido en ${p.nombre}`); return; }
+      
+      let precio = 0;
+      if (p.tipoPrecio === "directo") {
+        precio = p.valorPrecio;
+        if (isNaN(precio) || precio <= 0) { mostrarError(`Precio inválido en ${p.nombre}`); return; }
+      } 
+      else if (p.tipoPrecio === "margen") {
+        const margen = p.valorPrecio;
+        if (isNaN(margen) || margen <= 0) { mostrarError(`Margen inválido en ${p.nombre}`); return; }
+        precio = costo + margen;
+      } 
+      else if (p.tipoPrecio === "porcentaje") {
+        const porcentaje = p.valorPrecio;
+        if (isNaN(porcentaje) || porcentaje <= 0 || porcentaje >= 100) { mostrarError(`% de utilidad inválido en ${p.nombre} (debe ser entre 1 y 99)`); return; }
+        precio = costo / (1 - porcentaje / 100);
+      }
+      
+      if (precio <= costo) { mostrarError(`El precio de ${p.nombre} debe ser mayor al costo variable`); return; }
+      
+      const margen = precio - costo;
+      const relacionMargen = margen / precio;  // qué % del precio es ganancia
+      
+      productosValidos.push({
+        nombre: p.nombre,
+        costoVar: costo,
+        precio: precio,
+        margen: margen,
+        relacionMargen: relacionMargen
+      });
+    }
+
+    // Calcular el margen porcentual promedio (simple, sin ponderar)
+    let sumaRelaciones = 0;
+    for (let p of productosValidos) {
+      sumaRelaciones += p.relacionMargen;
+    }
+    const margenPorcentajePromedio = sumaRelaciones / productosValidos.length;
+
+    // Punto de equilibrio en dólares de venta
+    const ventasNecesarias = costosFijos / margenPorcentajePromedio;
+
+    // Para mostrar unidades, distribuimos las ventas totales según la participación de cada producto
+    // en el margen total (esto es una aproximación estándar)
+    const margenTotal = productosValidos.reduce((sum, p) => sum + p.margen, 0);
+    
+    const resultados = productosValidos.map(p => {
+      // Participación de este producto en el margen total
+      const participacion = p.margen / margenTotal;
+      // Ventas asignadas a este producto
+      const ventasProducto = ventasNecesarias * participacion;
+      const unidades = ventasProducto / p.precio;
+      return {
+        ...p,
+        participacion: participacion * 100,
+        ventasNecesarias: ventasProducto,
+        unidades: unidades,
+        unidadesRedondeadas: Math.ceil(unidades)
+      };
+    });
+
+    const margenGenerado = resultados.reduce((sum, r) => sum + (r.unidadesRedondeadas * r.margen), 0);
+    const diferencia = margenGenerado - costosFijos;
+
+    // Mostrar resultados
+    document.getElementById("resultadoPanel").innerHTML = `
+      <div class="metric-grid">
+        <div class="metric-card"><div class="label">💰 Costos fijos totales</div><div class="value">${moneda(costosFijos)}</div></div>
+        <div class="metric-card"><div class="label">📊 Margen promedio ponderado</div><div class="value">${(margenPorcentajePromedio * 100).toFixed(2)}%</div></div>
+        <div class="metric-card"><div class="label">💵 Ventas necesarias</div><div class="value">${moneda(ventasNecesarias)}</div></div>
+        <div class="metric-card"><div class="label">🎯 Utilidad generada</div><div class="value">${moneda(diferencia)}</div></div>
+      </div>
+      <div>El <strong>punto de equilibrio</strong> se alcanza con <span class="highlight">${moneda(ventasNecesarias)} en ventas totales</span>.</div>
+    `;
+
+    // Desglose de unidades
+    let desgloseHtml = `<table style="width:100%; border-collapse:collapse;"><thead><tr>
+      <th>Producto</th><th>Precio</th><th>Costo Var.</th><th>Margen Unit.</th><th>Participación</th>
+      <th style="background:#fef08a;">UNIDADES A VENDER</th><th>Ventas</th>
+    <tr></thead><tbody>`;
+    resultados.forEach(r => {
+      desgloseHtml += `<tr>
+        <td><strong>${r.nombre}</strong></td>
+        <td>${moneda(r.precio)}</td>${moneda(r.costoVar)}</td>${moneda(r.margen)}</td>
+        <td>${r.participacion.toFixed(1)}%</td>
+        <td style="background:#fef08a; font-size:1.1rem; font-weight:800;">${r.unidadesRedondeadas} unidades</td>
+        <td>${moneda(r.ventasNecesarias)}</td>
+      </tr>`;
+    });
+    desgloseHtml += `</tbody></table>
+    <div style="margin-top:1rem; background:#e6f0fa; padding:0.8rem; border-radius:0.8rem;">
+      🎯 <strong>RESUMEN:</strong> Para alcanzar el punto de equilibrio, debe vender:<br>
+      ${resultados.map(r => `• ${r.nombre}: <strong>${r.unidadesRedondeadas} unidades</strong>`).join('<br>')}
+    </div>`;
+    document.getElementById("desglosePanel").innerHTML = desgloseHtml;
+
+    dibujarGrafica(costosFijos, ventasNecesarias, margenPorcentajePromedio);
+  }
+
+  function dibujarGrafica(costosFijos, ventasEq, margenPorcentaje) {
+    const ctx = document.getElementById("graficaCanvas").getContext("2d");
+    if (chart) chart.destroy();
+
+    const maxVentas = ventasEq * 1.8;
+    const puntos = 50;
+    const labels = [];
     const ingresos = [];
-    const costos = [];
-    const punto = [];
+    const costosTotales = [];
 
-    for (let i = 0; i <= maxUnidades; i++) {
-      ingresos.push({ x: i, y: i * precioPromedio });
-      costos.push({ x: i, y: d.costosFijos + (i * costoPromedio) });
+    for (let i = 0; i <= puntos; i++) {
+      const ventas = (maxVentas * i) / puntos;
+      const costoVariable = ventas * (1 - margenPorcentaje);
+      labels.push(moneda(ventas));
+      ingresos.push(ventas);
+      costosTotales.push(costosFijos + costoVariable);
     }
 
-    punto.push({
-      x: equilibrioExacto,
-      y: equilibrioExacto * precioPromedio
-    });
-
-    const ctx = document.getElementById("graficaEquilibrio").getContext("2d");
-
-    if (graficaEquilibrio) {
-      graficaEquilibrio.destroy();
-    }
-
-    graficaEquilibrio = new Chart(ctx, {
-      type: "line",
+    chart = new Chart(ctx, {
+      type: 'line',
       data: {
+        labels: labels,
         datasets: [
-          {
-            label: "Ingresos totales",
-            data: ingresos,
-            parsing: false,
-            borderColor: "#00a63e",
-            backgroundColor: "#00a63e",
-            borderWidth: 5,
-            pointRadius: 4,
-            pointHoverRadius: 8,
-            tension: 0.15
-          },
-          {
-            label: "Costos totales",
-            data: costos,
-            parsing: false,
-            borderColor: "#dc2626",
-            backgroundColor: "#dc2626",
-            borderWidth: 5,
-            pointRadius: 4,
-            pointHoverRadius: 8,
-            tension: 0.15
-          },
-          {
-            label: "Punto de equilibrio",
-            data: punto,
-            parsing: false,
-            borderColor: "#f59e0b",
-            backgroundColor: "#f59e0b",
-            pointRadius: 13,
-            pointHoverRadius: 17,
-            showLine: false
-          }
+          { label: 'Ingresos totales', data: ingresos, borderColor: '#2563eb', borderWidth: 3, fill: false, pointRadius: 0 },
+          { label: 'Costos totales', data: costosTotales, borderColor: '#dc2626', borderWidth: 3, fill: false, pointRadius: 0 },
+          { label: 'Costos fijos', data: Array(puntos+1).fill(costosFijos), borderColor: '#94a3b8', borderWidth: 2, borderDash: [8,5], pointRadius: 0 }
         ]
       },
       options: {
         responsive: true,
-        interaction: {
-          mode: "nearest",
-          intersect: false
-        },
+        maintainAspectRatio: true,
         plugins: {
-          title: {
-            display: true,
-            text: "Equilibrio: ingresos totales vs costos totales",
-            color: "#0f172a",
-            font: {
-              size: 20,
-              weight: "bold"
-            }
-          },
-          legend: {
-            labels: {
-              color: "#0f172a",
-              font: {
-                size: 13,
-                weight: "bold"
-              }
-            }
-          },
-          tooltip: {
-            backgroundColor: "#0f172a",
-            titleColor: "#ffffff",
-            bodyColor: "#ffffff",
-            padding: 14,
-            borderWidth: 1,
-            borderColor: "#334155",
-            callbacks: {
-              title: function(context) {
-                return `Unidades totales: ${context[0].raw.x.toFixed(2)}`;
-              },
-              label: function(context) {
-                return `${context.dataset.label}: ${moneda(context.raw.y)}`;
-              }
-            }
-          }
+          tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${moneda(ctx.raw)}` } },
+          legend: { position: 'top' }
         },
         scales: {
-          x: {
-            type: "linear",
-            title: {
-              display: true,
-              text: "Unidades totales vendidas",
-              color: "#0f172a",
-              font: {
-                size: 14,
-                weight: "bold"
-              }
-            },
-            ticks: {
-              color: "#0f172a",
-              font: {
-                size: 13,
-                weight: "bold"
-              }
-            },
-            grid: {
-              color: "rgba(15, 23, 42, 0.25)"
-            }
-          },
-          y: {
-            title: {
-              display: true,
-              text: "Dinero",
-              color: "#0f172a",
-              font: {
-                size: 14,
-                weight: "bold"
-              }
-            },
-            ticks: {
-              color: "#0f172a",
-              font: {
-                size: 13,
-                weight: "bold"
-              },
-              callback: function(value) {
-                return "$" + value;
-              }
-            },
-            grid: {
-              color: "rgba(15, 23, 42, 0.25)"
-            }
-          }
+          x: { title: { display: true, text: 'Ventas totales (USD)' }, ticks: { maxRotation: 45, autoSkip: true, maxTicksLimit: 8 } },
+          y: { title: { display: true, text: 'Monto (USD)' }, ticks: { callback: (val) => moneda(val) } }
         }
       }
     });
-  }
-
-  function dibujarGraficaUnidades() {
-    const d = datosCalculados;
-
-    const nombres = d.productos.map(p => p.nombre);
-    const unidades = d.productos.map(p => p.unidades);
-    const margenes = d.productos.map(p => p.margenUnitario);
-
-    const ctx = document.getElementById("graficaUnidades").getContext("2d");
-
-    if (graficaUnidades) {
-      graficaUnidades.destroy();
-    }
-
-    graficaUnidades = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: nombres,
-        datasets: [
-          {
-            label: "Unidades a vender",
-            data: unidades,
-            backgroundColor: [
-              "rgba(37, 99, 235, 0.98)",
-              "rgba(124, 58, 237, 0.98)",
-              "rgba(22, 163, 74, 0.98)",
-              "rgba(245, 158, 11, 0.98)",
-              "rgba(220, 38, 38, 0.98)",
-              "rgba(8, 145, 178, 0.98)",
-              "rgba(147, 51, 234, 0.98)",
-              "rgba(234, 88, 12, 0.98)"
-            ],
-            borderColor: "#0f172a",
-            borderWidth: 2
-          },
-          {
-            label: "Margen unitario",
-            data: margenes,
-            type: "line",
-            borderColor: "#0f172a",
-            backgroundColor: "#0f172a",
-            borderWidth: 4,
-            pointRadius: 6,
-            pointHoverRadius: 10,
-            tension: 0.25,
-            yAxisID: "y1"
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          title: {
-            display: true,
-            text: "Unidades requeridas y margen unitario por producto",
-            color: "#0f172a",
-            font: {
-              size: 20,
-              weight: "bold"
-            }
-          },
-          legend: {
-            labels: {
-              color: "#0f172a",
-              font: {
-                size: 13,
-                weight: "bold"
-              }
-            }
-          },
-          tooltip: {
-            backgroundColor: "#0f172a",
-            titleColor: "#ffffff",
-            bodyColor: "#ffffff",
-            padding: 14,
-            borderWidth: 1,
-            borderColor: "#334155"
-          }
-        },
-        scales: {
-          x: {
-            ticks: {
-              color: "#0f172a",
-              font: {
-                size: 13,
-                weight: "bold"
-              }
-            },
-            grid: {
-              color: "rgba(15, 23, 42, 0.18)"
-            }
-          },
-          y: {
-            beginAtZero: true,
-            position: "left",
-            title: {
-              display: true,
-              text: "Unidades",
-              color: "#0f172a",
-              font: {
-                size: 14,
-                weight: "bold"
-              }
-            },
-            ticks: {
-              color: "#0f172a",
-              font: {
-                size: 13,
-                weight: "bold"
-              }
-            },
-            grid: {
-              color: "rgba(15, 23, 42, 0.22)"
-            }
-          },
-          y1: {
-            beginAtZero: true,
-            position: "right",
-            title: {
-              display: true,
-              text: "Margen unitario",
-              color: "#0f172a",
-              font: {
-                size: 14,
-                weight: "bold"
-              }
-            },
-            ticks: {
-              color: "#0f172a",
-              font: {
-                size: 13,
-                weight: "bold"
-              },
-              callback: function(value) {
-                return "$" + value;
-              }
-            },
-            grid: {
-              drawOnChartArea: false
-            }
-          }
-        }
-      }
-    });
-  }
-
-  function mostrarError(mensaje) {
-    const error = document.getElementById("error");
-    error.textContent = mensaje;
-    error.style.display = "block";
   }
 
   function moneda(valor) {
-    return valor.toLocaleString("es-EC", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 2
-    });
+    if (isNaN(valor)) return '—';
+    return valor.toLocaleString("es-EC", { style: "currency", currency: "USD", minimumFractionDigits: 0 });
   }
 
-  agregarRubro();
-  agregarProducto();
-  agregarProducto();
-</script>
+  function mostrarError(msg) {
+    const e = document.getElementById("errorMsg");
+    e.innerText = msg;
+    e.style.display = "block";
+    setTimeout(() => e.style.display = "none", 5000);
+  }
 
+  init();
+</script>
 </body>
 </html>
