@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calculadora de Punto de Equilibrio Multiproducto | Análisis Profesional</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js">
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     :root {
       --primary: #0f172a;
@@ -43,11 +43,10 @@
 
     body {
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);
+      background: #f1f5f9;
       color: var(--text);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
-      min-height: 100vh;
     }
 
     .container {
@@ -91,26 +90,11 @@
       margin-bottom: 0.75rem;
     }
 
-    .hero h1 i {
-      margin-right: 0.75rem;
-      color: var(--accent);
-    }
-
     .hero p {
       font-size: 1.125rem;
       color: #94a3b8;
       max-width: 800px;
       font-weight: 400;
-    }
-
-    .hero-badge {
-      display: inline-block;
-      background: rgba(59,130,246,0.2);
-      padding: 0.25rem 0.75rem;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      color: var(--accent);
-      margin-top: 1rem;
     }
 
     /* Cards */
@@ -121,12 +105,11 @@
       margin-bottom: 1.5rem;
       box-shadow: var(--shadow);
       border: 1px solid var(--border);
-      transition: all 0.3s ease;
+      transition: box-shadow 0.2s ease;
     }
 
     .card:hover {
-      box-shadow: var(--shadow-lg);
-      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
     }
 
     .card h2 {
@@ -137,13 +120,14 @@
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      border-bottom: 2px solid var(--border);
-      padding-bottom: 0.75rem;
     }
 
-    .card h2 i {
-      color: var(--accent);
-      font-size: 1.5rem;
+    .card h2::before {
+      content: '';
+      width: 4px;
+      height: 1.5rem;
+      background: var(--accent);
+      border-radius: 2px;
     }
 
     /* Buttons */
@@ -182,7 +166,6 @@
     .btn-primary:hover {
       background: var(--primary-soft);
       box-shadow: var(--shadow);
-      transform: translateY(-1px);
     }
 
     .btn-accent {
@@ -191,19 +174,17 @@
     }
     .btn-accent:hover {
       background: var(--accent-strong);
-      transform: translateY(-1px);
     }
 
     .btn-success {
-      background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+      background: var(--success);
       color: white;
       font-size: 1rem;
       padding: 0.875rem 1.75rem;
-      box-shadow: var(--shadow-md);
     }
     .btn-success:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
+      background: #059669;
+      box-shadow: var(--shadow-md);
     }
 
     .btn-danger {
@@ -215,7 +196,6 @@
     .btn-danger:hover {
       background: #fef2f2;
       border-color: var(--danger);
-      transform: scale(1.05);
     }
 
     .btn-outline {
@@ -226,7 +206,6 @@
     .btn-outline:hover {
       background: var(--surface-alt);
       border-color: #cbd5e1;
-      transform: translateY(-1px);
     }
 
     /* Tables */
@@ -234,7 +213,6 @@
       overflow-x: auto;
       border-radius: var(--radius);
       border: 1px solid var(--border);
-      background: white;
     }
 
     table {
@@ -244,7 +222,7 @@
     }
 
     th {
-      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      background: #f8fafc;
       color: var(--text-soft);
       font-weight: 600;
       font-size: 0.75rem;
@@ -262,12 +240,11 @@
     }
 
     tbody tr {
-      transition: all 0.2s ease;
+      transition: background 0.15s ease;
     }
 
     tbody tr:hover {
-      background: linear-gradient(90deg, #f8fafc 0%, #ffffff 100%);
-      transform: scale(1.01);
+      background: #f8fafc;
     }
 
     input, select {
@@ -295,35 +272,23 @@
     /* Metrics Grid */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 1rem;
       margin-bottom: 1.5rem;
     }
 
     .metric {
-      background: linear-gradient(135deg, white 0%, #fefefe 100%);
+      background: white;
       border-radius: var(--radius-lg);
       padding: 1.5rem;
       border: 1px solid var(--border);
       box-shadow: var(--shadow-sm);
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .metric::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: var(--accent);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .metric:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
     }
 
     .metric strong {
@@ -342,14 +307,14 @@
       color: var(--primary);
     }
 
-    .metric.accent::before { background: var(--accent); }
-    .metric.success::before { background: var(--success); }
-    .metric.warning::before { background: var(--warning); }
-    .metric.info::before { background: var(--info); }
+    .metric.accent { border-left: 4px solid var(--accent); }
+    .metric.success { border-left: 4px solid var(--success); }
+    .metric.warning { border-left: 4px solid var(--warning); }
+    .metric.info { border-left: 4px solid var(--info); }
 
     /* Result & Interpretation Boxes */
     .result-box, .interpretation-box {
-      background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+      background: #f8fafc;
       border-radius: var(--radius);
       padding: 1.5rem;
       border: 1px solid var(--border);
@@ -358,7 +323,7 @@
     }
 
     .nota {
-      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      background: #eff6ff;
       border-left: 4px solid var(--accent);
       padding: 1rem 1.25rem;
       border-radius: 0 var(--radius) var(--radius) 0;
@@ -369,7 +334,7 @@
     }
 
     .error-message {
-      background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+      background: #fef2f2;
       color: #991b1b;
       padding: 1rem 1.25rem;
       border-radius: var(--radius);
@@ -386,7 +351,6 @@
       border-radius: var(--radius);
       border: 1px solid var(--border);
       margin: 1rem 0;
-      box-shadow: var(--shadow-sm);
     }
 
     .pill-row {
@@ -416,43 +380,6 @@
 
     select.selector-grafica {
       max-width: 300px;
-      background: white;
-      cursor: pointer;
-    }
-
-    /* Download button special */
-    .download-section {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 1px solid var(--border);
-    }
-
-    .btn-download {
-      background: linear-gradient(135deg, var(--info) 0%, #7c3aed 100%);
-      color: white;
-    }
-
-    .btn-download:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .tips-icon {
-      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-      padding: 1rem;
-      border-radius: var(--radius);
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    .tips-icon i {
-      font-size: 2rem;
-      color: #d97706;
     }
 
     @media (max-width: 640px) {
@@ -468,19 +395,16 @@
 <div class="container">
   <section class="hero">
     <div class="hero-content">
-      <h1><i class="fas fa-chart-line"></i> Punto de Equilibrio Multiproducto</h1>
-      <p>Análisis financiero profesional: costos fijos, margen de contribución y visualización interactiva por producto y total consolidado.</p>
-      <div class="hero-badge">
-        <i class="fas fa-chart-simple"></i> Herramienta profesional de gestión
-      </div>
+      <h1>📊 Punto de Equilibrio Multiproducto</h1>
+      <p>Análisis financiero: costos fijos, margen de contribución y visualización interactiva por producto y total consolidado.</p>
     </div>
   </section>
 
   <!-- Costos Fijos Section -->
   <div class="card">
-    <h2><i class="fas fa-coins"></i> Costos Fijos</h2>
+    <h2>Costos Fijos</h2>
     <div class="toolbar">
-      <button class="btn-primary" onclick="agregarRubro()"><i class="fas fa-plus-circle"></i> Agregar rubro</button>
+      <button class="btn-primary" onclick="agregarRubro()">➕ Agregar rubro</button>
     </div>
     <div class="table-container">
       <table>
@@ -498,9 +422,9 @@
 
   <!-- Productos Section -->
   <div class="card">
-    <h2><i class="fas fa-boxes"></i> Productos / Servicios</h2>
+    <h2>Productos</h2>
     <div class="toolbar">
-      <button class="btn-primary" onclick="agregarProducto()"><i class="fas fa-plus-circle"></i> Agregar producto</button>
+      <button class="btn-primary" onclick="agregarProducto()">➕ Agregar producto</button>
     </div>
     <div class="table-container">
       <table>
@@ -517,71 +441,52 @@
       </table>
     </div>
     <div class="nota">
-      <i class="fas fa-lightbulb"></i> <strong>Nota clave:</strong> El costo fijo total se reparte equitativamente entre los productos. El punto de equilibrio se calcula con base en el <strong>margen de contribución unitario</strong> (Precio - Costo Variable). Un mayor margen implica menos unidades necesarias para cubrir la parte proporcional del costo fijo.
+      💡 El costo fijo total se reparte equitativamente entre los productos. El punto de equilibrio se calcula con base en el <strong>margen de contribución unitario</strong> (Precio - Costo Variable). Un mayor margen implica menos unidades necesarias para cubrir la parte proporcional del costo fijo.
     </div>
-    <div class="toolbar" style="justify-content: space-between; flex-wrap: wrap;">
-      <div style="display: flex; gap: 0.75rem;">
-        <button class="btn-success" onclick="calcular()"><i class="fas fa-rocket"></i> Calcular punto de equilibrio</button>
-        <button class="btn-outline btn-download" onclick="descargarInformeCompleto()" id="btnDescargarInforme" disabled style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white;">
-          <i class="fas fa-download"></i> Descargar informe completo
-        </button>
-      </div>
-      <div class="pill balance" id="alertaEstado" style="display: none;">
-        <i class="fas fa-chart-simple"></i> Complete el cálculo
-      </div>
+    <div class="toolbar">
+      <button class="btn-success" onclick="calcular()">🚀 Calcular punto de equilibrio</button>
     </div>
     <div id="error" class="error-message"></div>
   </div>
 
   <!-- Resultados Generales Section -->
   <div class="card">
-    <h2><i class="fas fa-chart-pie"></i> Resultados Generales</h2>
+    <h2>Resultados Generales</h2>
     <div id="resultado" class="result-box">
-      <p style="color: #64748b; text-align: center; padding: 2rem;">
-        <i class="fas fa-info-circle"></i> Ingrese los datos y presione <strong>"Calcular punto de equilibrio"</strong> para ver los resultados.
-      </p>
+      <p style="color: #64748b; text-align: center; padding: 2rem;">Ingrese los datos y presione <strong>"Calcular punto de equilibrio"</strong> para ver los resultados.</p>
     </div>
   </div>
 
   <!-- Gráfica Section -->
   <div class="card">
-    <h2><i class="fas fa-chart-line"></i> Gráfica Interactiva</h2>
+    <h2>Gráfica Interactiva</h2>
     <div class="toolbar">
       <select id="selectorGrafica" class="selector-grafica" onchange="actualizarGraficaSeleccionada()">
         <option value="total">📈 Vista Total Multiproducto</option>
       </select>
-      <button class="btn-outline" onclick="alternarPuntoEquilibrio()"><i class="fas fa-eye"></i> Mostrar / Ocultar punto de equilibrio</button>
+      <button class="btn-outline" onclick="alternarPuntoEquilibrio()">🔍 Mostrar / Ocultar punto de equilibrio</button>
     </div>
     <div class="chart-wrapper">
       <canvas id="graficaEquilibrio"></canvas>
     </div>
     <div id="lecturaGrafica" class="nota" style="margin-top: 1rem;">
-      <i class="fas fa-chart-simple"></i> La interpretación de la gráfica se mostrará aquí tras el cálculo.
+      La interpretación de la gráfica se mostrará aquí tras el cálculo.
     </div>
   </div>
 
   <!-- Desglose Section -->
   <div class="card">
-    <h2><i class="fas fa-table-list"></i> Desglose por Producto</h2>
+    <h2>Desglose por Producto</h2>
     <div id="desglose" class="table-container">
-      <p style="color: #64748b; text-align: center; padding: 2rem;">
-        <i class="fas fa-chart-simple"></i> El detalle por producto aparecerá después del cálculo.
-      </p>
+      <p style="color: #64748b; text-align: center; padding: 2rem;">El detalle por producto aparecerá después del cálculo.</p>
     </div>
   </div>
 
-  <!-- Interpretación + Consejo Útil Section -->
+  <!-- Interpretación Section -->
   <div class="card">
-    <h2><i class="fas fa-clipboard-list"></i> Interpretación Estratégica</h2>
+    <h2>Interpretación</h2>
     <div id="interpretacion" class="interpretation-box">
-      <p style="color: #64748b; text-align: center;">
-        <i class="fas fa-info-circle"></i> La interpretación detallada se generará tras el cálculo.
-      </p>
-    </div>
-    
-    <!-- Sección de Consejo Útil (Nueva) -->
-    <div class="tips-icon" id="consejoUtilContainer">
-      <i class="fas fa-lightbulb"></i>
+      <p style="color: #64748b; text-align: center;">La interpretación detallada se generará tras el cálculo.</p>
     </div>
   </div>
 </div>
@@ -599,7 +504,7 @@
     fila.innerHTML = `
       <td><input type="text" class="rubroNombre" value="Rubro ${contadorRubros}" placeholder="Ej: Alquiler"></td>
       <td><input type="number" class="rubroValor" min="0" step="0.01" placeholder="0.00"></td>
-      <td><button class="btn-danger" onclick="this.closest('tr').remove()"><i class="fas fa-trash-alt"></i></button></td>
+      <td><button class="btn-danger" onclick="this.closest('tr').remove()">🗑️</button></td>
     `;
     document.getElementById("rubros").appendChild(fila);
   }
@@ -620,7 +525,7 @@
       <td class="datoPrecio">
         <input type="number" class="precioDirecto" min="0" step="0.01" placeholder="0.00">
       </td>
-      <td><button class="btn-danger" onclick="this.closest('tr').remove()"><i class="fas fa-trash-alt"></i></button></td>
+      <td><button class="btn-danger" onclick="this.closest('tr').remove()">🗑️</button></td>
     `;
     document.getElementById("productos").appendChild(fila);
   }
@@ -641,8 +546,6 @@
     const error = document.getElementById("error");
     error.textContent = mensaje;
     error.style.display = "block";
-    document.getElementById("btnDescargarInforme").disabled = true;
-    setTimeout(() => { error.style.display = "none"; }, 5000);
   }
 
   function moneda(valor) {
@@ -719,35 +622,21 @@
     construirResultado();
     construirDesglose();
     construirInterpretacion();
-    generarConsejoUtil(utilidad, productos, costosFijos);
     cargarSelectorGrafica();
     actualizarGraficaSeleccionada();
-    document.getElementById("btnDescargarInforme").disabled = false;
-  }
-
-  function generarConsejoUtil(utilidad, productos, costosFijos) {
-    const consejoSpan = document.getElementById("consejoUtilTexto");
-    if (utilidad < 0) {
-      consejoSpan.innerHTML = "⚠️ <strong>Estás operando con pérdida.</strong> Te recomendamos: revisar costos fijos, aumentar precios de productos con mayor margen, o reducir costos variables. Enfócate en vender más unidades de los productos con mejor margen de contribución.";
-    } else if (utilidad === 0) {
-      consejoSpan.innerHTML = "⚖️ <strong>Estás exactamente en el punto de equilibrio.</strong> Cualquier venta adicional generará ganancias. Considera promocionar los productos de mayor margen o buscar eficiencias operativas para aumentar tu rentabilidad.";
-    } else {
-      const mejorProducto = productos.reduce((best, p) => p.margenUnitario > best.margenUnitario ? p : best, productos[0]);
-      consejoSpan.innerHTML = `✅ <strong>Utilidad positiva generada.</strong> Tu producto estrella es <strong>${mejorProducto.nombre}</strong> con un margen de ${moneda(mejorProducto.margenUnitario)} por unidad. Para mejorar aún más, enfócate en vender más de este producto y considera reducir costos fijos si el margen de seguridad es bajo.`;
-    }
   }
 
   function construirResultado() {
     const d = datosCalculados;
     document.getElementById("resultado").innerHTML = `
       <div class="grid">
-        <div class="metric accent"><strong><i class="fas fa-chart-line"></i> Costos fijos totales</strong><span>${moneda(d.costosFijos)}</span></div>
-        <div class="metric info"><strong><i class="fas fa-chart-pie"></i> Parte por producto</strong><span>${moneda(d.costoFijoPorProducto)}</span></div>
-        <div class="metric warning"><strong><i class="fas fa-cubes"></i> Unidades totales</strong><span>${d.unidadesTotales}</span></div>
-        <div class="metric success"><strong><i class="fas fa-chart-simple"></i> Resultado</strong><span>${moneda(d.utilidad)}</span></div>
+        <div class="metric accent"><strong>Costos fijos totales</strong><span>${moneda(d.costosFijos)}</span></div>
+        <div class="metric info"><strong>Parte por producto</strong><span>${moneda(d.costoFijoPorProducto)}</span></div>
+        <div class="metric warning"><strong>Unidades totales</strong><span>${d.unidadesTotales}</span></div>
+        <div class="metric success"><strong>Resultado</strong><span>${moneda(d.utilidad)}</span></div>
       </div>
-      <p><strong><i class="fas fa-receipt"></i> Detalle de rubros fijos:</strong><br>${d.detalleRubros}</p>
-      <p><strong>Estado financiero:</strong> <span class="highlight">${d.estado}</span></p>
+      <p><strong>Rubros:</strong><br>${d.detalleRubros}</p>
+      <p><strong>Estado:</strong> <span class="highlight">${d.estado}</span></p>
       <p><strong>Ingresos necesarios:</strong> ${moneda(d.ingresosTotales)} &nbsp;|&nbsp; <strong>Costos totales:</strong> ${moneda(d.costosTotales)} &nbsp;|&nbsp; <strong>Margen generado:</strong> ${moneda(d.margenGenerado)}</p>
     `;
   }
@@ -770,10 +659,10 @@
     const d = datosCalculados;
     const formula = d.productos.map(p => `${p.nombre}: ${moneda(p.parteCostoFijo)} ÷ ${moneda(p.margenUnitario)} = ${p.unidadesExactas.toFixed(2)} → <strong>${p.unidades} unidades</strong>`).join("<br>");
     document.getElementById("interpretacion").innerHTML = `
-      <p><strong><i class="fas fa-brain"></i> Lógica aplicada:</strong> El punto de equilibrio se basa en el <span class="highlight">margen de contribución unitario</span> (Precio - Costo variable). Repartimos el costo fijo total entre todos los productos y calculamos cuántas unidades de cada uno se necesitan para cubrir esa porción.</p>
-      <p><strong>📐 Fórmula clave:</strong> Unidades = Parte del costo fijo ÷ Margen unitario</p>
-      <p><strong>📋 Cálculo detallado por producto:</strong><br>${formula}</p>
-      <p><strong>✅ Verificación financiera:</strong> Ingresos totales = ${moneda(d.ingresosTotales)} | Costos totales = ${moneda(d.costosTotales)} | Resultado neto = <span class="highlight">${moneda(d.utilidad)}</span> ${d.utilidad > 0 ? '(excedente por redondeo de unidades)' : ''}</p>
+      <p><strong>🧠 Lógica aplicada:</strong> El punto de equilibrio se basa en el <span class="highlight">margen de contribución unitario</span> (Precio - Costo variable). Repartimos el costo fijo total entre todos los productos y calculamos cuántas unidades de cada uno se necesitan para cubrir esa porción.</p>
+      <p><strong>📐 Fórmula:</strong> Unidades = Parte del costo fijo ÷ Margen unitario</p>
+      <p><strong>📋 Cálculo por producto:</strong><br>${formula}</p>
+      <p><strong>✅ Verificación:</strong> Ingresos totales = ${moneda(d.ingresosTotales)} | Costos totales = ${moneda(d.costosTotales)} | Resultado = <span class="highlight">${moneda(d.utilidad)}</span> ${d.utilidad > 0 ? '(excedente por redondeo de unidades)' : ''}</p>
     `;
   }
 
@@ -806,8 +695,8 @@
       costos.push({ x: i, y: d.costosFijos + i * costoProm });
     }
     if (mostrarPunto) punto.push({ x: eqExacto, y: eqExacto * precioProm });
-    document.getElementById("lecturaGrafica").innerHTML = `📊 <strong>Vista consolidada:</strong> Punto de equilibrio total en <strong>${eqExacto.toFixed(2)} unidades agregadas</strong> (${moneda(eqExacto * precioProm)} de facturación).`;
-    renderizarGrafica({ titulo: "Punto de Equilibrio Total (Todos los Productos)", ejeX: "Unidades Totales", ingresos, costos, punto });
+    document.getElementById("lecturaGrafica").innerHTML = `📊 <strong>Vista total:</strong> Punto de equilibrio en <strong>${eqExacto.toFixed(2)} unidades</strong> (${moneda(eqExacto * precioProm)}).`;
+    renderizarGrafica({ titulo: "Punto de Equilibrio Total", ejeX: "Unidades Totales", ingresos, costos, punto });
   }
 
   function dibujarGraficaProducto(index) {
@@ -820,7 +709,7 @@
       costos.push({ x: i, y: p.parteCostoFijo + i * p.costoVariable });
     }
     if (mostrarPunto) punto.push({ x: eqExacto, y: eqExacto * p.precio });
-    document.getElementById("lecturaGrafica").innerHTML = `📦 <strong>Análisis individual ${p.nombre}:</strong> Equilibrio en <strong>${eqExacto.toFixed(2)} unidades</strong> (${moneda(eqExacto * p.precio)} de ventas). Requiere <strong>${p.unidades} unidades</strong> para cubrir su parte de costos fijos.`;
+    document.getElementById("lecturaGrafica").innerHTML = `📦 <strong>${p.nombre}:</strong> Equilibrio en <strong>${eqExacto.toFixed(2)} unidades</strong> (${moneda(eqExacto * p.precio)}). Requiere <strong>${p.unidades} unidades</strong>.`;
     renderizarGrafica({ titulo: `Punto de Equilibrio: ${p.nombre}`, ejeX: `Unidades de ${p.nombre}`, ingresos, costos, punto });
   }
 
@@ -833,7 +722,7 @@
         datasets: [
           { label: "Ingresos Totales", data: config.ingresos, borderColor: "#10b981", backgroundColor: "#10b981", borderWidth: 3, pointRadius: 0, tension: 0.2 },
           { label: "Costos Totales", data: config.costos, borderColor: "#ef4444", backgroundColor: "#ef4444", borderWidth: 3, pointRadius: 0, tension: 0.2 },
-          { label: "Punto de Equilibrio", data: config.punto, borderColor: "#f59e0b", backgroundColor: "#f59e0b", pointRadius: 6, pointStyle: 'circle', showLine: false }
+          { label: "Punto de Equilibrio", data: config.punto, borderColor: "#f59e0b", backgroundColor: "#f59e0b", pointRadius: 5, showLine: false }
         ]
       },
       options: {
@@ -848,42 +737,6 @@
         }
       }
     });
-  }
-
-  function descargarInformeCompleto() {
-    if (!datosCalculados) {
-      alert("Primero realiza el cálculo del punto de equilibrio.");
-      return;
-    }
-    const contenidoInforme = `
-      <!DOCTYPE html>
-      <html>
-      <head><meta charset="UTF-8"><title>Informe Punto de Equilibrio</title>
-      <style>body{font-family:Arial;padding:2rem;} h1{color:#0f172a;} table{border-collapse:collapse;width:100%;margin:1rem 0;} th,td{border:1px solid #ccc;padding:8px;text-align:left;} .metric{background:#f8fafc;padding:1rem;margin:1rem 0;}</style>
-      </head>
-      <body>
-      <h1>📊 Informe de Punto de Equilibrio Multiproducto</h1>
-      <p><strong>Fecha:</strong> ${new Date().toLocaleString()}</p>
-      <h2>📈 Resultados Generales</h2>
-      <div>${document.getElementById("resultado").innerHTML}</div>
-      <h2>📋 Desglose por Producto</h2>
-      <div>${document.getElementById("desglose").innerHTML}</div>
-      <h2>💡 Interpretación Estratégica</h2>
-      <div>${document.getElementById("interpretacion").innerHTML}</div>
-      <h2>🎯 Consejo para tu Negocio</h2>
-      <div>${document.getElementById("consejoUtilTexto").innerHTML}</div>
-      <hr>
-      <p><em>Informe generado automáticamente por la Calculadora de Punto de Equilibrio.</em></p>
-      </body>
-      </html>
-    `;
-    const blob = new Blob([contenidoInforme], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `informe_punto_equilibrio_${new Date().toISOString().slice(0,19)}.html`;
-    a.click();
-    URL.revokeObjectURL(url);
   }
 
   // Inicializar con datos de ejemplo
